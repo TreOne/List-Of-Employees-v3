@@ -27,7 +27,10 @@ class ClassTestEmployees(unittest.TestCase):
         hazards = ['1', '2', '3']
         employee = self.employees.get_employee(0)
         employee.set_value('family_name', 'Иванов')
+        employee.set_value('first_name', 'Иван')
+        employee.set_value('patronymic', 'Иванович')
         self.assertEqual(employee.value('family_name'), 'Иванов')
+        self.assertEqual(employee.value('full_name'), 'Иванов Иван Иванович')
         employee.set_value('hazard_types', hazards)
         hazards.append('4')
         self.assertEqual(len(employee.value('hazard_types')), 3)

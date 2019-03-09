@@ -53,4 +53,6 @@ class Employee:
             raise KeyError
 
     def value(self, field_name):
+        if field_name == 'full_name':
+            return ' '.join((self.fields['family_name'], self.fields['first_name'], self.fields['patronymic']))
         return self.fields[field_name]
