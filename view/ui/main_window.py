@@ -25,6 +25,7 @@ class Ui_MainWindow(object):
         self.label.setObjectName("label")
         self.verticalLayout.addWidget(self.label)
         self.employees_table = QtWidgets.QTableView(self.centralwidget)
+        self.employees_table.setSortingEnabled(True)
         self.employees_table.setObjectName("employees_table")
         self.verticalLayout.addWidget(self.employees_table)
         MainWindow.setCentralWidget(self.centralwidget)

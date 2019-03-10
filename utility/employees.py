@@ -37,7 +37,7 @@ class Employees:
 class Employee:
     def __init__(self):
         self.fields = dict()
-        for field_name in e.EMPLOYEE_FIELDS + e.JOB_FIELDS:
+        for field_name in e.EMPLOYEE_FIELDS_FULL:
             if field_name in ('hazard_types', 'hazard_factors'):
                 self.fields[field_name] = list()
             else:
