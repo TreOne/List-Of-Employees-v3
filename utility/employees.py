@@ -1,49 +1,67 @@
-import utility.enumerations as e
-
-
 class Employees:
     def __init__(self):
         self.list_of_employees = dict()
         self.max_id = -1
 
-    def num(self) -> int:
+    def __len__(self):
         return len(self.list_of_employees)
 
-    def get_new_id(self):
+    def _get_new_id(self):
         self.max_id += 1
         return self.max_id
 
     def get_employee(self, emp_id: int):
-        return self.list_of_employees[emp_id]
-
-    def rem_employee(self, emp_id: int):
-        return self.list_of_employees.pop(emp_id)
+        """Получить сотрудника по id"""
+        return self.list_of_employees.get(emp_id, None)
 
     def get_employees(self):
+        """Получить список всех сотрудников"""
         return self.list_of_employees
 
-    def add_empty_employee(self) -> int:
-        new_id = self.get_new_id()
-        self.list_of_employees[new_id] = Employee()
-        return new_id
+    def rem_employee(self, emp_id: int):
+        """Удалить сотрудника по id"""
+        self.list_of_employees.pop(emp_id, None)
+
+    def add_empty_employee(self):
+        """Добавить пустого сотрудника"""
+        new_id = self._get_new_id()
+        new_employee = Employee()
+        self.list_of_employees[new_id] = new_employee
+        return new_employee
 
     def add_employee(self, employee: dict):
-        new_id = self.add_empty_employee()
-        new_employee = self.get_employee(new_id)
+        """Добавить сотрудника"""
+        new_employee = self.add_empty_employee()
         for k, v in employee:
-            new_employee.set_value(k, v)
+            new_employee.set_attr(k, v)
 
 
 class Employee:
-    def __init__(self):
-        self.fields = dict()
-        for field_name in e.EMPLOYEE_FIELDS_FULL:
-            if field_name in ('hazard_types', 'hazard_factors'):
-                self.fields[field_name] = list()
-            else:
-                self.fields[field_name] = ''
+    ORGANIZATION_FIELDS = ('org_name', 'inn', 'ogrn', 'org_address',
+                           'head_full_name', 'representative_full_name', 'representative_position')
+    PERSON_FIELDS = ('family_name', 'first_name', 'patronymic', 'sex', 'birth_date', 'address_free_form')
+    JOB_FIELDS = ('experience', 'specialty', 'hazard_types', 'hazard_factors')
+    ALL_FIELDS = PERSON_FIELDS + JOB_FIELDS
 
-    def set_value(self, field_name, value):
+    def __init__(self, original=None):
+        self.fields = dict()
+        for field_name in Employee.ALL_FIELDS:
+            if field_name in ('hazard_types', 'hazard_factors'):
+                self.fields[field_name] = list() if original is None else original.attr(field_name).copy()
+            else:
+                self.fields[field_name] = '' if original is None else original.attr(field_name)
+
+    def __getattr__(self, attr_name):
+        if attr_name in Employee.ALL_FIELDS:
+            if attr_name == 'full_name':
+                full_name = ' '.join((self.fields['family_name'], self.fields['first_name'], self.fields['patronymic']))
+                return full_name.strip()
+            return self.fields[attr_name]
+        else:
+            raise AttributeError(attr_name)
+
+    # TODO: Решить проблемму с атрибутами класса Employee
+    def set_attr(self, field_name, value):
         if field_name in self.fields:
             if field_name in ('hazard_types', 'hazard_factors'):
                 self.fields[field_name] = value.copy()
@@ -52,7 +70,11 @@ class Employee:
         else:
             raise KeyError
 
-    def value(self, field_name):
+    def attr(self, field_name):
         if field_name == 'full_name':
-            return ' '.join((self.fields['family_name'], self.fields['first_name'], self.fields['patronymic']))
+            full_name = ' '.join((self.fields['family_name'], self.fields['first_name'], self.fields['patronymic']))
+            return full_name.strip()
         return self.fields[field_name]
+
+    def clone(self):
+        return Employee(self)

@@ -1,6 +1,6 @@
 from lxml import etree as et_xml
 import datetime
-import utility.enumerations as e
+import utility.org_fields_enums as efe
 from utility.employees import Employees, Employee
 
 
@@ -59,7 +59,7 @@ class XMLParser:
 
         # Заполняем тег <organization>
         organization_node = et_xml.SubElement(root, 'organization')
-        for field in e.ORGANIZATION_FIELDS:
+        for field in efe.ORGANIZATION_FIELDS:
             node = et_xml.SubElement(organization_node, field)
             node.text = organization.get(field, '')
 
@@ -67,12 +67,12 @@ class XMLParser:
         for employee in employees.values():
             employee_node = et_xml.SubElement(root, 'employee')
             # Заполняем корневой тег <employee> сотрудника
-            for field in e.EMPLOYEE_FIELDS:
+            for field in Employee.PERSON_FIELDS:
                 node = et_xml.SubElement(employee_node, field)
                 node.text = employee[field]
             # Заполняем тег <job> сотрудника
             job_node = et_xml.SubElement(employee_node, 'job')
-            for field in e.JOB_FIELDS:
+            for field in Employee.JOB_FIELDS:
                 if field not in ('hazard_types', 'hazard_factors'):
                     node = et_xml.SubElement(job_node, field)
                     node.text = employee[field]
@@ -90,10 +90,10 @@ class XMLParser:
         organization = self.__root.find('organization')
         if organization is None:
             print('WARNING: В XML файле отсутствует тег <organization>.')
-            for field in e.ORGANIZATION_FIELDS:
+            for field in efe.ORGANIZATION_FIELDS:
                 self.__organization[field] = ''
         else:
-            for field in e.ORGANIZATION_FIELDS:
+            for field in efe.ORGANIZATION_FIELDS:
                 try:
                     self.__organization[field] = organization.find(field).text
                 except AttributeError:
@@ -109,7 +109,7 @@ class XMLParser:
         for i, employee in enumerate(self.__root.iter("employee")):
             # Заполняем основные поля сотрудника
             add_employee = dict()
-            for field in e.EMPLOYEE_FIELDS:
+            for field in Employee.PERSON_FIELDS:
                 if employee.find(field) is None or employee.find(field).text is None:
                     print('WARNING: У сотрудника ' + str(i) + ' не заполнено поле ' + field)
                     add_employee[field] = ''
@@ -123,14 +123,14 @@ class XMLParser:
             # Если у сотрудника отсутствует тег <job> то заполняем его пустыми полями
             if job is None:
                 print('WARNING: У сотрудника ' + str(i) + ' пропущен тег <job>')
-                for field in e.JOB_FIELDS:
+                for field in Employee.JOB_FIELDS:
                     if field in ('hazard_types', 'hazard_factors'):
                         add_employee[field] = list()
                     else:
                         add_employee[field] = ''
             else:
                 # Иначе заполняем данными из файла
-                for field in e.JOB_FIELDS:
+                for field in Employee.JOB_FIELDS:
                     if job.find(field) is None or job.find(field).text is None:
                         print('WARNING: У сотрудника ' + str(i) + ' не заполнено поле ' + field)
                         if field in ('hazard_types', 'hazard_factors'):
