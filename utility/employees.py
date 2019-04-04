@@ -32,49 +32,61 @@ class Employees:
     def add_employee(self, employee: dict):
         """Добавить сотрудника"""
         new_employee = self.add_empty_employee()
-        for k, v in employee:
-            new_employee.set_attr(k, v)
+        for key, value in employee:
+            setattr(new_employee, key, value)
 
 
 class Employee:
-    ORGANIZATION_FIELDS = ('org_name', 'inn', 'ogrn', 'org_address',
-                           'head_full_name', 'representative_full_name', 'representative_position')
     PERSON_FIELDS = ('family_name', 'first_name', 'patronymic', 'sex', 'birth_date', 'address_free_form')
     JOB_FIELDS = ('experience', 'specialty', 'hazard_types', 'hazard_factors')
     ALL_FIELDS = PERSON_FIELDS + JOB_FIELDS
+    LIST_FIELDS = 'hazard_types', 'hazard_factors'
 
     def __init__(self, original=None):
-        self.fields = dict()
-        for field_name in Employee.ALL_FIELDS:
-            if field_name in ('hazard_types', 'hazard_factors'):
-                self.fields[field_name] = list() if original is None else original.attr(field_name).copy()
+        self.__dict__['fields'] = dict()
+        for key in Employee.ALL_FIELDS:
+            if key in Employee.LIST_FIELDS:
+                self.__dict__['fields'][key] = list() if original is None else getattr(original, key).copy()
             else:
-                self.fields[field_name] = '' if original is None else original.attr(field_name)
+                self.__dict__['fields'][key] = '' if original is None else getattr(original, key)
 
-    def __getattr__(self, attr_name):
-        if attr_name in Employee.ALL_FIELDS:
-            if attr_name == 'full_name':
-                full_name = ' '.join((self.fields['family_name'], self.fields['first_name'], self.fields['patronymic']))
-                return full_name.strip()
-            return self.fields[attr_name]
-        else:
-            raise AttributeError(attr_name)
-
-    # TODO: Решить проблемму с атрибутами класса Employee
-    def set_attr(self, field_name, value):
-        if field_name in self.fields:
-            if field_name in ('hazard_types', 'hazard_factors'):
-                self.fields[field_name] = value.copy()
-            else:
-                self.fields[field_name] = value
-        else:
-            raise KeyError
-
-    def attr(self, field_name):
-        if field_name == 'full_name':
-            full_name = ' '.join((self.fields['family_name'], self.fields['first_name'], self.fields['patronymic']))
+    def __getattr__(self, key):
+        if key == 'full_name':
+            full_name = ' '.join((self.family_name, self.first_name, self.patronymic))
             return full_name.strip()
-        return self.fields[field_name]
+
+        if key in Employee.ALL_FIELDS:
+            return self.fields[key]
+        else:
+            raise AttributeError(key)
+
+    def __setattr__(self, key, value):
+        if key in Employee.ALL_FIELDS:
+            if key in Employee.LIST_FIELDS:
+                self.__dict__[key] = value.copy()
+            else:
+                self.__dict__[key] = value
+        else:
+            raise AttributeError(key)
+
+    def __repr__(self):
+        return "Employee({})".format(self.full_name)
+
+    def __str__(self):
+        return self.full_name
+
+    def __iter__(self):
+        self.iter_index = 0
+        return self
+
+    def __next__(self):
+        if self.iter_index < len(Employee.ALL_FIELDS):
+            key = Employee.ALL_FIELDS[self.iter_index]
+            value = getattr(self, key)
+            self.iter_index += 1
+            return key, value
+        else:
+            raise StopIteration
 
     def clone(self):
         return Employee(self)

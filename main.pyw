@@ -19,8 +19,12 @@ if __name__ == '__main__':
     list_of_employees.add_empty_employee()
     list_of_employees.add_empty_employee()
     employee = list_of_employees.add_empty_employee()
-    employee.set_attr('family_name', 'test')
-    print(employee.family_name)
+    employee.family_name = 'Иванов'
+    employee.first_name = 'Иван'
+    employee.patronymic = 'Иванович'
+    employee.hazard_types = ['1', '2', '3']
+
+    print(employee.full_name)
 
     Controller(Model(list_of_employees.get_employees()))
     sys.exit(app.exec_())
