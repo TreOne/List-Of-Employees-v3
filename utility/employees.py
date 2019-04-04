@@ -80,13 +80,12 @@ class Employee:
         return self
 
     def __next__(self):
-        if self.iter_index < len(Employee.ALL_FIELDS):
-            key = Employee.ALL_FIELDS[self.iter_index]
-            value = getattr(self, key)
-            self.iter_index += 1
-            return key, value
-        else:
+        if self.iter_index >= len(Employee.ALL_FIELDS):
             raise StopIteration
+        key = Employee.ALL_FIELDS[self.iter_index]
+        value = getattr(self, key)
+        self.iter_index += 1
+        return key, value
 
     def clone(self):
         return Employee(self)
