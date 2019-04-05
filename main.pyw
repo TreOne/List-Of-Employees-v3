@@ -21,10 +21,12 @@ if __name__ == '__main__':
     employee = list_of_employees.add_empty_employee()
     employee.family_name = 'Иванов'
     employee.first_name = 'Иван'
-    employee.patronymic = 'Иванович'
+    # employee.patronymic = 'Иванович'
     employee.hazard_types = ['1', '2', '3']
 
-    print(employee.full_name)
+    print(employee)
+    print(employee)
+    print(employee)
 
     Controller(Model(list_of_employees.get_employees()))
     sys.exit(app.exec_())

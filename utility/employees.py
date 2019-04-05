@@ -46,9 +46,10 @@ class Employee:
         self.__dict__['fields'] = dict()
         for key in Employee.ALL_FIELDS:
             if key in Employee.LIST_FIELDS:
-                self.__dict__['fields'][key] = list() if original is None else getattr(original, key).copy()
+                value = getattr(original, key).copy() if original is not None else list()
             else:
-                self.__dict__['fields'][key] = '' if original is None else getattr(original, key)
+                value = getattr(original, key) if original is not None else ''
+            self.__dict__['fields'][key] = value
 
     def __getattr__(self, key):
         if key == 'full_name':
@@ -73,7 +74,21 @@ class Employee:
         return "Employee({})".format(self.full_name)
 
     def __str__(self):
-        return self.full_name
+        string = """\
+############################## СОТРУДНИК ##############################
+    ФИО: '{}'
+    Пол: '{}'
+    Дата рождения: '{}'
+    Адрес проживания: '{}'
+    
+    Стаж: '{}'
+    Должность: '{}'
+    Тивы вредностей: {}
+    Факторы вредностей: {}
+#######################################################################
+""".format(self.full_name, self.sex, self.birth_date, self.address_free_form,
+           self.experience, self.specialty, self.hazard_types, self.hazard_factors)
+        return string
 
     def __iter__(self):
         self.iter_index = 0
