@@ -24,9 +24,7 @@ if __name__ == '__main__':
     # employee.patronymic = 'Иванович'
     employee.hazard_types = ['1', '2', '3']
 
-    print(employee)
-    print(employee)
-    print(employee)
+    # print(employee)
 
     Controller(Model(list_of_employees.get_employees()))
     sys.exit(app.exec_())

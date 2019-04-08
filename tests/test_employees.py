@@ -34,6 +34,10 @@ class ClassTestEmployees(unittest.TestCase):
         self.assertEqual(employee.full_name, 'Иванов Иван Иванович')
         employee.hazard_types = hazards
         hazards.append('4')
+        new_patronymic = 'Сидорович'
+        employee.patronymic = new_patronymic
+        new_patronymic = 'Андреевич'
+        self.assertEqual(employee.full_name, 'Иванов Иван Сидорович')
         self.assertEqual(len(employee.hazard_types), 3)
 
     def test_clone_employee(self):

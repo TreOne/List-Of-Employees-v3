@@ -1,42 +1,14 @@
-class Employees:
-    def __init__(self):
-        self.list_of_employees = dict()
-        self.max_id = -1
-
-    def __len__(self):
-        return len(self.list_of_employees)
-
-    def _get_new_id(self):
-        self.max_id += 1
-        return self.max_id
-
-    def get_employee(self, emp_id: int):
-        """Получить сотрудника по id"""
-        return self.list_of_employees.get(emp_id, None)
-
-    def get_employees(self):
-        """Получить список всех сотрудников"""
-        return self.list_of_employees
-
-    def rem_employee(self, emp_id: int):
-        """Удалить сотрудника по id"""
-        self.list_of_employees.pop(emp_id, None)
-
-    def add_empty_employee(self):
-        """Добавить пустого сотрудника"""
-        new_id = self._get_new_id()
-        new_employee = Employee()
-        self.list_of_employees[new_id] = new_employee
-        return new_employee
-
-    def add_employee(self, employee: dict):
-        """Добавить сотрудника"""
-        new_employee = self.add_empty_employee()
-        for key, value in employee:
-            setattr(new_employee, key, value)
+from __future__ import annotations
 
 
 class Employee:
+    """
+    Класс Employee представляет собой модель острудника.
+    Получить список полей класса: Employee.ALL_FIELDS
+    Получить список полей представляющих собой списки: Employee.LIST_FIELDS (обработка списков обычно отличается)
+    При записей значений, списки клонируются, чтобы избежать проблем с изменением значений по ссылке.
+    """
+
     PERSON_FIELDS = ('family_name', 'first_name', 'patronymic', 'sex', 'birth_date', 'address_free_form')
     JOB_FIELDS = ('experience', 'specialty', 'hazard_types', 'hazard_factors')
     ALL_FIELDS = PERSON_FIELDS + JOB_FIELDS
@@ -80,7 +52,7 @@ class Employee:
     Пол: '{}'
     Дата рождения: '{}'
     Адрес проживания: '{}'
-    
+
     Стаж: '{}'
     Должность: '{}'
     Тивы вредностей: {}
@@ -103,4 +75,56 @@ class Employee:
         return key, value
 
     def clone(self):
+        """Возвращает глубокую копию объекта сотрудника"""
         return Employee(self)
+
+
+class Employees:
+    """
+    Класс Employees представляет собой словарь сотрудников с ключами в виде книуальных ID.
+    Класс позволяет удобно управлять добавлением, изменением, поиском и удалением сотрудников.
+    В классе содержатся копии констант из агрегируемого класса Employee, длы удобства использования.
+    """
+
+    PERSON_FIELDS = Employee.PERSON_FIELDS
+    JOB_FIELDS = Employee.JOB_FIELDS
+    ALL_FIELDS = Employee.ALL_FIELDS
+    LIST_FIELDS = Employee.LIST_FIELDS
+
+    def __init__(self):
+        self.list_of_employees = dict()
+        self.max_id = -1
+
+    def __len__(self):
+        return len(self.list_of_employees)
+
+    def get_employee(self, emp_id: int) -> Employee:
+        """Получить сотрудника по id"""
+        return self.list_of_employees.get(emp_id, None)
+
+    def get_employees(self) -> dict[Employee]:
+        """Получить список всех сотрудников"""
+        return self.list_of_employees
+
+    def rem_employee(self, emp_id: int) -> None:
+        """Удалить сотрудника по id"""
+        self.list_of_employees.pop(emp_id, None)
+
+    def add_empty_employee(self) -> Employee:
+        """Добавить пустого сотрудника"""
+        new_id = self._get_new_id()
+        new_employee = Employee()
+        self.list_of_employees[new_id] = new_employee
+        return new_employee
+
+    def add_employee(self, employee: Employee) -> [int, Employee]:
+        """Добавить сотрудника"""
+        new_id = self._get_new_id()
+        self.list_of_employees[new_id] = employee.clone()
+        return new_id, self.list_of_employees[new_id]
+
+    def _get_new_id(self) -> int:
+        """Получить уникальный ID для сотрудника"""
+        self.max_id += 1
+        return self.max_id
+
