@@ -1,7 +1,8 @@
 import sys
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QTranslator
-from utility.employees import Employees
+from utility.orfanization import Organization
+from utility.employees import Employee, Employees
 from model import EmployeesListModel as Model
 from controller import Controller
 from utility.resource_path import resource_path
@@ -24,7 +25,20 @@ if __name__ == '__main__':
     # employee.patronymic = 'Иванович'
     employee.hazard_types = ['1', '2', '3']
 
-    # print(employee)
+    print(employee)
+
+    # for k, v in employee:
+    #     print('{} -> {}'.format(k, v))
+
+    organization = Organization()
+    for field_name in organization.ALL_FIELDS:
+        setattr(organization, field_name, 'Значение для поля: "{}"'.format(field_name))
+
+    print(organization)
+
+
+    # for k, v in organization:
+    #     print('{} -> {}'.format(k, v))
 
     Controller(Model(list_of_employees.get_employees()))
     sys.exit(app.exec_())

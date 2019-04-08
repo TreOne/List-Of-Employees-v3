@@ -1,7 +1,6 @@
 from lxml import etree as et_xml
 import datetime
-import utility.org_fields_enums as efe
-from utility.employees import Employees, Employee
+from utility.employees import Employee, Employees
 
 
 class XMLParser:

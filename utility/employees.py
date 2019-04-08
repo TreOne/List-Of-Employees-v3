@@ -7,6 +7,10 @@ class Employee:
     Получить список полей класса: Employee.ALL_FIELDS
     Получить список полей представляющих собой списки: Employee.LIST_FIELDS (обработка списков обычно отличается)
     При записей значений, списки клонируются, чтобы избежать проблем с изменением значений по ссылке.
+    Так же класс является итерабельным, что обозначает, что вы можете перебирать все поля класса вот так:
+    emp = Employee()
+    for field_name, field_value in emp:
+        setattr(emp, field_name, field_value + ' изменение')
     """
 
     PERSON_FIELDS = ('family_name', 'first_name', 'patronymic', 'sex', 'birth_date', 'address_free_form')
@@ -34,13 +38,10 @@ class Employee:
             raise AttributeError(key)
 
     def __setattr__(self, key, value):
-        if key in Employee.ALL_FIELDS:
-            if key in Employee.LIST_FIELDS:
-                self.__dict__[key] = value.copy()
-            else:
-                self.__dict__[key] = value
+        if key in Employee.LIST_FIELDS:
+            self.__dict__[key] = value.copy()
         else:
-            raise AttributeError(key)
+            self.__dict__[key] = value
 
     def __repr__(self):
         return "Employee({})".format(self.full_name)
@@ -55,7 +56,7 @@ class Employee:
 
     Стаж: '{}'
     Должность: '{}'
-    Тивы вредностей: {}
+    Типы вредностей: {}
     Факторы вредностей: {}
 #######################################################################
 """.format(self.full_name, self.sex, self.birth_date, self.address_free_form,
@@ -92,39 +93,51 @@ class Employees:
     LIST_FIELDS = Employee.LIST_FIELDS
 
     def __init__(self):
-        self.list_of_employees = dict()
-        self.max_id = -1
+        self.__list_of_employees = dict()
+        self.__max_id = -1
 
     def __len__(self):
-        return len(self.list_of_employees)
+        return len(self.__list_of_employees)
+
+    def __iter__(self):
+        self.iter_index = 0
+        return self
+
+    def __next__(self):
+        if self.iter_index >= len(Employee.ALL_FIELDS):
+            raise StopIteration
+        key = Employee.ALL_FIELDS[self.iter_index]
+        value = getattr(self, key)
+        self.iter_index += 1
+        return key, value
 
     def get_employee(self, emp_id: int) -> Employee:
         """Получить сотрудника по id"""
-        return self.list_of_employees.get(emp_id, None)
+        return self.__list_of_employees.get(emp_id, None)
 
     def get_employees(self) -> dict[Employee]:
         """Получить список всех сотрудников"""
-        return self.list_of_employees
+        return self.__list_of_employees
 
     def rem_employee(self, emp_id: int) -> None:
         """Удалить сотрудника по id"""
-        self.list_of_employees.pop(emp_id, None)
+        self.__list_of_employees.pop(emp_id, None)
 
     def add_empty_employee(self) -> Employee:
         """Добавить пустого сотрудника"""
         new_id = self._get_new_id()
         new_employee = Employee()
-        self.list_of_employees[new_id] = new_employee
+        self.__list_of_employees[new_id] = new_employee
         return new_employee
 
     def add_employee(self, employee: Employee) -> [int, Employee]:
         """Добавить сотрудника"""
         new_id = self._get_new_id()
-        self.list_of_employees[new_id] = employee.clone()
-        return new_id, self.list_of_employees[new_id]
+        self.__list_of_employees[new_id] = employee.clone()
+        return new_id, self.__list_of_employees[new_id]
 
     def _get_new_id(self) -> int:
         """Получить уникальный ID для сотрудника"""
-        self.max_id += 1
-        return self.max_id
+        self.__max_id += 1
+        return self.__max_id
 
