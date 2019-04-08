@@ -44,9 +44,6 @@ class Employee:
             self.__dict__[key] = value
 
     def __repr__(self):
-        return "Employee({})".format(self.full_name)
-
-    def __str__(self):
         string = """\
 ############################## СОТРУДНИК ##############################
     ФИО: '{}'
@@ -62,6 +59,9 @@ class Employee:
 """.format(self.full_name, self.sex, self.birth_date, self.address_free_form,
            self.experience, self.specialty, self.hazard_types, self.hazard_factors)
         return string
+
+    def __str__(self):
+        return "Employee({})".format(self.full_name)
 
     def __iter__(self):
         self.iter_index = 0
@@ -100,16 +100,16 @@ class Employees:
         return len(self.__list_of_employees)
 
     def __iter__(self):
-        self.iter_index = 0
+        self.dict_index = list(self.__list_of_employees.keys())
         return self
 
     def __next__(self):
-        if self.iter_index >= len(Employee.ALL_FIELDS):
+        try:
+            key = self.dict_index.pop(0)
+            value = self.__list_of_employees[key]
+            return key, value
+        except IndexError:
             raise StopIteration
-        key = Employee.ALL_FIELDS[self.iter_index]
-        value = getattr(self, key)
-        self.iter_index += 1
-        return key, value
 
     def get_employee(self, emp_id: int) -> Employee:
         """Получить сотрудника по id"""

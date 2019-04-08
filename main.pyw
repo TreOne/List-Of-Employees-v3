@@ -19,6 +19,7 @@ if __name__ == '__main__':
     list_of_employees.add_empty_employee()
     list_of_employees.add_empty_employee()
     list_of_employees.add_empty_employee()
+    list_of_employees.rem_employee(2)
     employee = list_of_employees.add_empty_employee()
     employee.family_name = 'Иванов'
     employee.first_name = 'Иван'
@@ -29,16 +30,18 @@ if __name__ == '__main__':
 
     # for k, v in employee:
     #     print('{} -> {}'.format(k, v))
-
-    organization = Organization()
-    for field_name in organization.ALL_FIELDS:
-        setattr(organization, field_name, 'Значение для поля: "{}"'.format(field_name))
-
-    print(organization)
-
-
+    #
+    # organization = Organization()
+    # for field_name in organization.ALL_FIELDS:
+    #     setattr(organization, field_name, 'Значение для поля: "{}"'.format(field_name))
+    #
+    # print(organization)
+    #
     # for k, v in organization:
     #     print('{} -> {}'.format(k, v))
+
+    for emp_id, employee in list_of_employees:
+        print('{} -> {}'.format(emp_id, employee))
 
     Controller(Model(list_of_employees.get_employees()))
     sys.exit(app.exec_())
