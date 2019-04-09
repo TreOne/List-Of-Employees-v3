@@ -1,6 +1,7 @@
+from utility.employees import Employee, Employees
+from utility.organization import Organization
 from lxml import etree as et_xml
 import datetime
-from utility.employees import Employee, Employees
 
 
 class XMLParser:
@@ -9,10 +10,18 @@ class XMLParser:
     """
 
     def __init__(self):
-        self.__xml_filename = ''  # Путь к XML файлу
-        self.__root = None  # Корень XML объекта
-        self.__employees = dict()  # Список сотрудников организации
-        self.__organization = dict()  # Данные об организации
+        self.__xml_filename = None
+        self.__root = None
+        self.__employees = Employees()
+        self.__organization = Organization()
+        self.__errors = list()
+
+    def __reset_state(self):
+        self.__xml_filename = None
+        self.__root = None
+        self.__employees = Employees()
+        self.__organization = Organization()
+        self.__errors = list()
 
     def get_organization(self):
         return self.__organization
@@ -21,17 +30,14 @@ class XMLParser:
         return self.__employees
 
     def load_file(self, filename):
-        self.__xml_filename = ''
-        self.__root = None
-        self.__employees = dict()
-        self.__organization = dict()
+        self.__reset_state()
 
         # Пробуем открыть файл
         try:
             tree = et_xml.ElementTree(file=filename)
             self.__xml_filename = ''
         except OSError:
-            print('ERROR: XML файл по пути "' + self.__xml_filename + '" не найден.')
+            self.__errors.append('ERROR: XML файл по пути "' + self.__xml_filename + '" не найден.')
             return False
 
         # Корень древа - register?
@@ -58,7 +64,7 @@ class XMLParser:
 
         # Заполняем тег <organization>
         organization_node = et_xml.SubElement(root, 'organization')
-        for field in efe.ORGANIZATION_FIELDS:
+        for field in Organization.ALL_FIELDS:
             node = et_xml.SubElement(organization_node, field)
             node.text = organization.get(field, '')
 
@@ -89,10 +95,10 @@ class XMLParser:
         organization = self.__root.find('organization')
         if organization is None:
             print('WARNING: В XML файле отсутствует тег <organization>.')
-            for field in efe.ORGANIZATION_FIELDS:
+            for field in Organization.ALL_FIELDS:
                 self.__organization[field] = ''
         else:
-            for field in efe.ORGANIZATION_FIELDS:
+            for field in Organization.ALL_FIELDS:
                 try:
                     self.__organization[field] = organization.find(field).text
                 except AttributeError:

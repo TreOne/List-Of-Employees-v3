@@ -46,7 +46,7 @@ class ClassTestEmployees(unittest.TestCase):
         employee.first_name = 'Иван'
         employee.patronymic = 'Иванович'
         employee.hazard_types = ['1', '2', '3']
-        employee2 = employee.clone()
+        employee2 = employee.copy()
         employee2.family_name = 'Петров'
         employee2.hazard_types = ['4', '5', '6', '7']
         self.assertEqual(employee.family_name, 'Иванов')
