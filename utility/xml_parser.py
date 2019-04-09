@@ -55,6 +55,8 @@ class XMLParser:
         # Заполняем модель данными
         self.__fill_organization()
         self.__fill_employees()
+
+        self.__soft_remove_job_tags()
         return True
 
     def save_to_file(self, filename, organization, employees):
@@ -163,7 +165,7 @@ class XMLParser:
                         continue
                     for hazard in xml_employee.iterfind('job/' + field + '/code'):
                         # Проверяем, что в теге вредности есть текст
-                        if hazard.text is not None:
+                        if hazard.text is None:
                             self.__errors.append('WARNING: Пустой тег <code> у сотрудника {} (id:{})'
                                                  .format(new_employee['full_name'], str(i)))
                             continue
@@ -181,16 +183,14 @@ class XMLParser:
         # Перебираем найденных сотрудников
         for xml_employee in self.__root.iter("employee"):
             job = xml_employee.find('job')
-
             # Если не отсутствует тег <job> то переходим к следующему сотруднику
             if job is None:
                 continue
-
-            for child in job.iter():
-                pass  # TODO: Реализовать мягкое удаление JOB
+            for child in list(job):
+                xml_employee.append(child)
+            xml_employee.remove(job)
 
     def log_tree(self):
-        xml_object = etree.tostring(self.__root, pretty_print=True, xml_declaration=True, encoding='UTF-8')
-
-        with open("tests/tree.xml", "wb") as writer:
-            writer.write(xml_object)
+        save_tree = etree.ElementTree(self.__root)
+        # TODO: странное поведение pretty print. Лишние отступы
+        save_tree.write("tests/tree.xml", pretty_print=True, encoding="utf-8", xml_declaration=True)

@@ -38,7 +38,8 @@ if __name__ == '__main__':
         print(error)
 
     list_of_employees = xml_parser.get_employees()
-    print(list_of_employees)
+    xml_parser.log_tree()
+    # print(list_of_employees)
 
     # for employee in list_of_employees.values():
     #     employee.show()
