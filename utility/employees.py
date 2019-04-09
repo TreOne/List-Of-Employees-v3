@@ -45,6 +45,12 @@ class Employee:
         return self.__dict__[key]
 
     def __repr__(self):
+        return 'Employee({})'.format(self['full_name'])
+
+    def __str__(self):
+        return self['full_name']
+
+    def show(self):
         string = """\
 ############################## СОТРУДНИК ##############################
     ФИО: '{}'
@@ -61,10 +67,7 @@ class Employee:
            self['birth_date'], self['address_free_form'],
            self['experience'], self['specialty'],
            self['hazard_types'], self['hazard_factors'])
-        return string
-
-    def __str__(self):
-        return "Employee({})".format(self['full_name'])
+        print(string)
 
     def copy(self):
         """Возвращает глубокую копию объекта сотрудника"""
@@ -105,7 +108,7 @@ class Employees:
 
     def __str__(self):
         result = ''
-        for emp_id, employee in self:
+        for emp_id, employee in self.items():
             result += '[{}] {}\n'.format(emp_id, employee)
         return result
 

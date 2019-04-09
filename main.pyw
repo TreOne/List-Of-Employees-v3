@@ -23,6 +23,7 @@ if __name__ == '__main__':
     list_of_employees.pop(2)
     emp_id, employee = list_of_employees.add()
     employee['family_name'] = 'Иванов'
+    employee['family_name'] = 'Иванов'
     employee['first_name'] = 'Иван'
     employee['patronymic'] = 'Иванович'
     employee['hazard_types'] = ['1', '2', '3']
@@ -37,15 +38,15 @@ if __name__ == '__main__':
     # print(list_of_employees)
     # print(new_list_of_employees)
     # print(employee['full_name'])
-
-    for k, v in employee.items():
-        print('{} -> {}'.format(k, v))
+    #
+    # for k, v in employee.items():
+    #     print('{} -> {}'.format(k, v))
 
     # organization = Organization()
-    # for field_name in organization.ALL_FIELDS:
-    #     setattr(organization, field_name, 'Значение для поля: "{}"'.format(field_name))
+    # for field_name in organization.keys():
+    #     organization[field_name] = 'Значение для поля: "{}"'.format(field_name)
     #
-    # print(organization)
+    # organization.show()
     #
     # for k, v in organization:
     #     print('{} -> {}'.format(k, v))

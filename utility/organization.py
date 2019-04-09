@@ -11,24 +11,26 @@ class Organization:
     ALL_FIELDS = ('org_name', 'inn', 'ogrn', 'org_address',
                   'head_full_name', 'representative_full_name', 'representative_position')
 
-    def __init__(self):
-        self.__dict__['fields'] = dict()
+    def __init__(self, original=None):
         for key in Organization.ALL_FIELDS:
-            self.__dict__['fields'][key] = ''
+            value = original[key] if original is not None else ''
+            self.__dict__[key] = value
 
-    def __getattr__(self, key):
-        if key in Organization.ALL_FIELDS:
-            return self.fields[key]
-        else:
-            raise AttributeError(key)
-
-    def __setattr__(self, key, value):
+    def __setitem__(self, key, value):
+        if key not in Organization.ALL_FIELDS:
+            raise KeyError(key)
         self.__dict__[key] = value
 
+    def __getitem__(self, key):
+        return self.__dict__[key]
+
     def __repr__(self):
-        return "Organization({})".format(self.org_name)
+        return "Organization({})".format(self['org_name'])
 
     def __str__(self):
+        return self['org_name']
+
+    def show(self):
         string = """\
 ############################## ОРГАНИЗАЦИЯ ##############################
     Название: '{}'
@@ -40,18 +42,18 @@ class Organization:
     Представитель: '{}'
     Должность представителя: '{}'
 #########################################################################
-""".format(self.org_name, self.inn, self.ogrn, self.org_address,
-           self.head_full_name, self.representative_full_name, self.representative_position)
-        return string
+""".format(*self.values())
+        print(string)
 
-    def __iter__(self):
-        self.iter_index = 0
-        return self
+    def copy(self):
+        """Возвращает копию объекта организации"""
+        return Organization(self)
 
-    def __next__(self):
-        if self.iter_index >= len(Organization.ALL_FIELDS):
-            raise StopIteration
-        key = Organization.ALL_FIELDS[self.iter_index]
-        value = getattr(self, key)
-        self.iter_index += 1
-        return key, value
+    def keys(self):
+        return self.__dict__.keys()
+
+    def values(self):
+        return self.__dict__.values()
+
+    def items(self):
+        return self.__dict__.items()
