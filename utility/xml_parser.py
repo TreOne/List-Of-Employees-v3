@@ -37,7 +37,8 @@ class XMLParser:
 
         # Пробуем открыть файл
         try:
-            tree = etree.ElementTree(file=filename)
+            parser = etree.XMLParser(remove_blank_text=True)
+            tree = etree.ElementTree(file=filename, parser=parser)
         except OSError:
             self.__errors.append('ERROR: XML файл по пути "' + filename + '" не найден.')
             return False
@@ -56,6 +57,12 @@ class XMLParser:
         self.__fill_organization()
         self.__fill_employees()
 
+        # Очищаем лишние пробелы
+        for element in self.__root.iter("*"):
+            if element.text is not None and not element.text.strip():
+                element.text = None
+
+        # Переносим содержимое тега <job> в <employee> для удобного парсинга
         self.__soft_remove_job_tags()
         return True
 
@@ -119,6 +126,7 @@ class XMLParser:
 
     def __fill_employees(self):
         """Заполняет информацией поля организации"""
+        # TODO: Пеработать метод с учетом мягкого удаления job
         employees_count = len(self.__root.findall('employee'))
         # Если не найдены сотрудники в XML файле
         if employees_count == 0:
@@ -149,7 +157,7 @@ class XMLParser:
             # Перебираем поля связанные с работой
             for field in Employee.JOB_FIELDS:
                 # Если поле не обнаружено
-                if job.find(field) is None or job.find(field).text is None:
+                if job.find(field) is None:
                     self.__errors.append('WARNING: У сотрудника {} (id:{}) не обнаружен тег <{}>'
                                          .format(new_employee['full_name'], str(i), field))
 
@@ -176,21 +184,16 @@ class XMLParser:
 
     def __soft_remove_job_tags(self):
         """Удаляет тег <job>, перенося его детей в его родителя - <employee>"""
-        # Если не найдены сотрудники в XML файле
-        if len(self.__root.findall('employee')) == 0:
-            return
-
         # Перебираем найденных сотрудников
         for xml_employee in self.__root.iter("employee"):
             job = xml_employee.find('job')
             # Если не отсутствует тег <job> то переходим к следующему сотруднику
             if job is None:
                 continue
-            for child in list(job):
+            for child in job:
                 xml_employee.append(child)
             xml_employee.remove(job)
 
     def log_tree(self):
-        save_tree = etree.ElementTree(self.__root)
-        # TODO: странное поведение pretty print. Лишние отступы
-        save_tree.write("tests/tree.xml", pretty_print=True, encoding="utf-8", xml_declaration=True)
+        tree = etree.ElementTree(self.__root)
+        tree.write('tests/xml_parser_data.xml', pretty_print=True, xml_declaration=True, encoding="utf-8")

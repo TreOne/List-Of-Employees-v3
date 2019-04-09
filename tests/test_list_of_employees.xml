@@ -21,10 +21,6 @@
       <experience>3</experience>
       <specialty>Юрист</specialty>
       <hazard_types>
-        <code>23.</code>
-        <code>27.1.</code>
-        <code>27.9.</code>
-        <code>7.</code>
       </hazard_types>
       <hazard_factors>
         <code>1.1.4.3.3.</code>
