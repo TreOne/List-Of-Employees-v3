@@ -127,7 +127,7 @@ class Employees:
         return self.__list_of_employees.pop(emp_id)
 
     def add(self, employee=None) -> [int, Employee]:
-        """Добавить пустого сотрудника или занести переданного сотрудника, как нового."""
+        """Добавляет пустого сотрудника или заносит переданного сотрудника, как нового."""
         new_id = self._get_new_id()
         self.__list_of_employees[new_id] = employee if employee is not None else Employee()
         return new_id, self.__list_of_employees[new_id]

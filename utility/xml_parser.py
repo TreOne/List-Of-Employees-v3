@@ -1,6 +1,6 @@
 from utility.employees import Employee, Employees
 from utility.organization import Organization
-from lxml import etree as et_xml
+from lxml import etree
 import datetime
 
 
@@ -29,133 +29,168 @@ class XMLParser:
     def get_employees(self):
         return self.__employees
 
+    def get_errors(self):
+        return self.__errors
+
     def load_file(self, filename):
         self.__reset_state()
 
         # Пробуем открыть файл
         try:
-            tree = et_xml.ElementTree(file=filename)
-            self.__xml_filename = ''
+            tree = etree.ElementTree(file=filename)
         except OSError:
-            self.__errors.append('ERROR: XML файл по пути "' + self.__xml_filename + '" не найден.')
+            self.__errors.append('ERROR: XML файл по пути "' + filename + '" не найден.')
             return False
+        except etree.XMLSyntaxError:
+            self.__errors.append('ERROR: Не возможно разобрать файл по пути "' + filename + '".')
+            return False
+        self.__xml_filename = filename
 
         # Корень древа - register?
         if tree.getroot().tag != 'register':
-            print('ERROR: Не обнаружен тег <register> в XML файле. Выбран не тот файл?')
+            self.__errors.append('ERROR: Не обнаружен тег <register> в XML файле.')
             return False
-        else:
-            self.__root = tree.getroot()
+        self.__root = tree.getroot()
 
+        # Заполняем модель данными
         self.__fill_organization()
         self.__fill_employees()
         return True
 
     def save_to_file(self, filename, organization, employees):
+        # TODO: Доделать
         if filename is None:
             print('ERROR: Не указано место сохранения файла.')
             return False
-        root = et_xml.Element('register')
+        root = etree.Element('register')
 
         # Дата создания документа
-        date = et_xml.SubElement(root, 'date')
+        date = etree.SubElement(root, 'date')
         now = datetime.datetime.now()
         date.text = now.strftime("%d.%m.%Y")
 
         # Заполняем тег <organization>
-        organization_node = et_xml.SubElement(root, 'organization')
+        organization_node = etree.SubElement(root, 'organization')
         for field in Organization.ALL_FIELDS:
-            node = et_xml.SubElement(organization_node, field)
+            node = etree.SubElement(organization_node, field)
             node.text = organization.get(field, '')
 
         # Заполняем данные сотрудников
         for employee in employees.values():
-            employee_node = et_xml.SubElement(root, 'employee')
+            employee_node = etree.SubElement(root, 'employee')
             # Заполняем корневой тег <employee> сотрудника
             for field in Employee.PERSON_FIELDS:
-                node = et_xml.SubElement(employee_node, field)
+                node = etree.SubElement(employee_node, field)
                 node.text = employee[field]
             # Заполняем тег <job> сотрудника
-            job_node = et_xml.SubElement(employee_node, 'job')
+            job_node = etree.SubElement(employee_node, 'job')
             for field in Employee.JOB_FIELDS:
                 if field not in ('hazard_types', 'hazard_factors'):
-                    node = et_xml.SubElement(job_node, field)
+                    node = etree.SubElement(job_node, field)
                     node.text = employee[field]
                 else:
-                    hazard_node = et_xml.SubElement(job_node, field)
+                    hazard_node = etree.SubElement(job_node, field)
                     for hazard in employee[field]:
-                        code = et_xml.SubElement(hazard_node, 'code')
+                        code = etree.SubElement(hazard_node, 'code')
                         code.text = hazard
 
-        save_tree = et_xml.ElementTree(root)
+        save_tree = etree.ElementTree(root)
         save_tree.write(filename, pretty_print=True, encoding="utf-8", xml_declaration=True)
         return True
 
     def __fill_organization(self):
+        """Заполняет информацией поля организации"""
         organization = self.__root.find('organization')
+        # Если нет тега <organization>, то заполняем поля пустыми значениями.
         if organization is None:
-            print('WARNING: В XML файле отсутствует тег <organization>.')
-            for field in Organization.ALL_FIELDS:
+            self.__errors.append('WARNING: В XML файле отсутствует тег <organization>.')
+            for field in self.__organization.keys():
                 self.__organization[field] = ''
-        else:
-            for field in Organization.ALL_FIELDS:
-                try:
-                    self.__organization[field] = organization.find(field).text
-                except AttributeError:
-                    self.__organization[field] = ''
-                    print('WARNING: Не найден тег <organization>/<' + field + '> в XML файле.')
+            return
+        # Заполняем найденные поля значениями, а отсутствующие пустыми строками
+        for field in Organization.ALL_FIELDS:
+            try:
+                self.__organization[field] = organization.find(field).text
+            except AttributeError:
+                self.__organization[field] = ''
+                self.__errors.append('WARNING: Не найден тег <' + field + '> в разделе <organization>.')
 
     def __fill_employees(self):
+        """Заполняет информацией поля организации"""
         employees_count = len(self.__root.findall('employee'))
-        if employees_count < 1:
-            print('WARNING: В XML файле не обнаружен ни один сотрудник.')
+        # Если не найдены сотрудники в XML файле
+        if employees_count == 0:
+            self.__errors.append('WARNING: В XML файле не обнаружен ни один сотрудник.')
+            return
+        # Перебираем найденных сотрудников
+        for i, xml_employee in enumerate(self.__root.iter("employee")):
+
+            # Создаем нового острудника и заполняем его поля
+            new_employee = Employee()
+
+            for field in Employee.PERSON_FIELDS:
+                if xml_employee.find(field) is None or xml_employee.find(field).text is None:
+                    self.__errors.append('WARNING: У сотрудника {} (id:{}) пропущен тег <{}>'
+                                         .format(new_employee['full_name'], str(i), field))
+                else:
+                    new_employee[field] = xml_employee.find(field).text
+
+            # Заполняем поля из тега <job>
+            job = xml_employee.find('job')
+
+            # Если не отсутствует тег <job> то переходим к следующему сотруднику
+            if job is None:
+                self.__errors.append('WARNING: У сотрудника {} (id:{}) пропущен тег <job>'
+                                     .format(new_employee['full_name'], str(i)))
+                continue
+
+            # Перебираем поля связанные с работой
+            for field in Employee.JOB_FIELDS:
+                # Если поле не обнаружено
+                if job.find(field) is None or job.find(field).text is None:
+                    self.__errors.append('WARNING: У сотрудника {} (id:{}) не обнаружен тег <{}>'
+                                         .format(new_employee['full_name'], str(i), field))
+
+                # Если это не список, то просто записываем значение поля
+                elif field not in Employee.LIST_FIELDS:
+                    new_employee[field] = job.find(field).text
+
+                # Если это список вредностей то перебираем его
+                else:
+                    hazards_count = len(job.findall(field + '/code'))
+                    # Если в списке нет вредносте, то пропускаем его
+                    if hazards_count == 0:
+                        continue
+                    for hazard in xml_employee.iterfind('job/' + field + '/code'):
+                        # Проверяем, что в теге вредности есть текст
+                        if hazard.text is not None:
+                            self.__errors.append('WARNING: Пустой тег <code> у сотрудника {} (id:{})'
+                                                 .format(new_employee['full_name'], str(i)))
+                            continue
+                        # Если все в порядке, записываем вредность
+                        new_employee[field].append(hazard.text)
+
+            self.__employees.add(new_employee)
+
+    def __soft_remove_job_tags(self):
+        """Удаляет тег <job>, перенося его детей в его родителя - <employee>"""
+        # Если не найдены сотрудники в XML файле
+        if len(self.__root.findall('employee')) == 0:
             return
 
-        for i, employee in enumerate(self.__root.iter("employee")):
-            # Заполняем основные поля сотрудника
-            add_employee = dict()
-            for field in Employee.PERSON_FIELDS:
-                if employee.find(field) is None or employee.find(field).text is None:
-                    print('WARNING: У сотрудника ' + str(i) + ' не заполнено поле ' + field)
-                    add_employee[field] = ''
-                    if field == 'sex':
-                        add_employee['sex'] = 'Не указан'
-                else:
-                    add_employee[field] = employee.find(field).text
+        # Перебираем найденных сотрудников
+        for xml_employee in self.__root.iter("employee"):
+            job = xml_employee.find('job')
 
-            # Заполняем поля работы сотрудника
-            job = employee.find('job')
-            # Если у сотрудника отсутствует тег <job> то заполняем его пустыми полями
+            # Если не отсутствует тег <job> то переходим к следующему сотруднику
             if job is None:
-                print('WARNING: У сотрудника ' + str(i) + ' пропущен тег <job>')
-                for field in Employee.JOB_FIELDS:
-                    if field in ('hazard_types', 'hazard_factors'):
-                        add_employee[field] = list()
-                    else:
-                        add_employee[field] = ''
-            else:
-                # Иначе заполняем данными из файла
-                for field in Employee.JOB_FIELDS:
-                    if job.find(field) is None or job.find(field).text is None:
-                        print('WARNING: У сотрудника ' + str(i) + ' не заполнено поле ' + field)
-                        if field in ('hazard_types', 'hazard_factors'):
-                            add_employee[field] = list()
-                        else:
-                            add_employee[field] = ''
-                            continue
-                    else:
-                        if field not in ('hazard_types', 'hazard_factors'):
-                            add_employee[field] = job.find(field).text
-                        else:
-                            # Если это список вредностей то перебираем его
-                            hazards_count = len(job.findall(field + '/code'))
-                            hazards = list()
-                            if hazards_count > 0:
-                                for hazard in employee.iterfind('job/' + field + '/code'):
-                                    if hazard.text is not None:
-                                        hazards.append(hazard.text)
-                                    else:
-                                        print('WARNING: Пустое поле "code" у сотрудника ' + str(i))
-                            add_employee[field] = hazards
+                continue
 
-            self.__employees[i] = add_employee
+            for child in job.iter():
+                pass  # TODO: Реализовать мягкое удаление JOB
+
+    def log_tree(self):
+        xml_object = etree.tostring(self.__root, pretty_print=True, xml_declaration=True, encoding='UTF-8')
+
+        with open("tests/tree.xml", "wb") as writer:
+            writer.write(xml_object)

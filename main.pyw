@@ -32,7 +32,20 @@ if __name__ == '__main__':
     new_list_of_employees = list_of_employees.copy()
     employee_duplicate['family_name'] = 'Петров'
 
-    # xml_parser = XMLParser()
+    xml_parser = XMLParser()
+    xml_parser.load_file('tests/test_list_of_employees.xml')
+    for error in xml_parser.get_errors():
+        print(error)
+
+    list_of_employees = xml_parser.get_employees()
+    print(list_of_employees)
+
+    # for employee in list_of_employees.values():
+    #     employee.show()
+
+    # organization = xml_parser.get_organization()
+    # organization.show()
+
     # xml_parser.load_file('tests/test_list_of_employees.xml')
 
     # print(list_of_employees)
