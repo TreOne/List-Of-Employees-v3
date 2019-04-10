@@ -16,33 +16,17 @@ if __name__ == '__main__':
     translator.load(resource_path('utility/qtbase_ru.qm'))
     app.installTranslator(translator)
 
-    list_of_employees = Employees()
-    list_of_employees.add()
-    list_of_employees.add()
-    list_of_employees.add()
-    list_of_employees.pop(2)
-    emp_id, employee = list_of_employees.add()
-    employee['family_name'] = 'Иванов'
-    employee['family_name'] = 'Иванов'
-    employee['first_name'] = 'Иван'
-    employee['patronymic'] = 'Иванович'
-    employee['hazard_types'] = ['1', '2', '3']
-    employee_duplicate = employee.copy()
-    list_of_employees.add(employee_duplicate)
-    new_list_of_employees = list_of_employees.copy()
-    employee_duplicate['family_name'] = 'Петров'
-
     xml_parser = XMLParser()
     xml_parser.load_file('tests/test_list_of_employees.xml')
     for error in xml_parser.get_errors():
         print(error)
 
     list_of_employees = xml_parser.get_employees()
-    xml_parser.log_tree()
+    organization = xml_parser.get_organization()
+
     # print(list_of_employees)
 
-    # for employee in list_of_employees.values():
-    #     employee.show()
+    list_of_employees.show()
 
     # organization = xml_parser.get_organization()
     # organization.show()

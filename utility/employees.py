@@ -139,6 +139,11 @@ class Employees:
             new_list[emp_id] = employee.copy()
         return new_list
 
+    def show(self):
+        """Выводит подробный список данных о сотруднике"""
+        for employee in self.values():
+            employee.show()
+
     def keys(self):
         return self.__list_of_employees.keys()
 
