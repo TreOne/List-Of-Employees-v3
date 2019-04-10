@@ -26,7 +26,7 @@ if __name__ == '__main__':
 
     # print(list_of_employees)
 
-    xml_parser._log_tree()
+    # xml_parser._log_tree()
     xml_parser.validate()
 
     # organization = xml_parser.get_organization()

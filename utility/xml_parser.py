@@ -188,13 +188,23 @@ class XMLParser:
                 element.text = None
 
     def validate(self):
-        schema = etree.XMLSchema(file='utility/xml_schema.xsd')
-        parser = etree.XMLParser(schema=schema)
+        self.__errors = list()
         try:
-            etree.ElementTree(file=self.__xml_filename, parser=parser)
+            schema = etree.XMLSchema(file='utility/xml_schema.xsd')
+            xml_file = etree.ElementTree(file=self.__xml_filename)
+            schema.assert_(xml_file)
             return True
-        except etree.XMLSyntaxError as e:
-            print(e)
+
+        except etree.XMLSyntaxError as err:
+            self.__errors.append("XML parsing error:{0}".format(err))
+            return False
+
+        except AssertionError as err:
+            self.__errors.append("Incorrect XML schema: {0}".format(err))
+            return False
+
+        except ValueError as err:
+            self.__errors.append("Invalid XML file: {0}".format(err))
             return False
 
     def _log_tree(self):
