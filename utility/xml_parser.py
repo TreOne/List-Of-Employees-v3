@@ -187,6 +187,16 @@ class XMLParser:
             if element.text is not None and not element.text.strip():
                 element.text = None
 
+    def validate(self):
+        schema = etree.XMLSchema(file='utility/xml_schema.xsd')
+        parser = etree.XMLParser(schema=schema)
+        try:
+            etree.ElementTree(file=self.__xml_filename, parser=parser)
+            return True
+        except etree.XMLSyntaxError as e:
+            print(e)
+            return False
+
     def _log_tree(self):
         """Создает "отпечаток" текущего состояния данных. Использовать для отладки."""
         tree = etree.ElementTree(self.__root)

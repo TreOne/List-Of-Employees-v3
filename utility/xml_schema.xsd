@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:element name="register">
+    <xs:annotation>
+        <xs:documentation>Корень документа</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element                       name="date"         type="date_type"/>
+            <xs:element                       name="organization" type="organization_type"/>
+            <xs:element maxOccurs="unbounded" name="employee"     type="employee_type"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:element>
+
+
+<xs:simpleType name="date_type">
+    <xs:annotation>
+        <xs:documentation>Дата создания документа</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:date"/>
+</xs:simpleType>
+
+
+<xs:complexType name="organization_type">
+    <xs:annotation>
+        <xs:documentation>Данные об организации</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+        <xs:element               name="org_name"                 type="org_name_type"/>
+        <xs:element               name="inn"                      type="inn_type"/>
+        <xs:element               name="ogrn"                     type="ogrn_type"/>
+        <xs:element minOccurs="0" name="org_address"              type="org_address_type"/>
+        <xs:element minOccurs="0" name="head_full_name"           type="head_full_name_type"/>
+        <xs:element minOccurs="0" name="representative_full_name" type="representative_full_name_type"/>
+        <xs:element minOccurs="0" name="representative_position"  type="representative_position_type"/>
+    </xs:sequence>
+</xs:complexType>
+<xs:simpleType name="org_name_type">
+    <xs:annotation>
+        <xs:documentation>Название организации</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+</xs:simpleType>
+<xs:simpleType name="inn_type">
+    <xs:annotation>
+        <xs:documentation>ИНН организации</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+        <xs:length value="10"/>
+    </xs:restriction>
+</xs:simpleType>
+<xs:simpleType name="ogrn_type">
+    <xs:annotation>
+        <xs:documentation>ОГРН организации</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+        <xs:length value="13"/>
+    </xs:restriction>
+</xs:simpleType>
+<xs:simpleType name="org_address_type">
+    <xs:annotation>
+        <xs:documentation>Адрес организации</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+</xs:simpleType>
+<xs:simpleType name="head_full_name_type">
+    <xs:annotation>
+        <xs:documentation>ФИО директора организации</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+</xs:simpleType>
+<xs:simpleType name="representative_full_name_type">
+    <xs:annotation>
+        <xs:documentation>ФИО представителя организации</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+</xs:simpleType>
+<xs:simpleType name="representative_position_type">
+    <xs:annotation>
+        <xs:documentation>Должность представителя организации</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+</xs:simpleType>
+
+
+<xs:complexType name="employee_type">
+    <xs:annotation>
+        <xs:documentation>Данные о сотруднике</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+        <xs:element               name="family_name"       type="family_name_type"/>
+        <xs:element               name="first_name"        type="first_name_type"/>
+        <xs:element minOccurs="0" name="patronymic"        type="patronymic_type"/>
+        <xs:element               name="sex"               type="sex_type"/>
+        <xs:element               name="birth_date"        type="birth_date_type"/>
+        <xs:element minOccurs="0" name="address_free_form" type="address_free_form_type"/>
+        <xs:element               name="job"               type="job_type"/>
+    </xs:sequence>
+</xs:complexType>
+<xs:simpleType name="family_name_type">
+    <xs:annotation>
+        <xs:documentation>Фамилия сотрудника</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+</xs:simpleType>
+<xs:simpleType name="first_name_type">
+    <xs:annotation>
+        <xs:documentation>Имя сотрудника</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+</xs:simpleType>
+<xs:simpleType name="patronymic_type">
+    <xs:annotation>
+        <xs:documentation>Отчество сотрудника (если есть)</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+</xs:simpleType>
+<xs:simpleType name="sex_type">
+    <xs:annotation>
+        <xs:documentation>Пол сотрудника ("Мужской"/"Женский")</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+        <xs:enumeration value="Мужской"/>
+        <xs:enumeration value="Женский"/>
+    </xs:restriction>
+</xs:simpleType>
+<xs:simpleType name="birth_date_type">
+    <xs:annotation>
+        <xs:documentation>Дата рождения сотрудника</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:date"/>
+</xs:simpleType>
+<xs:simpleType name="address_free_form_type">
+    <xs:annotation>
+        <xs:documentation>Адрес регистрации сотрудника (свободная форма)</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+</xs:simpleType>
+<xs:complexType name="job_type">
+    <xs:annotation>
+        <xs:documentation>Данные сотрудника связанные с его работой</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+        <xs:element               name="experience"     type="experience_type"/>
+        <xs:element               name="specialty"      type="specialty_type"/>
+        <xs:element minOccurs="0" name="hazard_types"   type="hazard_types_type"/>
+        <xs:element minOccurs="0" name="hazard_factors" type="hazard_factors_type"/>
+    </xs:sequence>
+</xs:complexType>
+<xs:simpleType name="experience_type">
+    <xs:annotation>
+        <xs:documentation>Стаж сотрудника (количество полных лет)</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:integer"/>
+</xs:simpleType>
+<xs:simpleType name="specialty_type">
+    <xs:annotation>
+        <xs:documentation>Специальность сотрудника</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string"/>
+</xs:simpleType>
+<xs:complexType name="hazard_types_type">
+    <xs:annotation>
+        <xs:documentation>Коды типов вредностей сотрудника (Приложение 2)</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+        <xs:element maxOccurs="unbounded" name="code" type="code_type"/>
+    </xs:sequence>
+</xs:complexType>
+<xs:complexType name="hazard_factors_type">
+    <xs:annotation>
+        <xs:documentation>Коды факторов вредностей сотрудника (Приложение 1)</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+        <xs:element maxOccurs="unbounded" name="code" type="code_type"/>
+    </xs:sequence>
+</xs:complexType>
+<xs:simpleType name="code_type">
+    <xs:annotation>
+        <xs:documentation>Код фактора или типа вредности (пример: '1.10.4.13.')</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+        <xs:pattern value="([0-9]+\.)+"/>
+    </xs:restriction>
+</xs:simpleType>
+
+</xs:schema>
