@@ -1,5 +1,6 @@
 from utility.employees import Employee, Employees
 from utility.organization import Organization
+from utility.resource_path import resource_path
 from lxml import etree
 import datetime
 
@@ -190,28 +191,29 @@ class XMLParser:
     def validate(self):
         self.__errors = list()
         if self.__xml_filename is None:
-            self.__errors.append("XML файл еще не загружен.")
+            self.__errors.append("ERROR: XML файл еще не загружен.")
             return False
         try:
-            schema = etree.XMLSchema(file='utility/xml_schema.xsd')
+            schema_filename = resource_path('utility/xml_schema.xsd')
+            schema = etree.XMLSchema(file=schema_filename)
             xml_file = etree.ElementTree(file=self.__xml_filename)
             schema.assert_(xml_file)
             return True
 
         except etree.XMLSyntaxError as err:
-            self.__errors.append("Ошибка разбора XML файла:{0}".format(err))
+            self.__errors.append("ERROR: Ошибка разбора XML файла:{0}".format(err))
             return False
 
         except AssertionError as err:
-            self.__errors.append("Неправильный формат файла валидации XML: {0}".format(err))
+            self.__errors.append("ERROR: Неправильный формат файла валидации XML: {0}".format(err))
             return False
 
         except ValueError as err:
-            self.__errors.append("Не правильный формат XML файла: {0}".format(err))
+            self.__errors.append("ERROR: Не правильный формат XML файла: {0}".format(err))
             return False
 
         except OSError:
-            self.__errors.append("Ошибка чтения файла '{0}'".format(self.__xml_filename))
+            self.__errors.append("ERROR: Ошибка чтения файла '{0}'".format(self.__xml_filename))
             return False
 
     def _log_tree(self):

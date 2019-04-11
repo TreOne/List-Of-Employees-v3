@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QMessageBox
 from PyQt5.QtCore import QTranslator
 from utility.organization import Organization
 from utility.employees import Employee, Employees
@@ -17,7 +17,7 @@ if __name__ == '__main__':
     app.installTranslator(translator)
 
     xml_parser = XMLParser()
-    xml_parser.load_file('tests/test_list_of_employees.xml')
+    xml_parser.load_file(resource_path('tests/test_list_of_employees.xml'))
     for error in xml_parser.get_errors():
         print(error)
 
