@@ -40,7 +40,7 @@ if __name__ == '__main__':
     set_dark_palette()
 
     translator = QTranslator(app)
-    translator.load(resource_path('utility/qtbase_ru.qm'))
+    translator.load(resource_path('resources/qtbase_ru.qm'))
     app.installTranslator(translator)
 
     xml_parser = XMLParser()

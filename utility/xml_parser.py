@@ -194,7 +194,7 @@ class XMLParser:
             self.__errors.append("ERROR: XML файл еще не загружен.")
             return False
         try:
-            schema_filename = resource_path('utility/xml_schema.xsd')
+            schema_filename = resource_path('resources/xml_schema.xsd')
             schema = etree.XMLSchema(file=schema_filename)
             xml_file = etree.ElementTree(file=self.__xml_filename)
             schema.assert_(xml_file)
