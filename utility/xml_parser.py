@@ -199,15 +199,15 @@ class XMLParser:
             return True
 
         except etree.XMLSyntaxError as err:
-            self.__errors.append("XML parsing error:{0}".format(err))
+            self.__errors.append("Ошибка разбора XML файла:{0}".format(err))
             return False
 
         except AssertionError as err:
-            self.__errors.append("Incorrect XML schema: {0}".format(err))
+            self.__errors.append("Неправильный формат файла валидации XML: {0}".format(err))
             return False
 
         except ValueError as err:
-            self.__errors.append("Invalid XML file: {0}".format(err))
+            self.__errors.append("Не правильный формат XML файла: {0}".format(err))
             return False
 
         except OSError:
