@@ -23,7 +23,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Список сотрудников</string>
+       <string>Список сотрудников 3</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -35,6 +35,12 @@
       <property name="sortingEnabled">
        <bool>true</bool>
       </property>
+      <attribute name="horizontalHeaderStretchLastSection">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
      </widget>
     </item>
    </layout>

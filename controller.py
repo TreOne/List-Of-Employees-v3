@@ -16,6 +16,6 @@ class Controller:
 
         # Модель и Представление
         self.model = model
-        self.view = MWView(controller=self)
+        self.view = MWView(controller=self, autoload_ui=True)
 
         self.view.show()

@@ -12,14 +12,14 @@ from utility.resource_path import resource_path
 if __name__ == '__main__':
 
     app = QApplication(sys.argv)
+    app.setStyle('Fusion')
     translator = QTranslator(app)
     translator.load(resource_path('utility/qtbase_ru.qm'))
     app.installTranslator(translator)
 
     xml_parser = XMLParser()
     xml_parser.load_file(resource_path('tests/test_list_of_employees.xml'))
-    for error in xml_parser.get_errors():
-        print(error)
+    print('\n'.join(xml_parser.get_errors()))
 
     list_of_employees = xml_parser.get_employees()
     list_of_employees.pop(1)
