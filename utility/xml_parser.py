@@ -189,6 +189,9 @@ class XMLParser:
 
     def validate(self):
         self.__errors = list()
+        if self.__xml_filename is None:
+            self.__errors.append("XML файл еще не загружен.")
+            return False
         try:
             schema = etree.XMLSchema(file='utility/xml_schema.xsd')
             xml_file = etree.ElementTree(file=self.__xml_filename)
@@ -205,6 +208,10 @@ class XMLParser:
 
         except ValueError as err:
             self.__errors.append("Invalid XML file: {0}".format(err))
+            return False
+
+        except OSError:
+            self.__errors.append("Ошибка чтения файла '{0}'".format(self.__xml_filename))
             return False
 
     def _log_tree(self):

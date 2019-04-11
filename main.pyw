@@ -28,6 +28,8 @@ if __name__ == '__main__':
 
     # xml_parser._log_tree()
     xml_parser.validate()
+    for error in xml_parser.get_errors():
+        print(error)
 
     # organization = xml_parser.get_organization()
     # organization.show()
