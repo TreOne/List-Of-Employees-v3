@@ -46,8 +46,6 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "Список сотрудников"))
 
 
-
-
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)

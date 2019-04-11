@@ -18,4 +18,4 @@ class Controller:
         self.model = model
         self.view = MWView(controller=self, autoload_ui=True)
 
-        self.view.show()
+        self.view.showMaximized()
