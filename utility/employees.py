@@ -17,6 +17,21 @@ class Employee:
     ALL_FIELDS = PERSON_FIELDS + JOB_FIELDS
     LIST_FIELDS = 'hazard_types', 'hazard_factors'
 
+    @staticmethod
+    def translate(eng_field):
+        all_fields_rus = {'family_name': 'Фамилия',
+                          'first_name': 'Имя',
+                          'patronymic': 'Отчество',
+                          'sex': 'Пол',
+                          'birth_date': 'Дата рождения',
+                          'address_free_form': 'Адрес проживания',
+                          'experience': 'Стаж',
+                          'specialty': 'Должность',
+                          'hazard_types': 'Типы вредностей',
+                          'hazard_factors': 'Факторы вредностей'}
+
+        return all_fields_rus[eng_field]
+
     def __init__(self, original=None):
         for key in Employee.ALL_FIELDS:
             if key in Employee.LIST_FIELDS:

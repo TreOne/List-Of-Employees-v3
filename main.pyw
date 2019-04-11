@@ -22,14 +22,14 @@ if __name__ == '__main__':
         print(error)
 
     list_of_employees = xml_parser.get_employees()
+    list_of_employees.pop(1)
     organization = xml_parser.get_organization()
 
     # print(list_of_employees)
 
     # xml_parser._log_tree()
     xml_parser.validate()
-    for error in xml_parser.get_errors():
-        print(error)
+    print('\n'.join(xml_parser.get_errors()))
 
     # organization = xml_parser.get_organization()
     # organization.show()
