@@ -9,39 +9,46 @@ from utility.xml_parser import XMLParser
 from model import EmployeesListModel as Model
 from controller import Controller
 from utility.resource_path import resource_path
+from utility.settings import Settings
 
 
-def set_dark_palette():
-    palette = QtGui.QPalette()
-    palette.setColor(QtGui.QPalette.Window, QtGui.QColor(53, 53, 53))
-    palette.setColor(QtGui.QPalette.WindowText, QtCore.Qt.white)
-    palette.setColor(QtGui.QPalette.Base, QtGui.QColor(15, 15, 15))
-    palette.setColor(QtGui.QPalette.AlternateBase, QtGui.QColor(53, 53, 53))
-    palette.setColor(QtGui.QPalette.ToolTipBase, QtCore.Qt.white)
-    palette.setColor(QtGui.QPalette.ToolTipText, QtCore.Qt.white)
-    palette.setColor(QtGui.QPalette.Text, QtCore.Qt.white)
-    palette.setColor(QtGui.QPalette.Button, QtGui.QColor(53, 53, 53))
-    palette.setColor(QtGui.QPalette.ButtonText, QtCore.Qt.white)
-    palette.setColor(QtGui.QPalette.BrightText, QtCore.Qt.red)
+def prepare_app(app_var):
+    app_settings = Settings()
 
-    palette.setColor(QtGui.QPalette.Highlight, QtGui.QColor(142, 45, 197).lighter())
-    palette.setColor(QtGui.QPalette.HighlightedText, QtCore.Qt.black)
+    # Внешний вид приложения
+    theme_style = app_settings.get('appearance', 'theme_style')  # default/fusion/fusion_dark
+    if theme_style == 'fusion':
+        app_var.setStyle('Fusion')
+    elif theme_style == 'fusion_dark':
+        app_var.setStyle('Fusion')
+        palette = QtGui.QPalette()
+        palette.setColor(QtGui.QPalette.Window, QtGui.QColor(53, 53, 53))
+        palette.setColor(QtGui.QPalette.WindowText, QtCore.Qt.white)
+        palette.setColor(QtGui.QPalette.Base, QtGui.QColor(15, 15, 15))
+        palette.setColor(QtGui.QPalette.AlternateBase, QtGui.QColor(53, 53, 53))
+        palette.setColor(QtGui.QPalette.ToolTipBase, QtCore.Qt.white)
+        palette.setColor(QtGui.QPalette.ToolTipText, QtCore.Qt.white)
+        palette.setColor(QtGui.QPalette.Text, QtCore.Qt.white)
+        palette.setColor(QtGui.QPalette.Button, QtGui.QColor(53, 53, 53))
+        palette.setColor(QtGui.QPalette.ButtonText, QtCore.Qt.white)
+        palette.setColor(QtGui.QPalette.BrightText, QtCore.Qt.red)
+        palette.setColor(QtGui.QPalette.Highlight, QtGui.QColor(142, 45, 197).lighter())
+        palette.setColor(QtGui.QPalette.HighlightedText, QtCore.Qt.black)
+        palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.Light, QtGui.QColor(53, 53, 53).lighter())
+        app_var.setPalette(palette)
 
-    palette.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.Light, QtGui.QColor(53, 53, 53).lighter())
-    app.setPalette(palette)
+    # Руссификация интерфейса QT
+    translator = QTranslator(app_var)
+    translator.load(resource_path('resources/qtbase_ru.qm'))
+    app_var.installTranslator(translator)
 
 
 if __name__ == '__main__':
 
     app = QApplication(sys.argv)
-    app.setStyle('Fusion')
 
-    # Установить тёмную палитру
-    set_dark_palette()
-
-    translator = QTranslator(app)
-    translator.load(resource_path('resources/qtbase_ru.qm'))
-    app.installTranslator(translator)
+    # Настройки внешнего вида, руссификация интерфейса и пр.
+    prepare_app(app)
 
     xml_parser = XMLParser()
     xml_parser.load_file(resource_path('tests/test_list_of_employees.xml'))

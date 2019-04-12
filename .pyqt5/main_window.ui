@@ -7,24 +7,36 @@
     <x>0</x>
     <y>0</y>
     <width>1200</width>
-    <height>640</height>
+    <height>800</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>860</width>
-    <height>560</height>
+    <width>1200</width>
+    <height>800</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Список сотрудников</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../utility/resources.qrc">
+   <iconset resource="resources/resources.qrc">
     <normaloff>:/icons/list.svg</normaloff>:/icons/list.svg</iconset>
   </property>
   <widget class="QWidget" name="central_widget">
    <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,0,1">
+    <property name="leftMargin">
+     <number>10</number>
+    </property>
+    <property name="topMargin">
+     <number>10</number>
+    </property>
+    <property name="rightMargin">
+     <number>10</number>
+    </property>
+    <property name="bottomMargin">
+     <number>10</number>
+    </property>
     <item>
      <widget class="QWidget" name="vlw_left_coll" native="true">
       <property name="minimumSize">
@@ -268,7 +280,122 @@
         </spacer>
        </item>
        <item>
+        <widget class="QGroupBox" name="hide_group_box">
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
+         <property name="title">
+          <string>Отображать сведения</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="hide_col_family_name">
+            <property name="text">
+             <string>Фамилия</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QCheckBox" name="hide_col_sex">
+            <property name="text">
+             <string>Пол</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QCheckBox" name="hide_col_hazard_types">
+            <property name="text">
+             <string>Типы вредностей</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QCheckBox" name="hide_col_patronymic">
+            <property name="text">
+             <string>Отчество</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QCheckBox" name="hide_col_birth_date">
+            <property name="text">
+             <string>Дата рождения</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QCheckBox" name="hide_col_specialty">
+            <property name="text">
+             <string>Должность</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="hide_col_first_name">
+            <property name="text">
+             <string>Имя</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QCheckBox" name="hide_col_experience">
+            <property name="text">
+             <string>Стаж</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QCheckBox" name="hide_col_hazard_factors">
+            <property name="text">
+             <string>Факторы вредностей</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QCheckBox" name="hide_col_address_free_form">
+            <property name="text">
+             <string>Адрес</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <widget class="QGroupBox" name="organization_data">
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
          <property name="title">
           <string>Данные об организации</string>
          </property>
@@ -397,6 +524,9 @@
         <property name="selectionBehavior">
          <enum>QAbstractItemView::SelectRows</enum>
         </property>
+        <property name="horizontalScrollMode">
+         <enum>QAbstractItemView::ScrollPerPixel</enum>
+        </property>
         <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
          <bool>true</bool>
         </attribute>
@@ -480,7 +610,7 @@
   </action>
   <action name="menu_new_file">
    <property name="icon">
-    <iconset resource="../utility/resources.qrc">
+    <iconset resource="resources/resources.qrc">
      <normaloff>:/icons/star.svg</normaloff>:/icons/star.svg</iconset>
    </property>
    <property name="text">
@@ -489,7 +619,7 @@
   </action>
   <action name="menu_open">
    <property name="icon">
-    <iconset resource="../utility/resources.qrc">
+    <iconset resource="resources/resources.qrc">
      <normaloff>:/icons/folder.svg</normaloff>:/icons/folder.svg</iconset>
    </property>
    <property name="text">
@@ -501,7 +631,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../utility/resources.qrc">
+    <iconset resource="resources/resources.qrc">
      <normaloff>:/icons/diskette.svg</normaloff>:/icons/diskette.svg</iconset>
    </property>
    <property name="text">
@@ -513,7 +643,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../utility/resources.qrc">
+    <iconset resource="resources/resources.qrc">
      <normaloff>:/icons/diskette.svg</normaloff>:/icons/diskette.svg</iconset>
    </property>
    <property name="text">
@@ -525,7 +655,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../utility/resources.qrc">
+    <iconset resource="resources/resources.qrc">
      <normaloff>:/icons/word.svg</normaloff>:/icons/word.svg</iconset>
    </property>
    <property name="text">
@@ -534,7 +664,7 @@
   </action>
   <action name="menu_about">
    <property name="icon">
-    <iconset resource="../utility/resources.qrc">
+    <iconset resource="resources/resources.qrc">
      <normaloff>:/icons/question.svg</normaloff>:/icons/question.svg</iconset>
    </property>
    <property name="text">
@@ -560,7 +690,7 @@
   <tabstop>organization_edit_btn</tabstop>
  </tabstops>
  <resources>
-  <include location="../utility/resources.qrc"/>
+  <include location="resources/resources.qrc"/>
  </resources>
  <connections/>
  <designerdata>
