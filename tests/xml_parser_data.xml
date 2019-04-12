@@ -1,121 +1,121 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <register>
-  <date>2019-03-06</date>
-  <organization>
-    <org_name>АО "Рога и Копыта"</org_name>
-    <inn>1234567891</inn>
-    <ogrn>1234567891234</ogrn>
-    <org_address>Новгородская область, город Великий Новгород, проспект Александра Корсунова, 13</org_address>
-    <head_full_name>Конь Федор Михайлович</head_full_name>
-    <representative_full_name>Батраков Валентин Олегович</representative_full_name>
-    <representative_position>Начальник отдела кадров</representative_position>
-  </organization>
-  <employee>
-    <family_name>Васнецов</family_name>
-    <first_name>Петр</first_name>
-    <patronymic>Петрович</patronymic>
-    <sex>Мужской</sex>
-    <birth_date>1978-09-17</birth_date>
-    <address_free_form>г Москва, ул 8 Марта, д 1, кв 15</address_free_form>
-    <experience>3</experience>
-    <specialty>Юрист</specialty>
-    <hazard_factors>
-      <code>1.1.4.3.3.</code>
-      <code>1.1.4.6.3.</code>
-      <code>1.2.1.</code>
-      <code>1.2.14.1.</code>
-      <code>1.2.16.</code>
-      <code>1.2.17.</code>
-      <code>1.2.23.</code>
-      <code>1.2.30.1.</code>
-      <code>1.2.9.</code>
-    </hazard_factors>
-  </employee>
-  <employee>
-    <family_name>Егоров</family_name>
-    <first_name>Егор</first_name>
-    <patronymic>Егорович</patronymic>
-    <sex>Мужской</sex>
-    <birth_date>1945-10-12</birth_date>
-    <address_free_form>Новгородский р-н, деревня Новое Кунино, д 5</address_free_form>
-    <experience>5</experience>
-    <specialty>Начальник склада ГСМ</specialty>
-    <hazard_types>
-      <code>14.</code>
-      <code>22.</code>
-      <code>27.5.</code>
-      <code>7.</code>
-    </hazard_types>
-    <hazard_factors>
-      <code>1.1.3.</code>
-    </hazard_factors>
-  </employee>
-  <employee>
-    <family_name>Иванов</family_name>
-    <first_name>Иван</first_name>
-    <patronymic>Иванович</patronymic>
-    <sex>Мужской</sex>
-    <birth_date>1989-05-31</birth_date>
-    <address_free_form>г Великий Новгород, пр-кт Александра Корсунова, д 57, кв 58</address_free_form>
-    <experience>10</experience>
-    <specialty>Администратор вычислительных сетей</specialty>
-    <hazard_types>
-      <code>13.</code>
-      <code>2.</code>
-      <code>4.4.</code>
-    </hazard_types>
-    <hazard_factors>
-      <code>1.1.1.</code>
-      <code>1.1.2.</code>
-      <code>1.1.3.</code>
-      <code>1.1.4.1.</code>
-      <code>1.1.4.2.</code>
-      <code>1.1.4.3.1.</code>
-      <code>1.1.4.3.2.</code>
-      <code>1.1.4.3.3.</code>
-      <code>1.1.4.4.</code>
-      <code>1.1.4.5.</code>
-      <code>1.3.1.</code>
-      <code>4.2.</code>
-      <code>4.3.</code>
-    </hazard_factors>
-  </employee>
-  <employee>
-    <family_name>Ларисова</family_name>
-    <first_name>Лариса</first_name>
-    <patronymic>Ларисовна</patronymic>
-    <sex>Женский</sex>
-    <birth_date>1994-06-22</birth_date>
-    <address_free_form>Новгородская обл, Новгородский р-н, деревня Григорово, ул Центральная, д 14, кв 15</address_free_form>
-    <experience>6</experience>
-    <specialty>Системный администратор</specialty>
-    <hazard_types>
-      <code>1.1.</code>
-    </hazard_types>
-    <hazard_factors>
-      <code>2.3.</code>
-      <code>3.7.</code>
-      <code>4.1.</code>
-      <code>4.2.</code>
-      <code>4.3.</code>
-    </hazard_factors>
-  </employee>
-  <employee>
-    <family_name>Петров</family_name>
-    <first_name>Петр</first_name>
-    <patronymic>Петрович</patronymic>
-    <sex>Мужской</sex>
-    <birth_date>1985-05-01</birth_date>
-    <address_free_form>г Великий Новгород, ул Дворцовая, д 1</address_free_form>
-    <experience>7</experience>
-    <specialty>Дворник</specialty>
-    <hazard_types>
-      <code>27.3.</code>
-      <code>4.2.</code>
-    </hazard_types>
-    <hazard_factors>
-      <code>4.2.</code>
-      <code>4.3.</code>
-    </hazard_factors>
-  </employee>
+    <date>2019-03-06</date>
+    <organization>
+        <org_name>АО "Рога и Копыта"</org_name>
+        <inn>1234567891</inn>
+        <ogrn>1234567891234</ogrn>
+        <org_address>Новгородская область, город Великий Новгород, проспект Александра Корсунова, 13</org_address>
+        <head_full_name>Конь Федор Михайлович</head_full_name>
+        <representative_full_name>Батраков Валентин Олегович</representative_full_name>
+        <representative_position>Начальник отдела кадров</representative_position>
+    </organization>
+    <employee>
+        <family_name>Васнецов</family_name>
+        <first_name>Петр</first_name>
+        <patronymic>Петрович</patronymic>
+        <sex>Мужской</sex>
+        <birth_date>1978-09-17</birth_date>
+        <address_free_form>г Москва, ул 8 Марта, д 1, кв 15</address_free_form>
+        <experience>3</experience>
+        <specialty>Юрист</specialty>
+        <hazard_factors>
+            <code>1.1.4.3.3.</code>
+            <code>1.1.4.6.3.</code>
+            <code>1.2.1.</code>
+            <code>1.2.14.1.</code>
+            <code>1.2.16.</code>
+            <code>1.2.17.</code>
+            <code>1.2.23.</code>
+            <code>1.2.30.1.</code>
+            <code>1.2.9.</code>
+        </hazard_factors>
+    </employee>
+    <employee>
+        <family_name>Егоров</family_name>
+        <first_name>Егор</first_name>
+        <patronymic>Егорович</patronymic>
+        <sex>Мужской</sex>
+        <birth_date>1945-10-12</birth_date>
+        <address_free_form>Новгородский р-н, деревня Новое Кунино, д 5</address_free_form>
+        <experience>5</experience>
+        <specialty>Начальник склада ГСМ</specialty>
+        <hazard_types>
+            <code>14.</code>
+            <code>22.</code>
+            <code>27.5.</code>
+            <code>7.</code>
+        </hazard_types>
+        <hazard_factors>
+            <code>1.1.3.</code>
+        </hazard_factors>
+    </employee>
+    <employee>
+        <family_name>Иванов</family_name>
+        <first_name>Иван</first_name>
+        <patronymic>Иванович</patronymic>
+        <sex>Мужской</sex>
+        <birth_date>1989-05-31</birth_date>
+        <address_free_form>г Великий Новгород, пр-кт Александра Корсунова, д 57, кв 58</address_free_form>
+        <experience>10</experience>
+        <specialty>Администратор вычислительных сетей</specialty>
+        <hazard_types>
+            <code>13.</code>
+            <code>2.</code>
+            <code>4.4.</code>
+        </hazard_types>
+        <hazard_factors>
+            <code>1.1.1.</code>
+            <code>1.1.2.</code>
+            <code>1.1.3.</code>
+            <code>1.1.4.1.</code>
+            <code>1.1.4.2.</code>
+            <code>1.1.4.3.1.</code>
+            <code>1.1.4.3.2.</code>
+            <code>1.1.4.3.3.</code>
+            <code>1.1.4.4.</code>
+            <code>1.1.4.5.</code>
+            <code>1.3.1.</code>
+            <code>4.2.</code>
+            <code>4.3.</code>
+        </hazard_factors>
+    </employee>
+    <employee>
+        <family_name>Ларисова</family_name>
+        <first_name>Лариса</first_name>
+        <patronymic>Ларисовна</patronymic>
+        <sex>Женский</sex>
+        <birth_date>1994-06-22</birth_date>
+        <address_free_form>Новгородская обл, Новгородский р-н, деревня Григорово, ул Центральная, д 14, кв 15</address_free_form>
+        <experience>6</experience>
+        <specialty>Системный администратор</specialty>
+        <hazard_types>
+            <code>1.1.</code>
+        </hazard_types>
+        <hazard_factors>
+            <code>2.3.</code>
+            <code>3.7.</code>
+            <code>4.1.</code>
+            <code>4.2.</code>
+            <code>4.3.</code>
+        </hazard_factors>
+    </employee>
+    <employee>
+        <family_name>Петров</family_name>
+        <first_name>Петр</first_name>
+        <patronymic>Петрович</patronymic>
+        <sex>Мужской</sex>
+        <birth_date>1985-05-01</birth_date>
+        <address_free_form>г Великий Новгород, ул Дворцовая, д 1</address_free_form>
+        <experience>7</experience>
+        <specialty>Дворник</specialty>
+        <hazard_types>
+            <code>27.3.</code>
+            <code>4.2.</code>
+        </hazard_types>
+        <hazard_factors>
+            <code>4.2.</code>
+            <code>4.3.</code>
+        </hazard_factors>
+    </employee>
 </register>
