@@ -94,7 +94,7 @@
     <birth_date>1994-06-22</birth_date>
     <address_free_form>Новгородская обл, Новгородский р-н, деревня Григорово, ул Центральная, д 14, кв 15</address_free_form>
     <job>
-      <experience>6</experience>
+      <experience>0</experience>
       <specialty>Системный администратор</specialty>
       <hazard_types>
         <code>1.1.</code>
@@ -116,7 +116,7 @@
     <birth_date>1985-05-01</birth_date>
     <address_free_form>г Великий Новгород, ул Дворцовая, д 1</address_free_form>
     <job>
-      <experience>7</experience>
+      <experience>1</experience>
       <specialty>Дворник</specialty>
       <hazard_types>
         <code>27.3.</code>
