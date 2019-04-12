@@ -39,7 +39,10 @@ class Controller:
     def hide_checkbox_clicked(self, sender):
         column_name = sender.objectName().replace('hide_col_', '')
         columns_to_hide = self.app_settings.get('appearance', 'sections_to_hide')
-        columns_to_hide = columns_to_hide.split(', ')
+        if columns_to_hide == "":
+            columns_to_hide = list()
+        else:
+            columns_to_hide = columns_to_hide.split(', ')
         if sender.isChecked():
             columns_to_hide.remove(column_name)
         else:

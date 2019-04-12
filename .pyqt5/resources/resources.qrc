@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="icons">
+    <file>female.svg</file>
+    <file>male.svg</file>
     <file>question.svg</file>
     <file>diskette.svg</file>
     <file>folder.svg</file>

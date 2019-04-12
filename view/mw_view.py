@@ -58,12 +58,23 @@ class MWView(QtWidgets.QMainWindow):
 
         # Подключаем модель к главной таблице
         self.ui.employees_table.setModel(controller.model)
+        self.adjust_column_width()
 
         # Подключаем сигналы к контроллеру
         for column_name in Employee.ALL_FIELDS:
             # Ищем чекбокс, отвечающий за колонку
             hide_checkbox = getattr(self.ui, 'hide_col_' + column_name)
             hide_checkbox.stateChanged.connect(lambda: self.controller.hide_checkbox_clicked(self.sender()))
+
+    def adjust_column_width(self):
+        column_to_stretch = ('address_free_form', 'hazard_types', 'hazard_factors')
+        header = self.ui.employees_table.horizontalHeader()
+        for column in Employee.ALL_FIELDS:
+            column_number = Employee.ALL_FIELDS.index(column)
+            if column in column_to_stretch:
+                header.setSectionResizeMode(column_number, QtWidgets.QHeaderView.Stretch)
+            else:
+                header.setSectionResizeMode(column_number, QtWidgets.QHeaderView.ResizeToContents)
 
     def show_columns(self):
         for column_name in Employee.ALL_FIELDS:

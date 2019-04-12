@@ -2,6 +2,7 @@ from PyQt5 import QtCore
 from utility.employees import Employee
 from PyQt5 import QtWidgets
 from PyQt5 import QtGui
+import utility.resources
 
 
 class EmployeesListModel(QtCore.QAbstractTableModel):
@@ -13,6 +14,7 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
         row = q_model_index.row()
         column = q_model_index.column()
         field_name = Employee.ALL_FIELDS[column]
+        # Отображаем иконку вместо текста в колонке "Пол"
         if field_name in Employee.LIST_FIELDS:
             return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
         if column >= 0:
@@ -41,6 +43,19 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
             if field_name in Employee.LIST_FIELDS:
                 return ", ".join(self.employees[emp_id][field_name])
             return self.employees[emp_id][field_name]
+
+        if role == QtCore.Qt.DecorationRole:
+            if field_name == "sex":
+                gender = self.employees[emp_id]['sex']
+                if gender == 'Мужской':
+                    return QtGui.QIcon(':/icons/male.svg')
+                elif gender == 'Женский':
+                    return QtGui.QIcon(':/icons/female.svg')
+
+        if role == QtCore.Qt.TextAlignmentRole:
+            align_to_center = ('sex', 'experience', 'birth_date')
+            if field_name in align_to_center:
+                return QtCore.Qt.AlignCenter
 
     def setData(self, q_model_index, value, role=QtCore.Qt.EditRole):
         row = q_model_index.row()
