@@ -68,7 +68,8 @@ class XMLParser:
 
         return True
 
-    def save_to_file(self, filename, organization, employees):
+    @staticmethod
+    def save_to_file(filename, organization, employees):
         """Сохраняет данные в XML файл"""
         root = etree.Element('register')
 
