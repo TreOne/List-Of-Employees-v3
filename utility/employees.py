@@ -19,6 +19,7 @@ class Employee:
 
     @staticmethod
     def translate(eng_field):
+        """Позволяет ресифицировать название поля."""
         all_fields_rus = {'family_name': 'Фамилия',
                           'first_name': 'Имя',
                           'patronymic': 'Отчество',

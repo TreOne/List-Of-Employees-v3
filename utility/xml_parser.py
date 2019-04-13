@@ -36,6 +36,7 @@ class XMLParser:
         return self.__errors
 
     def load_file(self, filename):
+        """Разбирает XML файл и заполняет данными список сотрудников и данные об организации"""
         self.__reset_state()
 
         # Пробуем открыть файл
@@ -68,10 +69,7 @@ class XMLParser:
         return True
 
     def save_to_file(self, filename, organization, employees):
-        # TODO: Доделать
-        if filename is None:
-            print('ERROR: Не указано место сохранения файла.')
-            return False
+        """Сохраняет данные в XML файл"""
         root = etree.Element('register')
 
         # Дата создания документа
@@ -95,7 +93,7 @@ class XMLParser:
             # Заполняем тег <job> сотрудника
             job_node = etree.SubElement(employee_node, 'job')
             for field in Employee.JOB_FIELDS:
-                if field not in ('hazard_types', 'hazard_factors'):
+                if field not in Employee.LIST_FIELDS:
                     node = etree.SubElement(job_node, field)
                     node.text = employee[field]
                 else:
@@ -107,9 +105,6 @@ class XMLParser:
         save_tree = etree.ElementTree(root)
         save_tree.write(filename, pretty_print=True, encoding="utf-8", xml_declaration=True)
         return True
-
-    def validate_xml(self):
-        pass
 
     def __fill_organization(self):
         """Заполняет информацией поля организации."""
