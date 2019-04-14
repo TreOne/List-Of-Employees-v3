@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtCore import Qt
+from PyQt5 import QtCore
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QShortcut
 from utility.employees import Employee
@@ -8,6 +9,7 @@ import datetime
 from utility.resource_path import resource_path
 from utility import resources
 from utility.settings import Settings
+from model import EmployeesSortModel
 
 
 def _mute(method_to_mute):
@@ -57,7 +59,13 @@ class MWView(QtWidgets.QMainWindow):
                                        self.ui.hide_col_hazard_types, self.ui.hide_col_hazard_factors]
 
         # Подключаем модель к главной таблице
-        self.ui.employees_table.setModel(controller.model)
+
+        proxy_model = EmployeesSortModel()
+        proxy_model.setSourceModel(controller.model)
+        # proxyModel.setDynamicSortFilter(True)
+        self.ui.employees_table.setModel(proxy_model)
+
+        # self.ui.employees_table.setModel(controller.model)
         self.adjust_column_width()
 
         # Подключаем сигналы к контроллеру
