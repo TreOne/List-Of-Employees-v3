@@ -4,3 +4,4 @@
 ## Для работы приложения установите следующие пакеты:
 * pip install pyqt5
 * pip install lxml
+* pip install requests

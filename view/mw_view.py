@@ -9,7 +9,7 @@ import datetime
 from utility.resource_path import resource_path
 from utility import resources
 from utility.settings import Settings
-from model import EmployeesSortModel
+from model import EmployeesSortModel, EmployeesHazardsDelegate
 
 
 def _mute(method_to_mute):
@@ -64,8 +64,12 @@ class MWView(QtWidgets.QMainWindow):
         proxy_model.setSourceModel(controller.model)
         # proxyModel.setDynamicSortFilter(True)
         self.ui.employees_table.setModel(proxy_model)
-
         # self.ui.employees_table.setModel(controller.model)
+
+        hazard_cells_delegate = EmployeesHazardsDelegate(self)
+        self.ui.employees_table.setItemDelegateForColumn(8, hazard_cells_delegate)
+        self.ui.employees_table.setItemDelegateForColumn(9, hazard_cells_delegate)
+
         self.adjust_column_width()
 
         # Подключаем сигналы к контроллеру

@@ -1,10 +1,9 @@
 from datetime import datetime
-from PyQt5 import QtCore
 from utility.employees import Employee
+from utility.words import smart_ending
+from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5 import QtGui
-import utility.resources
-from utility.words import smart_ending
 
 
 class EmployeesListModel(QtCore.QAbstractTableModel):
@@ -16,9 +15,9 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
         row = index.row()
         column = index.column()
         field_name = Employee.ALL_FIELDS[column]
-        # Отображаем иконку вместо текста в колонке "Пол"
-        if field_name in Employee.LIST_FIELDS:
-            return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
+        # TODO: раскомментировать
+        # if field_name in Employee.LIST_FIELDS:
+        #     return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
         if column >= 0:
             return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable
 
@@ -37,7 +36,7 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
             return section + 1
 
     def data(self, index, role=None):
-        """Предоставляет данные из модели"""
+        """Предоставляет данные из модели в зависимости от роли"""
         if not index.isValid():
             return
         row = index.row()
@@ -45,6 +44,7 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
         field_name = Employee.ALL_FIELDS[column]
         emp_id = tuple(self.employees.keys())[row]
 
+        # Отображение
         if role == QtCore.Qt.DisplayRole:
             if field_name == 'birth_date':
                 birth_date = datetime.strptime(self.employees[emp_id]['birth_date'], '%Y-%m-%d')
@@ -56,16 +56,38 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
 
             if field_name in Employee.LIST_FIELDS:
                 return ", ".join(self.employees[emp_id][field_name])
+                # return self.employees[emp_id][field_name]
+
             return self.employees[emp_id][field_name]
 
+        # Сортировка
+        if role == QtCore.Qt.UserRole:
+            if field_name == 'birth_date':
+                str_birth_date = self.employees[emp_id]['birth_date']
+                birth_date = datetime.strptime(str_birth_date, "%Y-%m-%d")
+                now = datetime.today()
+                delta = now - birth_date
+                return delta.days
+
+            if field_name == 'experience':
+                experience = self.employees[emp_id]['experience']
+                return int(experience)
+
+            if field_name in Employee.LIST_FIELDS:
+                return len(self.employees[emp_id][field_name])
+
+            return index.data(role=QtCore.Qt.DisplayRole).lower().replace('ё', 'е')
+
+        # Иконка
         if role == QtCore.Qt.DecorationRole:
-            if field_name == "sex":
+            if field_name == 'sex':
                 gender = self.employees[emp_id]['sex']
                 if gender == 'Мужской':
                     return QtGui.QIcon(':/icons/male.svg')
                 elif gender == 'Женский':
                     return QtGui.QIcon(':/icons/female.svg')
 
+        # Выравнивание
         if role == QtCore.Qt.TextAlignmentRole:
             align_to_center = ('sex', 'experience', 'birth_date')
             if field_name in align_to_center:
@@ -82,67 +104,67 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
         self.employees[emp_id][field_name] = value
         self.dataChanged.emit(index, index, (QtCore.Qt.DisplayRole,))
         return True
-    #
-    # def sort(self, column, order=QtCore.Qt.AscendingOrder):
-    #     """ Реализация сортировки столбцов """
-    #     self.layoutAboutToBeChanged.emit()
-    #     ascending = (order == QtCore.Qt.AscendingOrder)
-    #     column_name = Employee.ALL_FIELDS[column]
-    #     print(column_name)
-    #
-    #
-    #
-    #
-    #     # self.changePersistentIndexList(oldIndexList, newIndexList)
-    #     self.layoutChanged.emit()
-    #     self.dataChanged.emit(QtCore.QModelIndex(), QtCore.QModelIndex())
-
-        #
-        #
-        #
-        # # Storing persistent indexes
-        # self.layoutAboutToBeChanged.emit()
-        # oldIndexList = self.persistentIndexList()
-        # oldIds = self._dfDisplay.index.copy()
-        #
-        # # Sorting data
-        # column = self._dfDisplay.columns[col]
-        # ascending = (order == QtCore.Qt.AscendingOrder)
-        # if column in self._sortBy:
-        #     i = self._sortBy.index(column)
-        #     self._sortBy.pop(i)
-        #     self._sortDirection.pop(i)
-        # self._sortBy.insert(0, column)
-        # self._sortDirection.insert(0, ascending)
-        # self.updateDisplay()
-        #
-        # # Updating persistent indexes
-        # newIds = self._dfDisplay.index
-        # newIndexList = []
-        # for index in oldIndexList:
-        #     id = oldIds[index.row()]
-        #     newRow = newIds.get_loc(id)
-        #     newIndexList.append(self.index(newRow, index.column(), index.parent()))
-        # self.changePersistentIndexList(oldIndexList, newIndexList)
-        # self.layoutChanged.emit()
-        # self.dataChanged.emit(QtCore.QModelIndex(), QtCore.QModelIndex())
 
 
 class EmployeesSortModel(QtCore.QSortFilterProxyModel):
 
     def lessThan(self, left, right):
-        # TODO: Доделать
-        left_row = left.row()
-        left_column = left.column()
-        left_field_name = Employee.ALL_FIELDS[left_column]
-        left_emp_id = tuple(self.employees.keys())[left_row]
+        """Сортирует данные столбцов в таблице сотрудников"""
+        lvalue = left.data(role=QtCore.Qt.UserRole)
+        rvalue = right.data(role=QtCore.Qt.UserRole)
+        return lvalue > rvalue
 
-        right_row = right.row()
-        right_column = right.column()
-        right_field_name = Employee.ALL_FIELDS[right_column]
-        right_emp_id = tuple(self.employees.keys())[right_row]
 
-        if left_field_name == 'experience' and right_field_name == 'experience':
-            return int(self.employees[left_emp_id]['experience']) < int(self.employees[right_emp_id]['experience'])
-        else:
-            return QtCore.QAbstractTableModel.lessThan(left, right)
+class EmployeesHazardsDelegate(QtWidgets.QStyledItemDelegate):
+    """Тестовый делегат"""
+
+    def __init__(self, parent=None):
+        """Инициализация делегата"""
+        print("Вызван метод init")
+        super().__init__(parent)
+
+    def createEditor(self, parent, option, index):
+        """Создание редактора"""
+        print("Вызван метод createEditor")
+        return super().createEditor(parent, option, index)
+
+    def setEditorData(self, editor, index):
+        """Передача данных в редактор"""
+        print("Вызван метод setEditorData")
+        return super().setEditorData(editor, index)
+
+    # def setModelData(self, editor, model, index):
+        # row = index.row()
+        # column = index.column()
+        # field_name = Employee.ALL_FIELDS[column]
+        # emp_id = tuple(self.employees.keys())[row]
+        #
+        # if field_name in Employee.LIST_FIELDS:
+        #     return len(self.employees[emp_id][field_name])
+        #
+        # data_int = editor.value()
+        # data_var = QVariant(data_int)
+
+
+        # model.setData(index, self.__generate_hazard_cell(editor.text()))
+        # print(editor, model, index)
+
+
+    @staticmethod
+    def __generate_hazard_cell(hazard_codes):
+        """Создает ряд скругленных ячеек вредностей для таблицы"""
+        if type(hazard_codes) == str:
+            hazard_codes = hazard_codes.split(',')
+        hazards_layout = QtWidgets.QHBoxLayout()
+        hazards_cell = QtWidgets.QWidget()
+        hazards_cell.setLayout(hazards_layout)
+        for hazard_code in hazard_codes:
+            if hazard_code.endswith('.'):
+                hazard_code = hazard_code[:-1]
+            hazard_label = QtWidgets.QLabel(hazard_code)
+            hazard_label.setStyleSheet('background-color: #fff; border-radius: 5px; padding: 2px;'
+                                       'min-height: 15px; border: 1px solid;')
+            hazards_layout.addWidget(hazard_label)
+        h_spacer = QtWidgets.QSpacerItem(0, 0, QtWidgets.QSizePolicy.Expanding)
+        hazards_layout.addSpacerItem(h_spacer)
+        return hazards_cell

@@ -51,11 +51,10 @@ if __name__ == '__main__':
     prepare_app(app)
 
     xml_parser = XMLParser()
-    xml_parser.load_file(resource_path('tests/test_list_of_employees.xml'))
+    xml_parser.load_file(resource_path('tests/demo_data.xml'))
     print('\n'.join(xml_parser.get_errors()))
 
     list_of_employees = xml_parser.get_employees()
-    list_of_employees.pop(1)
     organization = xml_parser.get_organization()
 
     # print(list_of_employees)

@@ -76,13 +76,13 @@ class XMLParser:
         # Дата создания документа
         date = etree.SubElement(root, 'date')
         now = datetime.datetime.now()
-        date.text = now.strftime("%d.%m.%Y")
+        date.text = now.strftime("%Y-%m-%d")
 
         # Заполняем тег <organization>
         organization_node = etree.SubElement(root, 'organization')
         for field in Organization.ALL_FIELDS:
             node = etree.SubElement(organization_node, field)
-            node.text = organization.get(field, '')
+            node.text = organization[field]
 
         # Заполняем данные сотрудников
         for employee in employees.values():
@@ -98,10 +98,11 @@ class XMLParser:
                     node = etree.SubElement(job_node, field)
                     node.text = employee[field]
                 else:
-                    hazard_node = etree.SubElement(job_node, field)
-                    for hazard in employee[field]:
-                        code = etree.SubElement(hazard_node, 'code')
-                        code.text = hazard
+                    if len(employee[field]) > 0:
+                        hazard_node = etree.SubElement(job_node, field)
+                        for hazard in employee[field]:
+                            code = etree.SubElement(hazard_node, 'code')
+                            code.text = hazard
 
         save_tree = etree.ElementTree(root)
         save_tree.write(filename, pretty_print=True, encoding="utf-8", xml_declaration=True)
