@@ -72,7 +72,7 @@ if __name__ == '__main__':
     # print(new_list_of_employees)
     # print(employee['full_name'])
     #
-    # for k, v in employee.items():
+    # for k, v in employee.genders():
     #     print('{} -> {}'.format(k, v))
 
     # organization = Organization()
@@ -84,7 +84,7 @@ if __name__ == '__main__':
     # for k, v in organization:
     #     print('{} -> {}'.format(k, v))
     #
-    # for emp_id, employee in list_of_employees.items():
+    # for emp_id, employee in list_of_employees.genders():
     #     print('{} -> {}'.format(emp_id, employee))
 
     # null_employees = Employees()

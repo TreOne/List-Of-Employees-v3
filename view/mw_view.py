@@ -9,7 +9,9 @@ import datetime
 from utility.resource_path import resource_path
 from utility import resources
 from utility.settings import Settings
-from model import EmployeesSortModel, EmployeesHazardsDelegate
+from model import EmployeesSortModel
+from utility.delegates import InLineEditDelegate, GenderSelectionDelegate, BirthDateSelectionDelegate, \
+    ExperienceSelectionDelegate, HazardsSelectionDelegate
 
 
 def _mute(method_to_mute):
@@ -66,9 +68,21 @@ class MWView(QtWidgets.QMainWindow):
         self.ui.employees_table.setModel(proxy_model)
         # self.ui.employees_table.setModel(controller.model)
 
-        hazard_cells_delegate = EmployeesHazardsDelegate(self)
-        self.ui.employees_table.setItemDelegateForColumn(8, hazard_cells_delegate)
-        self.ui.employees_table.setItemDelegateForColumn(9, hazard_cells_delegate)
+        in_line_edit_delegate = InLineEditDelegate(self, controller.model)
+        gender_selection_delegate = GenderSelectionDelegate(self)
+        birth_date_selection_delegate = BirthDateSelectionDelegate(self)
+        experience_selection_delegate = ExperienceSelectionDelegate(self)
+        hazards_selection_delegate = HazardsSelectionDelegate(self)
+        self.ui.employees_table.setItemDelegateForColumn(0, in_line_edit_delegate)
+        self.ui.employees_table.setItemDelegateForColumn(1, in_line_edit_delegate)
+        self.ui.employees_table.setItemDelegateForColumn(2, in_line_edit_delegate)
+        self.ui.employees_table.setItemDelegateForColumn(3, gender_selection_delegate)
+        self.ui.employees_table.setItemDelegateForColumn(4, birth_date_selection_delegate)
+        self.ui.employees_table.setItemDelegateForColumn(5, in_line_edit_delegate)
+        self.ui.employees_table.setItemDelegateForColumn(6, experience_selection_delegate)
+        self.ui.employees_table.setItemDelegateForColumn(7, in_line_edit_delegate)
+        self.ui.employees_table.setItemDelegateForColumn(8, hazards_selection_delegate)
+        self.ui.employees_table.setItemDelegateForColumn(9, hazards_selection_delegate)
 
         self.adjust_column_width()
 
