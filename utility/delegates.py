@@ -1,18 +1,13 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from utility.employees import Employee
-from view.hw_view import HFView
+from view.hw_view import HWView
 
 
-class InLineEditDelegate(QtWidgets.QItemDelegate):
+class InLineEditDelegate(QtWidgets.QStyledItemDelegate):
     """Делегат для редактирования текстовых данных"""
     def __init__(self, parent, model):
         super().__init__(parent)
         self.model = model
-
-    def paint(self, painter, option, index):
-        if isinstance(self.parent(), QtWidgets.QAbstractItemView):
-            self.parent().openPersistentEditor(index)
-        super(InLineEditDelegate, self).paint(painter, option, index)
 
     def createEditor(self, parent, option, index):
         line_editor = super(InLineEditDelegate, self).createEditor(parent, option, index)
@@ -31,14 +26,9 @@ class InLineEditDelegate(QtWidgets.QItemDelegate):
 class GenderSelectionDelegate(QtWidgets.QStyledItemDelegate):
     """Делегат для выбора пола"""
 
-    def __init__(self, owner):
-        super().__init__(owner)
+    def __init__(self, parent):
+        super().__init__(parent)
         self.genders = ['Мужской', 'Женский']
-
-    def paint(self, painter, option, index):
-        if isinstance(self.parent(), QtWidgets.QAbstractItemView):
-            self.parent().openPersistentEditor(index)
-        super(GenderSelectionDelegate, self).paint(painter, option, index)
 
     def createEditor(self, parent, option, index):
         editor = QtWidgets.QComboBox(parent)
@@ -65,14 +55,9 @@ class GenderSelectionDelegate(QtWidgets.QStyledItemDelegate):
 class BirthDateSelectionDelegate(QtWidgets.QStyledItemDelegate):
     """Делегат для выбора даты рождения"""
 
-    def __init__(self, owner):
-        super().__init__(owner)
+    def __init__(self, parent):
+        super().__init__(parent)
         self.date_picker = QtWidgets.QCalendarWidget()
-
-    def paint(self, painter, option, index):
-        if isinstance(self.parent(), QtWidgets.QAbstractItemView):
-            self.parent().openPersistentEditor(index)
-        super(BirthDateSelectionDelegate, self).paint(painter, option, index)
 
     def createEditor(self, parent, option, index):
         editor = QtWidgets.QDateEdit(parent)
@@ -102,13 +87,8 @@ class BirthDateSelectionDelegate(QtWidgets.QStyledItemDelegate):
 class ExperienceSelectionDelegate(QtWidgets.QStyledItemDelegate):
     """Делегат для выбора стажа"""
 
-    def __init__(self, owner):
-        super().__init__(owner)
-
-    def paint(self, painter, option, index):
-        if isinstance(self.parent(), QtWidgets.QAbstractItemView):
-            self.parent().openPersistentEditor(index)
-        super(ExperienceSelectionDelegate, self).paint(painter, option, index)
+    def __init__(self, parent):
+        super().__init__(parent)
 
     def createEditor(self, parent, option, index):
         editor = QtWidgets.QSpinBox(parent)
@@ -132,24 +112,46 @@ class ExperienceSelectionDelegate(QtWidgets.QStyledItemDelegate):
     def updateEditorGeometry(self, editor, option, index):
         editor.setGeometry(option.rect)
 
+#
+# class HazardsSelectionDelegate(QtWidgets.QStyledItemDelegate):
+#     """Делегат для редактирования вредностей"""
+#
+#     def __init__(self, parent=None):
+#         super().__init__(parent)
+#
+#     def paint(self, painter, option, index):
+#         pass
+#         # if isinstance(self.parent(), QtWidgets.QAbstractItemView):
+#         #     self.parent().openPersistentEditor(index)
+#         # super(HazardsSelectionDelegate, self).paint(painter, option, index)
+#
+#     def createEditor(self, parent, option, index):
+#         pass
+#         # editor = HWView(parent=self.parent(), autoload_ui=True)
+#         # return editor
+#
+#     def setEditorData(self, editor, index):
+#         pass
+#
+#     def setModelData(self, editor, model, index):
+#         pass
+
 
 class HazardsSelectionDelegate(QtWidgets.QStyledItemDelegate):
     """Делегат для редактирования вредностей"""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent):
         super().__init__(parent)
 
-    def paint(self, painter, option, index):
-        if isinstance(self.parent(), QtWidgets.QAbstractItemView):
-            self.parent().openPersistentEditor(index)
-        super(HazardsSelectionDelegate, self).paint(painter, option, index)
-
     def createEditor(self, parent, option, index):
-        editor = HFView(parent=parent, autoload_ui=True)
+        editor = HWView(parent=self.parent(), autoload_ui=False)
         return editor
 
     def setEditorData(self, editor, index):
-        pass
+        hazard_factors = index.data(QtCore.Qt.EditRole)
+        editor.set_hazards(list(), hazard_factors)
 
     def setModelData(self, editor, model, index):
-        pass
+        selected_file = editor.selectedFiles()[0]
+        image = open(selected_file, 'rb').read()
+        model.setData(index, image)

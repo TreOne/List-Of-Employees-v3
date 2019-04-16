@@ -7,9 +7,9 @@ from PyQt5.QtGui import QKeySequence, QColor, QBrush
 from PyQt5.QtWidgets import QShortcut, QMessageBox
 
 
-class HFView(QtWidgets.QWidget):
+class HWView(QtWidgets.QWidget):
     """
-    Класс HFView отвечает за визуальное представление формы редактирования типов и факторво вредностей.
+    Класс HWView отвечает за визуальное представление формы редактирования типов и факторво вредностей.
     (Заметка для разработчика) Для импорта UI в PY:
         pyuic5 -x .pyqt5/hazards_form.ui -o view/ui/hazards_form.py
     """
@@ -18,7 +18,7 @@ class HFView(QtWidgets.QWidget):
 
         # Подключаем Представление
         flags = Qt.WindowFlags(Qt.Window | Qt.WindowTitleHint)
-        super(HFView, self).__init__(parent, flags)
+        super(HWView, self).__init__(parent, flags)
 
         # Подключаем UI
         # TODO: При релизе, переключить с динамической компиляции интерфейса на статическую.
@@ -39,10 +39,6 @@ class HFView(QtWidgets.QWidget):
         self.types_tree = self.ui.hazards_types
         self.factors_tree = self.ui.hazards_factors
 
-        # # Визуализируем деревья вредностей
-        # self.load_tree_data(self.types_tree, self.hazards_types, 'hazard_types')
-        # self.load_tree_data(self.factors_tree, self.hazards_factors, 'hazard_factors')
-
         # # При двойном клике отмечаем вредность
         # self.types_tree.itemDoubleClicked.connect(self.item_double_clicked)
         # self.factors_tree.itemDoubleClicked.connect(self.item_double_clicked)
@@ -62,8 +58,8 @@ class HFView(QtWidgets.QWidget):
 
     def set_hazards(self, hazard_types, hazard_factors):
         """Загружает списки факторов и типов вредностей"""
-        self.load_tree_data(self.types_tree, hazard_types, 'hazard_types')
-        self.load_tree_data(self.factors_tree, hazard_factors, 'hazard_factors')
+        self.load_tree_data(self.types_tree, self.hazards_types, 'hazard_types', hazard_types)
+        self.load_tree_data(self.factors_tree, self.hazards_factors, 'hazard_factors', hazard_factors)
 
     def hazards(self):
         """Возвращает списки факторов и типов вредностей"""
@@ -75,33 +71,32 @@ class HFView(QtWidgets.QWidget):
             self.__fill_hazards_list(self.factors_tree.topLevelItem(i), hazard_factors)
         return hazard_types, hazard_factors
 
-    def load_tree_data(self, tree, data, mode):
+    def load_tree_data(self, tree, data, mode, emp_hazards):
         tree.setColumnWidth(0, 550)
         top_level_items = data.root.childs
         for top_level_item in top_level_items:
             root = QtWidgets.QTreeWidgetItem([top_level_item.name, top_level_item.get_full_code()])
             self.__fill_the_brunch(top_level_item, root)
             tree.addTopLevelItem(root)
-            self.__add_checkboxes(root, mode)
+            self.__add_checkboxes(root, mode, emp_hazards)
         tree.expandAll()
 
-    def __add_checkboxes(self, node, mode):
-        hazards = self.employee[mode]
+    def __add_checkboxes(self, node, mode, emp_hazards):
         child_count = node.childCount()
         if not child_count:
             node.setFlags(node.flags() | Qt.ItemIsUserCheckable)
-            if node.text(1) + '.' in hazards:
+            if node.text(1) + '.' in emp_hazards:
                 node.setCheckState(2, Qt.Checked)
             else:
                 node.setCheckState(2, Qt.Unchecked)
         else:
             node.setFlags(node.flags() | Qt.ItemIsUserCheckable)
-            if node.text(1) in hazards:
+            if node.text(1) in emp_hazards:
                 node.setCheckState(2, Qt.Checked)
             else:
                 node.setCheckState(2, Qt.Unchecked)
             for i in range(child_count):
-                self.__add_checkboxes(node.child(i), mode)
+                self.__add_checkboxes(node.child(i), mode, emp_hazards)
 
     def save_btn_clicked(self):
         employee_hazards = self.employee['hazard_types']
@@ -116,34 +111,35 @@ class HFView(QtWidgets.QWidget):
         self.close()
 
     def cancel_btn_clicked(self):
-        types_codes = []
-        for i in range(self.types_tree.topLevelItemCount()):
-            self.__fill_hazards_list(self.types_tree.topLevelItem(i), types_codes)
-        factors_codes = []
-        for i in range(self.factors_tree.topLevelItemCount()):
-            self.__fill_hazards_list(self.factors_tree.topLevelItem(i), factors_codes)
-
-        types_codes.sort()
-        self.controller.changed_employee['hazard_types'].sort()
-        factors_codes.sort()
-        self.controller.changed_employee['hazard_factors'].sort()
-        if types_codes != self.controller.changed_employee['hazard_types'] or \
-                factors_codes != self.controller.changed_employee['hazard_factors']:
-            are_changed = True
-        else:
-            print(types_codes)
-            are_changed = False
-
-        if not are_changed:
-            self.close()
-        else:
-            reply = QMessageBox.question(self, 'Вы не сохранили изменения!',
-                                         'Все несохраненные изменения будут потеряны. Сохранить сделанные изменения?',
-                                         QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Yes)
-            if reply == QMessageBox.Yes:
-                self.save_btn_clicked()
-            elif reply == QMessageBox.No:
-                self.close()
+        self.close()
+        # types_codes = []
+        # for i in range(self.types_tree.topLevelItemCount()):
+        #     self.__fill_hazards_list(self.types_tree.topLevelItem(i), types_codes)
+        # factors_codes = []
+        # for i in range(self.factors_tree.topLevelItemCount()):
+        #     self.__fill_hazards_list(self.factors_tree.topLevelItem(i), factors_codes)
+        #
+        # types_codes.sort()
+        # self.controller.changed_employee['hazard_types'].sort()
+        # factors_codes.sort()
+        # self.controller.changed_employee['hazard_factors'].sort()
+        # if types_codes != self.controller.changed_employee['hazard_types'] or \
+        #         factors_codes != self.controller.changed_employee['hazard_factors']:
+        #     are_changed = True
+        # else:
+        #     print(types_codes)
+        #     are_changed = False
+        #
+        # if not are_changed:
+        #     self.close()
+        # else:
+        #     reply = QMessageBox.question(self, 'Вы не сохранили изменения!',
+        #                                  'Все несохраненные изменения будут потеряны. Сохранить сделанные изменения?',
+        #                                  QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Yes)
+        #     if reply == QMessageBox.Yes:
+        #         self.save_btn_clicked()
+        #     elif reply == QMessageBox.No:
+        #         self.close()
 
     def __fill_hazards_list(self, node, hazard_list):
         """Заполняет список отмеченными в дереве вредностями"""

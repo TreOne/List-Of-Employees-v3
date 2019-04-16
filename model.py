@@ -83,9 +83,14 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
             if field_name == 'birth_date':
                 str_birth_date = self.employees[emp_id]['birth_date']
                 return QtCore.QDate.fromString(str_birth_date, 'yyyy-MM-dd')
+
             if field_name == 'experience':
                 experience = self.employees[emp_id]['experience']
                 return int(experience)
+
+            if field_name in Employee.LIST_FIELDS:
+                return self.employees[emp_id][field_name]
+
             return index.data(role=QtCore.Qt.DisplayRole)
 
         # Иконка

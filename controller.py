@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QCompleter, QTableWidgetItem, QSizePolicy, QHBoxLayo
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QStringListModel, Qt
 #from View.OFView import OFView  # Представление для редактирования данных организации
-#from View.HFView import HFView  # Представление для редактирования списков вредностей
+#from View.HWView import HWView  # Представление для редактирования списков вредностей
 from datetime import datetime
 import re
 #from Utility.DocxCreator import DocxCreator
