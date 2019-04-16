@@ -14,12 +14,7 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
         self.employees = list_of_employees
 
     def flags(self, index):
-        row = index.row()
         column = index.column()
-        field_name = Employee.ALL_FIELDS[column]
-        # TODO: раскомментировать
-        # if field_name in Employee.LIST_FIELDS:
-        #     return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
         if column >= 0:
             return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable
 
@@ -57,7 +52,7 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
                 return experience + smart_ending(int(experience), ' год', ' года', ' лет')
 
             if field_name in Employee.LIST_FIELDS:
-                return ", ".join(self.employees[emp_id][field_name])
+                return " / ".join(self.employees[emp_id][field_name])
                 # return self.employees[emp_id][field_name]
 
             return self.employees[emp_id][field_name]
@@ -114,8 +109,13 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
         field_name = Employee.ALL_FIELDS[column]
         emp_id = tuple(self.employees.keys())[row]
         self.employees[emp_id][field_name] = value
+        if field_name in self.employees.get_completer_fields():
+            self.employees.refresh_completer(field_name)
         self.dataChanged.emit(index, index, (QtCore.Qt.DisplayRole,))
         return True
+
+    def get_completer(self, completer_field):
+        return self.employees.get_completer(completer_field)
 
 
 class EmployeesSortModel(QtCore.QSortFilterProxyModel):

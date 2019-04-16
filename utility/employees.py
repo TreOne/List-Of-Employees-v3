@@ -118,6 +118,11 @@ class Employees:
     def __init__(self):
         self.__list_of_employees = dict()
         self.__max_id = -1
+        self.__completer_fields = ('family_name', 'first_name', 'patronymic', 'specialty')
+        self.__completer_hints = dict()
+        # Инициализируем множества значений
+        for completer_field in self.__completer_fields:
+            self.__completer_hints[completer_field] = set()
 
     def __len__(self):
         return len(self.__list_of_employees)
@@ -138,6 +143,23 @@ class Employees:
         """Получить список всех сотрудников"""
         return self.__list_of_employees
 
+    def get_completer(self, completer_field):
+        return self.__completer_hints[completer_field]
+
+    def get_completer_fields(self):
+        return self.__completer_fields
+
+    def refresh_completer(self, field=None):
+        if field is None:
+            for field in self.__completer_fields:
+                self.__completer_hints[field].clear()
+                for employee in self.__list_of_employees:
+                    self.__completer_hints[field].add(employee[field])
+        else:
+            self.__completer_hints[field].clear()
+            for employee in self.__list_of_employees.values():
+                self.__completer_hints[field].add(employee[field])
+
     def pop(self, emp_id: int) -> Employee:
         """Удалить сотрудника по id"""
         return self.__list_of_employees.pop(emp_id)
@@ -145,7 +167,14 @@ class Employees:
     def add(self, employee=None) -> [int, Employee]:
         """Добавляет пустого сотрудника или заносит переданного сотрудника, как нового."""
         new_id = self._get_new_id()
-        self.__list_of_employees[new_id] = employee if employee is not None else Employee()
+        if employee is None:
+            self.__list_of_employees[new_id] = Employee()
+        else:
+            self.__list_of_employees[new_id] = employee
+            for completer_field in self.__completer_fields:
+                new_value = self.__list_of_employees[new_id][completer_field]
+                self.__completer_hints[completer_field].add(new_value)
+
         return new_id, self.__list_of_employees[new_id]
 
     def copy(self):

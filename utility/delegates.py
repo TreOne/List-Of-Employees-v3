@@ -1,8 +1,10 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 
+from utility.employees import Employee
+
 
 class InLineEditDelegate(QtWidgets.QItemDelegate):
-    """Делегат для редактирования текстовых данных"""
+    """Делегат для редактирования текстовых данных с автозавершением слов"""
     def __init__(self, owner, model):
         super().__init__(owner)
         self.model = model
@@ -12,11 +14,11 @@ class InLineEditDelegate(QtWidgets.QItemDelegate):
         return line_editor
 
     def setEditorData(self, editor, index):
+        column = index.column()
+        field_name = Employee.ALL_FIELDS[column]
         text = index.data(QtCore.Qt.EditRole)
-        variants = set()
-        for row in range(0, self.model.rowCount()):
-            variants.add(self.model.index(row, index.column()).data())
-        auto_complete = QtWidgets.QCompleter(variants)
+        auto_complete = QtWidgets.QCompleter(self.model.get_completer(field_name))
+        auto_complete.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         editor.setCompleter(auto_complete)
         editor.setText(str(text))
 
@@ -130,13 +132,10 @@ class HazardsSelectionDelegate(QtWidgets.QStyledItemDelegate):
     """Делегат для редактирования вредностей"""
 
     def __init__(self, parent=None):
-        """Инициализация делегата"""
         super().__init__(parent)
 
     def createEditor(self, parent, option, index):
-        """Создание редактора"""
         return super().createEditor(parent, option, index)
 
     def setEditorData(self, editor, index):
-        """Передача данных в редактор"""
         return super().setEditorData(editor, index)

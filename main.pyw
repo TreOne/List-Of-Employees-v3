@@ -91,5 +91,5 @@ if __name__ == '__main__':
     # for k, v in null_employees:
     #     print('{} -> {}'.format(k, v))
 
-    Controller(Model(list_of_employees.get_employees()))
+    Controller(Model(list_of_employees))
     sys.exit(app.exec_())
