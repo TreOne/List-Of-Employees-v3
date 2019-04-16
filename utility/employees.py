@@ -144,7 +144,10 @@ class Employees:
         return self.__list_of_employees
 
     def get_completer(self, completer_field):
-        return self.__completer_hints[completer_field]
+        try:
+            return self.__completer_hints[completer_field]
+        except KeyError:
+            return set()
 
     def get_completer_fields(self):
         return self.__completer_fields

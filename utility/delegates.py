@@ -1,13 +1,18 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
-
 from utility.employees import Employee
+from view.hw_view import HFView
 
 
 class InLineEditDelegate(QtWidgets.QItemDelegate):
-    """Делегат для редактирования текстовых данных с автозавершением слов"""
-    def __init__(self, owner, model):
-        super().__init__(owner)
+    """Делегат для редактирования текстовых данных"""
+    def __init__(self, parent, model):
+        super().__init__(parent)
         self.model = model
+
+    def paint(self, painter, option, index):
+        if isinstance(self.parent(), QtWidgets.QAbstractItemView):
+            self.parent().openPersistentEditor(index)
+        super(InLineEditDelegate, self).paint(painter, option, index)
 
     def createEditor(self, parent, option, index):
         line_editor = super(InLineEditDelegate, self).createEditor(parent, option, index)
@@ -134,8 +139,17 @@ class HazardsSelectionDelegate(QtWidgets.QStyledItemDelegate):
     def __init__(self, parent=None):
         super().__init__(parent)
 
+    def paint(self, painter, option, index):
+        if isinstance(self.parent(), QtWidgets.QAbstractItemView):
+            self.parent().openPersistentEditor(index)
+        super(HazardsSelectionDelegate, self).paint(painter, option, index)
+
     def createEditor(self, parent, option, index):
-        return super().createEditor(parent, option, index)
+        editor = HFView(parent=parent, autoload_ui=True)
+        return editor
 
     def setEditorData(self, editor, index):
-        return super().setEditorData(editor, index)
+        pass
+
+    def setModelData(self, editor, model, index):
+        pass

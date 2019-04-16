@@ -1,8 +1,8 @@
+import math
 from datetime import datetime
 from utility.employees import Employee
 from utility.words import smart_ending
 from PyQt5 import QtCore
-from PyQt5 import QtWidgets
 from PyQt5 import QtGui
 
 
@@ -45,7 +45,10 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
         if role == QtCore.Qt.DisplayRole:
             if field_name == 'birth_date':
                 birth_date = datetime.strptime(self.employees[emp_id]['birth_date'], '%Y-%m-%d')
-                return birth_date.strftime("%d.%m.%Y")
+                age = datetime.now() - birth_date
+                age = math.trunc(age.days / 365)
+                age = "{} {}".format(age, smart_ending(age, 'год', 'года', 'лет'))
+                return "{} ({})".format(birth_date.strftime("%d.%m.%Y"), age)
 
             if field_name == 'experience':
                 experience = self.employees[emp_id]['experience']

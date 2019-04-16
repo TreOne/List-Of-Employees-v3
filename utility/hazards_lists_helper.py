@@ -20,16 +20,16 @@ class HazardsListsHelper:
         # Если данные с web получены и хэш обновился, то перезаписываем локальную базу
         if ins_lists_json_web is not None and 'hash' in ins_lists_json_web:
             try:  # Если файл не открыть (удален) то скачиваем новый файл
-                with open(resource_path('../resources/hazard_lists.json'), encoding='utf-8') as f:
+                with open(resource_path('./resources/hazard_lists.json'), encoding='utf-8') as f:
                     ins_lists_json_local = json.load(f)
                 if ins_lists_json_local['hash'] != ins_lists_json_web['hash']:
-                    with open(resource_path('../resources/hazard_lists.json'), 'w', encoding="utf-8") as outfile:
+                    with open(resource_path('./resources/hazard_lists.json'), 'w', encoding="utf-8") as outfile:
                         json.dump(ins_lists_json_web, outfile, ensure_ascii=False)
             except (OSError, IOError):
-                with open(resource_path('../resources/hazard_lists.json'), 'w', encoding="utf-8") as outfile:
+                with open(resource_path('./resources/hazard_lists.json'), 'w', encoding="utf-8") as outfile:
                     json.dump(ins_lists_json_web, outfile, ensure_ascii=False)
 
-        with open(resource_path('../resources/hazard_lists.json'), encoding='utf-8') as f:
+        with open(resource_path('./resources/hazard_lists.json'), encoding='utf-8') as f:
             ins_lists_json = json.load(f)
 
         self.__hazard_factors = ins_lists_json['hazards_factors']

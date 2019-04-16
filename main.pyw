@@ -50,18 +50,14 @@ if __name__ == '__main__':
     # Настройки внешнего вида, руссификация интерфейса и пр.
     prepare_app(app)
 
+    # Парсинг XML в Employees и Organization
     xml_parser = XMLParser()
     xml_parser.load_file(resource_path('tests/demo_data.xml'))
     print('\n'.join(xml_parser.get_errors()))
-
-    list_of_employees = xml_parser.get_employees()
-    organization = xml_parser.get_organization()
-
-    # print(list_of_employees)
-
-    # xml_parser._log_tree()
     xml_parser.validate()
     print('\n'.join(xml_parser.get_errors()))
+    list_of_employees = xml_parser.get_employees()
+    organization = xml_parser.get_organization()
 
     # organization = xml_parser.get_organization()
     # organization.show()

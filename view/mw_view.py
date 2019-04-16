@@ -27,8 +27,11 @@ class MWView(QtWidgets.QMainWindow):
     """
     Класс MWView отвечает за визуальное представление главного окна.
 
-    (Заметка для разработчика) Для импорта ресурсов:
-    pyrcc5 -o utility/resources.py .pyqt5/resources/resources.qrc
+    (Заметки для разработчика)
+        Для импорта ресурсов:
+            pyrcc5 -x .pyqt5/resources/resources.qrc -o utility/resources.py
+        Для импорта UI в PY:
+            pyuic5 -x .pyqt5/main_window.ui -o view/ui/main_window.py
     """
 
     def __init__(self, controller, autoload_ui=False):
@@ -73,16 +76,17 @@ class MWView(QtWidgets.QMainWindow):
         birth_date_selection_delegate = BirthDateSelectionDelegate(self)
         experience_selection_delegate = ExperienceSelectionDelegate(self)
         hazards_selection_delegate = HazardsSelectionDelegate(self)
-        self.ui.employees_table.setItemDelegateForColumn(0, in_line_edit_delegate)
-        self.ui.employees_table.setItemDelegateForColumn(1, in_line_edit_delegate)
-        self.ui.employees_table.setItemDelegateForColumn(2, in_line_edit_delegate)
-        self.ui.employees_table.setItemDelegateForColumn(3, gender_selection_delegate)
-        self.ui.employees_table.setItemDelegateForColumn(4, birth_date_selection_delegate)
-        self.ui.employees_table.setItemDelegateForColumn(5, in_line_edit_delegate)
-        self.ui.employees_table.setItemDelegateForColumn(6, experience_selection_delegate)
-        self.ui.employees_table.setItemDelegateForColumn(7, in_line_edit_delegate)
-        self.ui.employees_table.setItemDelegateForColumn(8, hazards_selection_delegate)
-        self.ui.employees_table.setItemDelegateForColumn(9, hazards_selection_delegate)
+
+        self.ui.employees_table.setItemDelegateForColumn(3, gender_selection_delegate)  # Пол
+        self.ui.employees_table.setItemDelegateForColumn(4, birth_date_selection_delegate)  # Дата рождения
+        self.ui.employees_table.setItemDelegateForColumn(6, experience_selection_delegate)  # Стаж
+        self.ui.employees_table.setItemDelegateForColumn(0, in_line_edit_delegate)  # Фамилия
+        self.ui.employees_table.setItemDelegateForColumn(1, in_line_edit_delegate)  # Имя
+        self.ui.employees_table.setItemDelegateForColumn(2, in_line_edit_delegate)  # Отчество
+        self.ui.employees_table.setItemDelegateForColumn(5, in_line_edit_delegate)  # Адрес
+        self.ui.employees_table.setItemDelegateForColumn(7, in_line_edit_delegate)  # Должность
+        self.ui.employees_table.setItemDelegateForColumn(8, hazards_selection_delegate)  # Типы вредности
+        self.ui.employees_table.setItemDelegateForColumn(9, hazards_selection_delegate)  # Факторы вредности
 
         self.adjust_column_width()
 
