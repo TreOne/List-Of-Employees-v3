@@ -98,8 +98,6 @@ class HazardListItem:
         while node.parent is not None:
             full_code = str(node.code) + '.' + full_code
             node = node.parent
-        if len(self.childs) == 0:  # Убрать точку в адресе листового нода
-            full_code = full_code[0:-1]
         return full_code
 
     def search_child_by_code(self, code):

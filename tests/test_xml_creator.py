@@ -11,7 +11,7 @@ from mimesis.enums import Gender
 from mimesis.builtins import RussiaSpecProvider
 
 if __name__ == '__main__':
-    EMPLOYEE_NUMS = 100
+    EMPLOYEE_NUMS = 5
 
     organization = Organization()
     list_of_employees = Employees()

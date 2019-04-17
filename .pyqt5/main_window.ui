@@ -513,7 +513,7 @@
       <item>
        <widget class="QTableView" name="employees_table">
         <property name="editTriggers">
-         <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
+         <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
         </property>
         <property name="alternatingRowColors">
          <bool>true</bool>

@@ -1,6 +1,16 @@
 from __future__ import annotations
 
 
+class Validate:
+    VALID = 0
+    WARNING = 1
+    INVALID = 2
+
+    def __init__(self, result, text):
+        self.result = result
+        self.text = text
+
+
 class Employee:
     """
     Класс Employee представляет собой модель острудника.
@@ -65,6 +75,30 @@ class Employee:
 
     def __str__(self):
         return self['full_name']
+
+    def field_validation(self, field_name):
+        """Проверка валидности поля сотрудника"""
+        # PERSON_FIELDS = ('family_name', 'first_name', 'patronymic', 'sex', 'birth_date', 'address_free_form')
+        # JOB_FIELDS = ('experience', 'specialty', 'hazard_types', 'hazard_factors')
+
+        rus_name = Employee.translate(field_name)
+
+        # Проверяем название поля
+        if field_name not in Employee.ALL_FIELDS:
+            return Validate(Validate.INVALID, "Неправильное название поля сотрудника: '{}'".format(rus_name))
+
+        # Эти поля не должны быть пустыми
+        if field_name in ('family_name', 'first_name', 'sex', 'birth_date', 'experience', 'specialty'):
+            if self[field_name] == '':
+                return Validate(Validate.INVALID, "Поле '{}' должно быть обязательно заполнено!".format(rus_name))
+
+        # У человека может не быть отчества, но это подозрительно
+        if field_name == 'patronymic':
+            if self[field_name] == '':
+                return Validate(Validate.WARNING, "Если у сотрудника есть отчество,"
+                                                  " оно должно быть обязательно указано.".format(rus_name))
+
+        return Validate(Validate.VALID, "Неправильное название поля сотрудника: '{}'".format(rus_name))
 
     def show(self):
         string = """\

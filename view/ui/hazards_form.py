@@ -19,11 +19,11 @@ class Ui_HazardsForm(object):
         self.hl_hazards.setObjectName("hl_hazards")
         self.hazards_types = QtWidgets.QTreeWidget(HazardsForm)
         self.hazards_types.setObjectName("hazards_types")
-        self.hazards_types.header().setStretchLastSection(False)
+        self.hazards_types.header().setStretchLastSection(True)
         self.hl_hazards.addWidget(self.hazards_types)
         self.hazards_factors = QtWidgets.QTreeWidget(HazardsForm)
         self.hazards_factors.setObjectName("hazards_factors")
-        self.hazards_factors.header().setStretchLastSection(False)
+        self.hazards_factors.header().setStretchLastSection(True)
         self.hl_hazards.addWidget(self.hazards_factors)
         self.hl_hazards.setStretch(0, 1)
         self.hl_hazards.setStretch(1, 1)
@@ -36,10 +36,6 @@ class Ui_HazardsForm(object):
         self.save_btn.setMinimumSize(QtCore.QSize(200, 30))
         self.save_btn.setObjectName("save_btn")
         self.al_hazards_btns.addWidget(self.save_btn)
-        self.cancel_btn = QtWidgets.QPushButton(HazardsForm)
-        self.cancel_btn.setMinimumSize(QtCore.QSize(100, 30))
-        self.cancel_btn.setObjectName("cancel_btn")
-        self.al_hazards_btns.addWidget(self.cancel_btn)
         self.verticalLayout.addLayout(self.al_hazards_btns)
 
         self.retranslateUi(HazardsForm)
@@ -48,14 +44,11 @@ class Ui_HazardsForm(object):
     def retranslateUi(self, HazardsForm):
         _translate = QtCore.QCoreApplication.translate
         HazardsForm.setWindowTitle(_translate("HazardsForm", "Form"))
-        self.hazards_types.headerItem().setText(0, _translate("HazardsForm", "Тип вредности (Приложение 2)"))
-        self.hazards_types.headerItem().setText(1, _translate("HazardsForm", "Код"))
-        self.hazards_types.headerItem().setText(2, _translate("HazardsForm", "Наличие"))
-        self.hazards_factors.headerItem().setText(0, _translate("HazardsForm", "Фактор вредности (Приложение 1)"))
-        self.hazards_factors.headerItem().setText(1, _translate("HazardsForm", "Код"))
-        self.hazards_factors.headerItem().setText(2, _translate("HazardsForm", "Наличие"))
-        self.save_btn.setText(_translate("HazardsForm", "Сохранить и закрыть (F5)"))
-        self.cancel_btn.setText(_translate("HazardsForm", "Отмена"))
+        self.hazards_types.headerItem().setText(0, _translate("HazardsForm", "Код"))
+        self.hazards_types.headerItem().setText(1, _translate("HazardsForm", "Тип вредности (Приложение 2)"))
+        self.hazards_factors.headerItem().setText(0, _translate("HazardsForm", "Код"))
+        self.hazards_factors.headerItem().setText(1, _translate("HazardsForm", "Фактор вредности (Приложение 1)"))
+        self.save_btn.setText(_translate("HazardsForm", "Сохранить и закрыть"))
 
 
 

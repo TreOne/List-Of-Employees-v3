@@ -2,7 +2,7 @@ from PyQt5 import QtWidgets, uic, QtCore
 from utility.hazards_lists_helper import HazardsListsHelper
 from utility.resource_path import resource_path
 from view.ui.hazards_form import Ui_HazardsForm
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QKeySequence, QColor, QBrush
 from PyQt5.QtWidgets import QShortcut, QMessageBox
 
@@ -13,20 +13,15 @@ class HWView(QtWidgets.QWidget):
     (Заметка для разработчика) Для импорта UI в PY:
         pyuic5 -x .pyqt5/hazards_form.ui -o view/ui/hazards_form.py
     """
+    hazardsChanged = pyqtSignal()
 
-    def __init__(self, parent=None, autoload_ui=False):
+    def __init__(self, parent=None):
 
         # Подключаем Представление
         flags = Qt.WindowFlags(Qt.Window | Qt.WindowTitleHint)
         super(HWView, self).__init__(parent, flags)
-
-        # Подключаем UI
-        # TODO: При релизе, переключить с динамической компиляции интерфейса на статическую.
-        if autoload_ui:
-            self.ui = uic.loadUi(resource_path('.pyqt5/hazards_form.ui'), self)
-        else:
-            self.ui = Ui_HazardsForm()
-            self.ui.setupUi(self)
+        self.ui = Ui_HazardsForm()
+        self.ui.setupUi(self)
 
         # Настраиваем внешний вид окна
         self.setWindowModality(QtCore.Qt.WindowModal)
@@ -39,27 +34,16 @@ class HWView(QtWidgets.QWidget):
         self.types_tree = self.ui.hazards_types
         self.factors_tree = self.ui.hazards_factors
 
-        # # При двойном клике отмечаем вредность
-        # self.types_tree.itemDoubleClicked.connect(self.item_double_clicked)
-        # self.factors_tree.itemDoubleClicked.connect(self.item_double_clicked)
-
         # Подключаем слоты кнопок
-        self.ui.cancel_btn.clicked.connect(self.cancel_btn_clicked)
-        QShortcut(QKeySequence(Qt.Key_Escape), self, self.cancel_btn_clicked)
         self.ui.save_btn.clicked.connect(self.save_btn_clicked)
-        QShortcut(QKeySequence(Qt.Key_F5), self, self.save_btn_clicked)
-
-    def item_double_clicked(self, item):
-        if item.childCount() == 0:
-            if item.checkState(2):
-                item.setCheckState(2, Qt.Unchecked)
-            else:
-                item.setCheckState(2, Qt.Checked)
+        QShortcut(QKeySequence(Qt.Key_Return), self, self.save_btn_clicked)
 
     def set_hazards(self, hazard_types, hazard_factors):
         """Загружает списки факторов и типов вредностей"""
         self.load_tree_data(self.types_tree, self.hazards_types, 'hazard_types', hazard_types)
         self.load_tree_data(self.factors_tree, self.hazards_factors, 'hazard_factors', hazard_factors)
+        self.types_tree.resizeColumnToContents(0)
+        self.factors_tree.resizeColumnToContents(0)
 
     def hazards(self):
         """Возвращает списки факторов и типов вредностей"""
@@ -72,10 +56,12 @@ class HWView(QtWidgets.QWidget):
         return hazard_types, hazard_factors
 
     def load_tree_data(self, tree, data, mode, emp_hazards):
-        tree.setColumnWidth(0, 550)
+        """Создаем незаполненные деревья вредностей (интерфейс)"""
+        # tree.setColumnWidth(0, 550)
         top_level_items = data.root.childs
         for top_level_item in top_level_items:
-            root = QtWidgets.QTreeWidgetItem([top_level_item.name, top_level_item.get_full_code()])
+            root = QtWidgets.QTreeWidgetItem([top_level_item.get_full_code(), top_level_item.name])
+            root.setToolTip(1, '<div style="width: 80px;">{}</div>'.format(top_level_item.name))
             self.__fill_the_brunch(top_level_item, root)
             tree.addTopLevelItem(root)
             self.__add_checkboxes(root, mode, emp_hazards)
@@ -85,70 +71,38 @@ class HWView(QtWidgets.QWidget):
         child_count = node.childCount()
         if not child_count:
             node.setFlags(node.flags() | Qt.ItemIsUserCheckable)
-            if node.text(1) + '.' in emp_hazards:
-                node.setCheckState(2, Qt.Checked)
+            if node.text(0) in emp_hazards:
+                node.setCheckState(0, Qt.Checked)
             else:
-                node.setCheckState(2, Qt.Unchecked)
+                node.setCheckState(0, Qt.Unchecked)
         else:
             node.setFlags(node.flags() | Qt.ItemIsUserCheckable)
-            if node.text(1) in emp_hazards:
-                node.setCheckState(2, Qt.Checked)
+            if node.text(0) in emp_hazards:
+                node.setCheckState(0, Qt.Checked)
             else:
-                node.setCheckState(2, Qt.Unchecked)
+                node.setCheckState(0, Qt.Unchecked)
             for i in range(child_count):
                 self.__add_checkboxes(node.child(i), mode, emp_hazards)
 
     def save_btn_clicked(self):
-        employee_hazards = self.employee['hazard_types']
-        employee_hazards.clear()
-        for i in range(self.types_tree.topLevelItemCount()):
-            self.__fill_hazards_list(self.types_tree.topLevelItem(i), employee_hazards)
-        employee_hazards = self.employee['hazard_factors']
-        employee_hazards.clear()
-        for i in range(self.factors_tree.topLevelItemCount()):
-            self.__fill_hazards_list(self.factors_tree.topLevelItem(i), employee_hazards)
-        self.controller.update_hazards_count()
+        self.hazardsChanged.emit()
         self.close()
-
-    def cancel_btn_clicked(self):
-        self.close()
-        # types_codes = []
+        # employee_hazards = self.employee['hazard_types']
+        # employee_hazards.clear()
         # for i in range(self.types_tree.topLevelItemCount()):
-        #     self.__fill_hazards_list(self.types_tree.topLevelItem(i), types_codes)
-        # factors_codes = []
+        #     self.__fill_hazards_list(self.types_tree.topLevelItem(i), employee_hazards)
+        # employee_hazards = self.employee['hazard_factors']
+        # employee_hazards.clear()
         # for i in range(self.factors_tree.topLevelItemCount()):
-        #     self.__fill_hazards_list(self.factors_tree.topLevelItem(i), factors_codes)
-        #
-        # types_codes.sort()
-        # self.controller.changed_employee['hazard_types'].sort()
-        # factors_codes.sort()
-        # self.controller.changed_employee['hazard_factors'].sort()
-        # if types_codes != self.controller.changed_employee['hazard_types'] or \
-        #         factors_codes != self.controller.changed_employee['hazard_factors']:
-        #     are_changed = True
-        # else:
-        #     print(types_codes)
-        #     are_changed = False
-        #
-        # if not are_changed:
-        #     self.close()
-        # else:
-        #     reply = QMessageBox.question(self, 'Вы не сохранили изменения!',
-        #                                  'Все несохраненные изменения будут потеряны. Сохранить сделанные изменения?',
-        #                                  QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Yes)
-        #     if reply == QMessageBox.Yes:
-        #         self.save_btn_clicked()
-        #     elif reply == QMessageBox.No:
-        #         self.close()
+        #     self.__fill_hazards_list(self.factors_tree.topLevelItem(i), employee_hazards)
+        # self.controller.update_hazards_count()
+        # self.close()
 
     def __fill_hazards_list(self, node, hazard_list):
         """Заполняет список отмеченными в дереве вредностями"""
         child_count = node.childCount()
-        if node.text(1).endswith('.'):
-            code = node.text(1)
-        else:
-            code = node.text(1) + '.'
-        if node.checkState(2):
+        code = node.text(0)
+        if node.checkState(0):
             hazard_list.append(code)
         # Если у узла есть дети, то рекурсивно вызываем эту же функцию для каждого потомка
         if child_count:
@@ -164,6 +118,7 @@ class HWView(QtWidgets.QWidget):
             q_tree_item.setBackground(1, bg_color)
             q_tree_item.setBackground(2, bg_color)
             for child in node.childs:
-                q_item_child = QtWidgets.QTreeWidgetItem([child.name, child.get_full_code()])
+                q_item_child = QtWidgets.QTreeWidgetItem([child.get_full_code(), child.name])
+                q_item_child.setToolTip(1, '<div style="width: 80px;">{}</div>'.format(child.name))
                 self.__fill_the_brunch(child, q_item_child)
                 q_tree_item.addChild(q_item_child)

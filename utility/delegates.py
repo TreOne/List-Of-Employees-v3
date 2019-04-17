@@ -43,7 +43,7 @@ class GenderSelectionDelegate(QtWidgets.QStyledItemDelegate):
         self.commitData.emit(editor)
 
     def setEditorData(self, editor, index):
-        value = index.data(QtCore.Qt.DisplayRole)
+        value = index.data(QtCore.Qt.EditRole)
         num = self.genders.index(value)
         editor.setCurrentIndex(num)
 
@@ -144,14 +144,21 @@ class HazardsSelectionDelegate(QtWidgets.QStyledItemDelegate):
         super().__init__(parent)
 
     def createEditor(self, parent, option, index):
-        editor = HWView(parent=self.parent(), autoload_ui=False)
+        editor = HWView(parent=self.parent())
         return editor
 
     def setEditorData(self, editor, index):
-        hazard_factors = index.data(QtCore.Qt.EditRole)
-        editor.set_hazards(list(), hazard_factors)
+        editor.showMaximized()
+        hazard_types = index.siblingAtColumn(8).data(QtCore.Qt.EditRole)
+        hazard_factors = index.siblingAtColumn(9).data(QtCore.Qt.EditRole)
+        editor.set_hazards(hazard_types, hazard_factors)
 
     def setModelData(self, editor, model, index):
-        selected_file = editor.selectedFiles()[0]
-        image = open(selected_file, 'rb').read()
-        model.setData(index, image)
+        # Получаем данные из редактора вредностей
+        hazard_types, hazard_factors = editor.hazards()
+        # Получаем индексы ячеек вредностей
+        hazard_types_index = index.siblingAtColumn(8)
+        hazard_factors_index = index.siblingAtColumn(9)
+        # Обновляем данные по указанным индексам
+        model.setData(hazard_types_index, hazard_types)
+        model.setData(hazard_factors_index, hazard_factors)

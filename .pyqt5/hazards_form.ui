@@ -19,13 +19,8 @@
      <item>
       <widget class="QTreeWidget" name="hazards_types">
        <attribute name="headerStretchLastSection">
-        <bool>false</bool>
+        <bool>true</bool>
        </attribute>
-       <column>
-        <property name="text">
-         <string>Тип вредности (Приложение 2)</string>
-        </property>
-       </column>
        <column>
         <property name="text">
          <string>Код</string>
@@ -33,7 +28,7 @@
        </column>
        <column>
         <property name="text">
-         <string>Наличие</string>
+         <string>Тип вредности (Приложение 2)</string>
         </property>
        </column>
       </widget>
@@ -41,13 +36,8 @@
      <item>
       <widget class="QTreeWidget" name="hazards_factors">
        <attribute name="headerStretchLastSection">
-        <bool>false</bool>
+        <bool>true</bool>
        </attribute>
-       <column>
-        <property name="text">
-         <string>Фактор вредности (Приложение 1)</string>
-        </property>
-       </column>
        <column>
         <property name="text">
          <string>Код</string>
@@ -55,7 +45,7 @@
        </column>
        <column>
         <property name="text">
-         <string>Наличие</string>
+         <string>Фактор вредности (Приложение 1)</string>
         </property>
        </column>
       </widget>
@@ -86,20 +76,7 @@
         </size>
        </property>
        <property name="text">
-        <string>Сохранить и закрыть (F5)</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancel_btn">
-       <property name="minimumSize">
-        <size>
-         <width>100</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Отмена</string>
+        <string>Сохранить и закрыть</string>
        </property>
       </widget>
      </item>

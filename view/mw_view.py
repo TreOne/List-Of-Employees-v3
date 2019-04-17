@@ -1,8 +1,8 @@
-from PyQt5 import QtWidgets, uic
+from PyQt5 import QtWidgets, uic, QtGui
 from PyQt5.QtCore import Qt
 from PyQt5 import QtCore
 from PyQt5.QtGui import QIcon, QKeySequence
-from PyQt5.QtWidgets import QShortcut
+from PyQt5.QtWidgets import QShortcut, QMessageBox
 from utility.employees import Employee
 from view.hw_view import HWView
 from view.ui.main_window import Ui_MainWindow
@@ -17,10 +17,12 @@ from utility.delegates import InLineEditDelegate, GenderSelectionDelegate, Birth
 
 def _mute(method_to_mute):
     """Декоратор заглушающий сигналы от формы на время выполнения декорируемой функции"""
+
     def to_mute(self, *args, **kwargs):
         self.block_signals(True)
         method_to_mute(self, *args, **kwargs)
         self.block_signals(False)
+
     return to_mute
 
 
@@ -30,7 +32,7 @@ class MWView(QtWidgets.QMainWindow):
 
     (Заметки для разработчика)
         Для импорта ресурсов:
-            pyrcc5 -x .pyqt5/resources/resources.qrc -o utility/resources.py
+            pyrcc5 .pyqt5/resources/resources.qrc -o utility/resources.py
         Для импорта UI в PY:
             pyuic5 -x .pyqt5/main_window.ui -o view/ui/main_window.py
     """
@@ -65,17 +67,18 @@ class MWView(QtWidgets.QMainWindow):
                                        self.ui.hide_col_hazard_types, self.ui.hide_col_hazard_factors]
 
         # Подключаем модель к главной таблице
-
         proxy_model = EmployeesSortModel()
         proxy_model.setSourceModel(controller.model)
         self.ui.employees_table.setModel(proxy_model)
 
+        # Создаем делегатов для редактирования данных модели
         in_line_edit_delegate = InLineEditDelegate(self, controller.model)
         gender_selection_delegate = GenderSelectionDelegate(self)
         birth_date_selection_delegate = BirthDateSelectionDelegate(self)
         experience_selection_delegate = ExperienceSelectionDelegate(self)
         hazards_selection_delegate = HazardsSelectionDelegate(self)
 
+        # Подключаем делегатов к таблице
         self.ui.employees_table.setItemDelegateForColumn(0, in_line_edit_delegate)  # Фамилия
         self.ui.employees_table.setItemDelegateForColumn(1, in_line_edit_delegate)  # Имя
         self.ui.employees_table.setItemDelegateForColumn(2, in_line_edit_delegate)  # Отчество
@@ -87,13 +90,31 @@ class MWView(QtWidgets.QMainWindow):
         self.ui.employees_table.setItemDelegateForColumn(8, hazards_selection_delegate)  # Типы вредности
         self.ui.employees_table.setItemDelegateForColumn(9, hazards_selection_delegate)  # Факторы вредности
 
+        # Выравниваем колонки таблицы
         self.adjust_column_width()
+
+        # Подключаем контекстное меню к таблице
+        self.ui.employees_table.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ui.employees_table.customContextMenuRequested.connect(self.context_menu)
+
+        # Подключаем сигналы
+        self.ui.add_employee_btn.clicked.connect(lambda: proxy_model.insertRow())
+        self.ui.remove_employee_btn.clicked.connect(self.remove_row)
 
         # Подключаем сигналы к контроллеру
         for column_name in Employee.ALL_FIELDS:
             # Ищем чекбокс, отвечающий за колонку
             hide_checkbox = getattr(self.ui, 'hide_col_' + column_name)
             hide_checkbox.stateChanged.connect(lambda: self.controller.hide_checkbox_clicked(self.sender()))
+
+    #     edit_key = QShortcut(QKeySequence(Qt.Key_Return), self.ui.employees_table)
+    #     edit_key.activated.connect(self.item_edit)
+    #
+    # def item_edit(self):
+    #     """Переводим активную ячейку в режим редактирования"""
+    #     if self.ui.employees_table.selectedIndexes():
+    #         edited_cell_index = self.ui.employees_table.selectedIndexes()[0]
+    #         self.ui.employees_table.edit(edited_cell_index)
 
     def adjust_column_width(self):
         column_to_stretch = ('address_free_form', 'hazard_types', 'hazard_factors')
@@ -133,3 +154,34 @@ class MWView(QtWidgets.QMainWindow):
             field.blockSignals(boolean)
         for checkbox in self.HIDE_COLUMN_CHECKBOXES:
             checkbox.blockSignals(boolean)
+
+    def context_menu(self):
+        menu = QtWidgets.QMenu()
+        proxy_model = self.ui.employees_table.model()
+
+        add_data = menu.addAction("Добавить сотрудника")
+        add_data.setIcon(QtGui.QIcon(":/icons/add_user.svg"))
+        add_data.triggered.connect(lambda: proxy_model.insertRow())
+
+        remove_data = menu.addAction("Удалить сотрудника")
+        remove_data.setIcon(QtGui.QIcon(":/icons/rem_user.svg"))
+        remove_data.triggered.connect(self.remove_row)
+
+        cursor = QtGui.QCursor()
+        menu.exec_(cursor.pos())
+
+    def remove_row(self):
+        proxy_model = self.ui.employees_table.model()
+        selected_indexes = self.ui.employees_table.selectedIndexes()
+        if selected_indexes:
+            answer = QMessageBox.question(self, 'Удалить сотрудника',
+                                          "Вы действительно хотите удалить сотрудника?",
+                                          QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if answer == QMessageBox.No:
+                return
+            proxy_index = selected_indexes[0]
+            proxy_model.removeRow(proxy_index)
+        else:
+            QMessageBox.critical(self, 'Удаление невозможно!',
+                                 "Не выбран сотрудник для удаления.",
+                                 QMessageBox.Close, QMessageBox.Close)

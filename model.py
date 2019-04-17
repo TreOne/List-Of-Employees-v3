@@ -1,6 +1,6 @@
 import math
 from datetime import datetime
-from utility.employees import Employee
+from utility.employees import Employee, Validate
 from utility.words import smart_ending
 from PyQt5 import QtCore
 from PyQt5 import QtGui
@@ -44,6 +44,8 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
         # Отображение
         if role == QtCore.Qt.DisplayRole:
             if field_name == 'birth_date':
+                if self.employees[emp_id]['birth_date'] == '':
+                    return ''
                 birth_date = datetime.strptime(self.employees[emp_id]['birth_date'], '%Y-%m-%d')
                 age = datetime.now() - birth_date
                 age = math.trunc(age.days / 365)
@@ -51,14 +53,33 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
                 return "{} ({})".format(birth_date.strftime("%d.%m.%Y"), age)
 
             if field_name == 'experience':
+                if self.employees[emp_id]['experience'] == '':
+                    return ''
                 experience = self.employees[emp_id]['experience']
                 return experience + smart_ending(int(experience), ' год', ' года', ' лет')
 
             if field_name in Employee.LIST_FIELDS:
                 return " / ".join(self.employees[emp_id][field_name])
-                # return self.employees[emp_id][field_name]
 
             return self.employees[emp_id][field_name]
+
+        # Фон при ошибке в поле сотрудника
+        if role == QtCore.Qt.BackgroundRole:
+            validator = self.employees[emp_id].field_validation(field_name)
+            if validator.result == Validate.INVALID:
+                color = QtGui.QColor.fromRgbF(1, 0, 0, 0.2)
+                brush = QtGui.QBrush(color)
+                return brush
+            if validator.result == Validate.WARNING:
+                color = QtGui.QColor.fromRgbF(1, 1, 0, 0.2)
+                brush = QtGui.QBrush(color)
+                return brush
+
+        # Подсказка при ошибке в поле сотрудника
+        if role == QtCore.Qt.ToolTipRole:
+            validator = self.employees[emp_id].field_validation(field_name)
+            if validator.result != Validate.VALID:
+                return validator.text
 
         # Сортировка
         if role == EmployeesListModel.SortRole:
@@ -81,12 +102,20 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
         # Редактирование
         if role == QtCore.Qt.EditRole:
             if field_name == 'birth_date':
+                if self.employees[emp_id]['birth_date'] == '':
+                    return QtCore.QDate.fromString('1900-01-01', 'yyyy-MM-dd')
                 str_birth_date = self.employees[emp_id]['birth_date']
                 return QtCore.QDate.fromString(str_birth_date, 'yyyy-MM-dd')
 
             if field_name == 'experience':
+                if self.employees[emp_id]['experience'] == '':
+                    return 0
                 experience = self.employees[emp_id]['experience']
                 return int(experience)
+
+            if field_name == 'sex':
+                if self.employees[emp_id]['sex'] == '':
+                    return 'Мужской'
 
             if field_name in Employee.LIST_FIELDS:
                 return self.employees[emp_id][field_name]
@@ -122,6 +151,21 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
         self.dataChanged.emit(index, index, (QtCore.Qt.DisplayRole,))
         return True
 
+    def insertRow(self):
+        row_pos = self.rowCount()
+        self.beginInsertRows(QtCore.QModelIndex(), row_pos, row_pos)
+        self.employees.add()
+        self.endInsertRows()
+        return True
+
+    def removeRow(self, index):
+        row = index.row()
+        emp_id = tuple(self.employees.keys())[row]
+        self.beginRemoveRows(QtCore.QModelIndex(), row, row)
+        self.employees.pop(emp_id)
+        self.endRemoveRows()
+        return True
+
     def get_completer(self, completer_field):
         return self.employees.get_completer(completer_field)
 
@@ -133,3 +177,10 @@ class EmployeesSortModel(QtCore.QSortFilterProxyModel):
         lvalue = left.data(role=EmployeesListModel.SortRole)
         rvalue = right.data(role=EmployeesListModel.SortRole)
         return lvalue < rvalue
+
+    def insertRow(self):
+        return self.sourceModel().insertRow()
+
+    def removeRow(self, proxy_index):
+        source_index = self.mapToSource(proxy_index)
+        return self.sourceModel().removeRow(source_index)

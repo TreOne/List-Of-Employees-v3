@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="icons">
+    <file>add_user.svg</file>
+    <file>rem_user.svg</file>
     <file>female.svg</file>
     <file>male.svg</file>
     <file>question.svg</file>
