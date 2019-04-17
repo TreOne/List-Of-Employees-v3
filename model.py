@@ -67,11 +67,11 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
         if role == QtCore.Qt.BackgroundRole:
             validator = self.employees[emp_id].field_validation(field_name)
             if validator.result == Validate.INVALID:
-                color = QtGui.QColor.fromRgbF(1, 0, 0, 0.2)
+                color = QtGui.QColor.fromRgbF(1, 0, 0, 0.1)
                 brush = QtGui.QBrush(color)
                 return brush
             if validator.result == Validate.WARNING:
-                color = QtGui.QColor.fromRgbF(1, 1, 0, 0.2)
+                color = QtGui.QColor.fromRgbF(1, 1, 0, 0.1)
                 brush = QtGui.QBrush(color)
                 return brush
 
