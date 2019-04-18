@@ -1,4 +1,5 @@
 from PyQt5 import QtWidgets, QtCore
+from utility.organization import Organization
 from view.ui.organization_form import Ui_OrganizationForm
 from PyQt5.QtCore import Qt
 
@@ -20,28 +21,18 @@ class OFView(QtWidgets.QWidget):
         self.controller = controller
         self.parent = parent
 
-        self.ui.org_name.setText(organization_data['org_name'])
-        self.ui.inn.setText(organization_data['inn'])
-        self.ui.ogrn.setText(organization_data['ogrn'])
-        self.ui.org_address.setText(organization_data['org_address'])
-        self.ui.head_full_name.setText(organization_data['head_full_name'])
-        self.ui.representative_full_name.setText(organization_data['representative_full_name'])
-        self.ui.representative_position.setText(organization_data['representative_position'])
+        for field in Organization.ALL_FIELDS:
+            ui_field = getattr(self.ui, field)
+            ui_field.setText(organization_data[field])
 
         self.ui.cancel_btn.clicked.connect(self.close)
         self.ui.save_btn.clicked.connect(self.save_btn_clicked)
 
     def save_btn_clicked(self):
-        org_name = self.ui.org_name.text()
-        inn = self.ui.inn.text()
-        ogrn = self.ui.ogrn.text()
-        org_address = self.ui.org_address.text()
-        head_full_name = self.ui.head_full_name.text()
-        representative_full_name = self.ui.representative_full_name.text()
-        representative_position = self.ui.representative_position.text()
-        new_data = {'org_name': org_name, 'inn': inn, 'ogrn': ogrn, 'org_address': org_address,
-                    'head_full_name': head_full_name, 'representative_full_name': representative_full_name,
-                    'representative_position': representative_position}
+        new_data = dict()
+        for field in Organization.ALL_FIELDS:
+            ui_field = getattr(self.ui, field)
+            new_data[field] = ui_field.text()
         self.controller.organization = new_data
         self.parent.fill_organization_fields()
         self.close()

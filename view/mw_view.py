@@ -94,10 +94,19 @@ class MWView(QtWidgets.QMainWindow):
         self.ui.remove_employee_btn.clicked.connect(self.remove_rows)
         self.ui.menu_about.triggered.connect(self.open_about_window)
         self.ui.organization_edit_btn.clicked.connect(self.organization_edit_btn_clicked)
+        self.ui.menu_new_file.triggered.connect(self.menu_new_file_clicked)
+        self.ui.menu_open.triggered.connect(self.menu_open_clicked)
+        self.ui.menu_save.triggered.connect(self.menu_save_file_clicked)
+        self.ui.menu_save_as.triggered.connect(self.menu_save_file_as_clicked)
+        self.ui.menu_export_word.triggered.connect(self.menu_export_word_clicked)
 
         # Горячие клавиши
         QShortcut(QKeySequence(Qt.Key_F1), self, lambda: proxy_model.insertRow())
         QShortcut(QKeySequence(Qt.Key_Delete), self, self.remove_rows)
+        QShortcut(QKeySequence.New, self, self.menu_new_file_clicked)
+        QShortcut(QKeySequence.Open, self, self.menu_open_clicked)
+        QShortcut(QKeySequence.Save, self, self.menu_save_file_clicked)
+        QShortcut(QKeySequence.SaveAs, self, self.menu_save_file_as_clicked)
 
         # Подключаем сигналы к контроллеру
         for column_name in Employee.ALL_FIELDS:
@@ -197,3 +206,18 @@ class MWView(QtWidgets.QMainWindow):
         organization_data = self.controller.organization
         organization_edit_dialog = OFView(controller=self.controller, organization_data=organization_data, parent=self)
         organization_edit_dialog.show()
+
+    def menu_new_file_clicked(self):
+        pass
+
+    def menu_open_clicked(self):
+        pass
+
+    def menu_save_file_clicked(self):
+        pass
+
+    def menu_save_file_as_clicked(self):
+        pass
+
+    def menu_export_word_clicked(self):
+        pass
