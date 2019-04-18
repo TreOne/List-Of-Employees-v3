@@ -161,7 +161,6 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
         self.employees.add()
         self.endInsertRows()
         self.rowsAddRemove.emit()
-        return True
 
     def removeRow(self, row, parent=QtCore.QModelIndex()):
         emp_id = tuple(self.employees.keys())[row]
@@ -169,7 +168,6 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
         self.employees.pop(emp_id)
         self.endRemoveRows()
         self.rowsAddRemove.emit()
-        return True
 
     def get_completer(self, completer_field):
         return self.employees.get_completer(completer_field)

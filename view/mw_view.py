@@ -3,14 +3,14 @@ from PyQt5.QtCore import Qt
 from PyQt5 import QtCore
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QShortcut, QMessageBox
-from utility.employees import Employee
+from utility.employees import Employee, Employees
+from model import EmployeesListModel
+import utility.resources
 from utility.organization import Organization
-from view.hw_view import HWView
+from utility.xml_parser import XMLParser
 from view.of_view import OFView
 from view.ui.main_window import Ui_MainWindow
-import datetime
 from utility.resource_path import resource_path
-from utility import resources
 from utility.settings import Settings
 from model import EmployeesSortModel
 from utility.delegates import InLineEditDelegate, GenderSelectionDelegate, BirthDateSelectionDelegate, \
@@ -28,12 +28,20 @@ class MWView(QtWidgets.QMainWindow):
             pyuic5 -x .pyqt5/main_window.ui -o view/ui/main_window.py
     """
 
-    def __init__(self, model, organization, autoload_ui=False):
+    def __init__(self, autoload_ui=False):
 
-        self.model = model
+        # Парсинг XML в Employees и Organization
+        xml_parser = XMLParser()
+        xml_parser.load_file(resource_path('tests/demo_data.xml'))
+        print('\n'.join(xml_parser.get_errors()))
+        xml_parser.validate()
+        print('\n'.join(xml_parser.get_errors()))
+        list_of_employees = xml_parser.get_employees()
+        self.model = EmployeesListModel(list_of_employees)
+        self.organization = xml_parser.get_organization()
+
         self.app_settings = Settings()
         self.data_is_saved = True
-        self.organization = organization
 
         # Подключаем Представление
         flags = Qt.WindowFlags()
@@ -59,9 +67,9 @@ class MWView(QtWidgets.QMainWindow):
                                        self.ui.hide_col_hazard_types, self.ui.hide_col_hazard_factors]
 
         # Подключаем модель к главной таблице
-        proxy_model = EmployeesSortModel()
-        proxy_model.setSourceModel(self.model)
-        self.ui.employees_table.setModel(proxy_model)
+        self.proxy_model = EmployeesSortModel()
+        self.proxy_model.setSourceModel(self.model)
+        self.ui.employees_table.setModel(self.proxy_model)
 
         # Создаем делегатов для редактирования данных модели
         in_line_edit_delegate = InLineEditDelegate(self, self.model)
@@ -90,7 +98,7 @@ class MWView(QtWidgets.QMainWindow):
         self.ui.employees_table.customContextMenuRequested.connect(self.context_menu)
 
         # Подключаем сигналы
-        self.ui.add_employee_btn.clicked.connect(lambda: proxy_model.insertRow())
+        self.ui.add_employee_btn.clicked.connect(self.proxy_model.insertRow)
         self.ui.remove_employee_btn.clicked.connect(self.remove_rows)
         self.ui.menu_about.triggered.connect(self.open_about_window)
         self.ui.organization_edit_btn.clicked.connect(self.organization_edit_btn_clicked)
@@ -103,7 +111,7 @@ class MWView(QtWidgets.QMainWindow):
         self.model.rowsAddRemove.connect(self.data_changed)
 
         # Горячие клавиши
-        QShortcut(QKeySequence(Qt.Key_F1), self, lambda: proxy_model.insertRow())
+        QShortcut(QKeySequence(Qt.Key_F1), self, self.proxy_model.insertRow)
         QShortcut(QKeySequence(Qt.Key_Delete), self, self.remove_rows)
         QShortcut(QKeySequence.New, self, self.menu_new_file_clicked)
         QShortcut(QKeySequence.Open, self, self.menu_open_clicked)
@@ -127,7 +135,6 @@ class MWView(QtWidgets.QMainWindow):
     #     if self.ui.employees_table.selectedIndexes():
     #         edited_cell_index = self.ui.employees_table.selectedIndexes()[0]
     #         self.ui.employees_table.edit(edited_cell_index)
-
 
     def adjust_column_width(self):
         column_to_stretch = ('address_free_form', 'hazard_types', 'hazard_factors')
@@ -161,11 +168,10 @@ class MWView(QtWidgets.QMainWindow):
 
     def context_menu(self):
         menu = QtWidgets.QMenu()
-        proxy_model = self.ui.employees_table.model()
 
         add_data = menu.addAction("Добавить сотрудника")
         add_data.setIcon(QtGui.QIcon(":/icons/add_user.svg"))
-        add_data.triggered.connect(lambda: proxy_model.insertRow())
+        add_data.triggered.connect(self.proxy_model.insertRow)
 
         remove_data = menu.addAction("Удалить сотрудника")
         remove_data.setIcon(QtGui.QIcon(":/icons/rem_user.svg"))
@@ -175,7 +181,6 @@ class MWView(QtWidgets.QMainWindow):
         menu.exec_(cursor.pos())
 
     def remove_rows(self):
-        proxy_model = self.ui.employees_table.model()
         selected_indexes = self.ui.employees_table.selectedIndexes()
         if selected_indexes:
             answer = QMessageBox.question(self, 'Удалить сотрудника',
@@ -183,7 +188,7 @@ class MWView(QtWidgets.QMainWindow):
                                           QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
             if answer == QMessageBox.No:
                 return
-            proxy_model.removeRows(selected_indexes)
+            self.proxy_model.removeRows(selected_indexes)
         else:
             QMessageBox.critical(self, 'Удаление невозможно!',
                                  "Не выбран сотрудник для удаления.",
@@ -192,7 +197,7 @@ class MWView(QtWidgets.QMainWindow):
     def open_about_window(self):
         version = self.app_settings.get('system', 'version')
         QMessageBox.about(self, 'О СписокСотрудников v.{}'.format(version),
-                          'Разработано ООО"Системная Интеграция"\n'
+                          'Разработано ООО "Системная Интеграция"\n'
                           'официальный партнер компании «САМСОН Групп»\n'
                           'в Великом Новгороде\n\n'
                           'Версия {}\n'
@@ -214,7 +219,18 @@ class MWView(QtWidgets.QMainWindow):
         organization_edit_dialog.show()
 
     def menu_new_file_clicked(self):
-        pass
+        if not self.data_is_saved:
+            answer = QMessageBox.question(self, 'Изменения еще не сохранены!',
+                                          "Вы хотите сохранить изменения?",
+                                          QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+            if answer == QMessageBox.Yes:
+                # TODO: Реализовать систему сохранения. После сохранения не инициализировать создание нового файла!
+                return
+        self.organization = Organization()
+        self.fill_organization_fields()
+        self.model = EmployeesListModel(Employees())
+        self.proxy_model.setSourceModel(self.model)
+        self.ui.employees_table.setModel(self.proxy_model)
 
     def menu_open_clicked(self):
         pass
