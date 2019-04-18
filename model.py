@@ -1,5 +1,8 @@
 import math
 from datetime import datetime
+
+from PyQt5.QtCore import QVariant
+
 from utility.employees import Employee, Validate
 from utility.words import smart_ending
 from PyQt5 import QtCore
@@ -14,6 +17,8 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
         self.employees = list_of_employees
 
     def flags(self, index):
+        if not index.isValid():
+            return QVariant()
         column = index.column()
         if column >= 0:
             return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable
@@ -158,13 +163,11 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
         self.endInsertRows()
         return True
 
-    def removeRow(self, index):
-        row = index.row()
+    def removeRow(self, row, parent=QtCore.QModelIndex()):
         emp_id = tuple(self.employees.keys())[row]
-        self.beginRemoveRows(QtCore.QModelIndex(), row, row)
+        self.beginRemoveRows(parent, row, row)
         self.employees.pop(emp_id)
         self.endRemoveRows()
-        return True
 
     def get_completer(self, completer_field):
         return self.employees.get_completer(completer_field)
@@ -181,6 +184,8 @@ class EmployeesSortModel(QtCore.QSortFilterProxyModel):
     def insertRow(self):
         return self.sourceModel().insertRow()
 
-    def removeRow(self, proxy_index):
+    def removeRows(self, selected_indexes):
+        # При удалении сразу нескольких сотрудников возникают проблемы с переиндексацией
+        proxy_index = selected_indexes[0]
         source_index = self.mapToSource(proxy_index)
-        return self.sourceModel().removeRow(source_index)
+        self.sourceModel().removeRow(source_index.row(), source_index.parent())

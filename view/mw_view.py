@@ -4,7 +4,9 @@ from PyQt5 import QtCore
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QShortcut, QMessageBox
 from utility.employees import Employee
+from utility.organization import Organization
 from view.hw_view import HWView
+from view.of_view import OFView
 from view.ui.main_window import Ui_MainWindow
 import datetime
 from utility.resource_path import resource_path
@@ -13,17 +15,6 @@ from utility.settings import Settings
 from model import EmployeesSortModel
 from utility.delegates import InLineEditDelegate, GenderSelectionDelegate, BirthDateSelectionDelegate, \
     ExperienceSelectionDelegate, HazardsSelectionDelegate
-
-
-def _mute(method_to_mute):
-    """Декоратор заглушающий сигналы от формы на время выполнения декорируемой функции"""
-
-    def to_mute(self, *args, **kwargs):
-        self.block_signals(True)
-        method_to_mute(self, *args, **kwargs)
-        self.block_signals(False)
-
-    return to_mute
 
 
 class MWView(QtWidgets.QMainWindow):
@@ -40,6 +31,7 @@ class MWView(QtWidgets.QMainWindow):
     def __init__(self, controller, autoload_ui=False):
 
         self.controller = controller
+        self.app_settings = Settings()
 
         # Подключаем Представление
         flags = Qt.WindowFlags()
@@ -53,11 +45,11 @@ class MWView(QtWidgets.QMainWindow):
             self.ui = Ui_MainWindow()
             self.ui.setupUi(self)
 
-        # Список визуальных элементов формы
-        self.FORM_FIELDS = [self.ui.family_name, self.ui.first_name,
-                            self.ui.patronymic, self.ui.sex,
-                            self.ui.birth_date, self.ui.address_free_form,
-                            self.ui.experience, self.ui.specialty]
+        version = self.app_settings.get('system', 'version')
+        self.setWindowTitle('СписокСотрудников (версия {})'.format(version))
+
+        # Заполняем данными поля организации
+        self.fill_organization_fields()
 
         # Список чекбоксов для отображения/скрытия колонок таблицы
         self.HIDE_COLUMN_CHECKBOXES = [self.ui.hide_col_family_name, self.ui.hide_col_first_name,
@@ -99,7 +91,13 @@ class MWView(QtWidgets.QMainWindow):
 
         # Подключаем сигналы
         self.ui.add_employee_btn.clicked.connect(lambda: proxy_model.insertRow())
-        self.ui.remove_employee_btn.clicked.connect(self.remove_row)
+        self.ui.remove_employee_btn.clicked.connect(self.remove_rows)
+        self.ui.menu_about.triggered.connect(self.open_about_window)
+        self.ui.organization_edit_btn.clicked.connect(self.organization_edit_btn_clicked)
+
+        # Горячие клавиши
+        QShortcut(QKeySequence(Qt.Key_F1), self, lambda: proxy_model.insertRow())
+        QShortcut(QKeySequence(Qt.Key_Delete), self, self.remove_rows)
 
         # Подключаем сигналы к контроллеру
         for column_name in Employee.ALL_FIELDS:
@@ -134,26 +132,17 @@ class MWView(QtWidgets.QMainWindow):
         for column_name in Employee.ALL_FIELDS:
             self.hide_column(column_name)
 
-    @_mute
     def show_column(self, column):
         if column in Employee.ALL_FIELDS:
             hide_checkbox = getattr(self.ui, 'hide_col_' + column)
             self.ui.employees_table.showColumn(Employee.ALL_FIELDS.index(column))
             hide_checkbox.setChecked(True)
 
-    @_mute
     def hide_column(self, column):
         if column in Employee.ALL_FIELDS:
             hide_checkbox = getattr(self.ui, 'hide_col_' + column)
             self.ui.employees_table.hideColumn(Employee.ALL_FIELDS.index(column))
             hide_checkbox.setChecked(False)
-
-    def block_signals(self, boolean):
-        """Заглущает или восстанавливает сигналы полей и чекбоксов"""
-        for field in self.FORM_FIELDS:
-            field.blockSignals(boolean)
-        for checkbox in self.HIDE_COLUMN_CHECKBOXES:
-            checkbox.blockSignals(boolean)
 
     def context_menu(self):
         menu = QtWidgets.QMenu()
@@ -165,23 +154,46 @@ class MWView(QtWidgets.QMainWindow):
 
         remove_data = menu.addAction("Удалить сотрудника")
         remove_data.setIcon(QtGui.QIcon(":/icons/rem_user.svg"))
-        remove_data.triggered.connect(self.remove_row)
+        remove_data.triggered.connect(self.remove_rows)
 
         cursor = QtGui.QCursor()
         menu.exec_(cursor.pos())
 
-    def remove_row(self):
+    def remove_rows(self):
         proxy_model = self.ui.employees_table.model()
         selected_indexes = self.ui.employees_table.selectedIndexes()
         if selected_indexes:
             answer = QMessageBox.question(self, 'Удалить сотрудника',
                                           "Вы действительно хотите удалить сотрудника?",
-                                          QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                                          QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
             if answer == QMessageBox.No:
                 return
-            proxy_index = selected_indexes[0]
-            proxy_model.removeRow(proxy_index)
+            proxy_model.removeRows(selected_indexes)
         else:
             QMessageBox.critical(self, 'Удаление невозможно!',
                                  "Не выбран сотрудник для удаления.",
                                  QMessageBox.Close, QMessageBox.Close)
+
+    def open_about_window(self):
+        version = self.app_settings.get('system', 'version')
+        QMessageBox.about(self, 'О СписокСотрудников v.{}'.format(version),
+                          'Разработано ООО"Системная Интеграция"\n'
+                          'официальный партнер компании «САМСОН Групп»\n'
+                          'в Великом Новгороде\n\n'
+                          'Версия {}\n'
+                          'Copyright © 2019 ООО"Системная Интеграция"\n'
+                          'Распространяется под лицензией GNU GPLv.3 или выше\n'
+                          'Email техподдержки: samson@itnov.ru'.format(version))
+
+    def fill_organization_fields(self):
+        for field in Organization.ALL_FIELDS:
+            ui_field = getattr(self.ui, field)
+            if self.controller.organization[field] == '':
+                ui_field.setText('<НЕ ЗАПОЛНЕНО>')
+            else:
+                ui_field.setText(self.controller.organization[field])
+
+    def organization_edit_btn_clicked(self):
+        organization_data = self.controller.organization
+        organization_edit_dialog = OFView(controller=self.controller, organization_data=organization_data, parent=self)
+        organization_edit_dialog.show()

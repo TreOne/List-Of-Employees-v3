@@ -48,7 +48,7 @@ class Ui_HazardsForm(object):
         self.hazards_types.headerItem().setText(1, _translate("HazardsForm", "Тип вредности (Приложение 2)"))
         self.hazards_factors.headerItem().setText(0, _translate("HazardsForm", "Код"))
         self.hazards_factors.headerItem().setText(1, _translate("HazardsForm", "Фактор вредности (Приложение 1)"))
-        self.save_btn.setText(_translate("HazardsForm", "Сохранить и закрыть"))
+        self.save_btn.setText(_translate("HazardsForm", "Сохранить и закрыть (Enter)"))
 
 
 

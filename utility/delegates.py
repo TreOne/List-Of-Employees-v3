@@ -1,4 +1,6 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
+
+from utility.address_assistant import set_address_completer
 from utility.employees import Employee
 from view.hw_view import HWView
 
@@ -17,6 +19,11 @@ class InLineEditDelegate(QtWidgets.QStyledItemDelegate):
         column = index.column()
         field_name = Employee.ALL_FIELDS[column]
         text = index.data(QtCore.Qt.EditRole)
+        if field_name == 'address_free_form':
+            # Подключаем кастомный комплитер для поля адреса
+            set_address_completer(editor, self.parent().ui.is_nov_obl)
+            editor.setText(str(text))
+            return
         auto_complete = QtWidgets.QCompleter(self.model.get_completer(field_name))
         auto_complete.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         editor.setCompleter(auto_complete)

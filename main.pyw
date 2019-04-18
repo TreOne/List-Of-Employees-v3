@@ -87,5 +87,5 @@ if __name__ == '__main__':
     # for k, v in null_employees:
     #     print('{} -> {}'.format(k, v))
 
-    Controller(Model(list_of_employees))
+    Controller(Model(list_of_employees), organization)
     sys.exit(app.exec_())

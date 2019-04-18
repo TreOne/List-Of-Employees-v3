@@ -1,145 +1,335 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <register>
-  <date>2019-04-17</date>
+  <date>2019-04-18</date>
   <organization>
-    <org_name>ПAO "Независимая энергосбытовая компания Краснодарского края"</org_name>
-    <inn>5768798241</inn>
-    <ogrn>1853076780811</ogrn>
-    <org_address>324251, Белгородская область, город Георгиевск, ул. Хачатуряна, дом 162</org_address>
-    <head_full_name>Стариков Илья Феофанович</head_full_name>
-    <representative_full_name>Александров Павел Фёдорович</representative_full_name>
-    <representative_position>Геоэколог</representative_position>
+    <org_name>ПAO "Балтийская строительная компания"</org_name>
+    <inn>4576887212</inn>
+    <ogrn>9197754372876</ogrn>
+    <org_address>393224, Карачаево-Черкесия, город Олёкминск, Аллея Маршала Бирюзова, дом 297</org_address>
+    <head_full_name>Захарова Кристина Зиновьевна</head_full_name>
+    <representative_full_name>Попова Марианна Яковлевна</representative_full_name>
+    <representative_position>Продавец</representative_position>
   </organization>
   <employee>
-    <family_name>Александрович</family_name>
-    <first_name>Евгений</first_name>
-    <patronymic>Арсеньевич</patronymic>
+    <family_name>Устинов</family_name>
+    <first_name>Альберт</first_name>
+    <patronymic>Ануфриевич</patronymic>
     <sex>Мужской</sex>
-    <birth_date>1965-03-15</birth_date>
-    <address_free_form>Марий, г Асбест, Аллея Прибрежная, д 244, кв 149</address_free_form>
-    <job>
-      <experience>1</experience>
-      <specialty>Редактор</specialty>
-      <hazard_types>
-        <code>14.</code>
-        <code>4.1.</code>
-        <code>21.</code>
-      </hazard_types>
-      <hazard_factors>
-        <code>1.2.32.2.</code>
-        <code>1.2.45.</code>
-        <code>3.2.2.2.</code>
-        <code>1.2.18.</code>
-        <code>1.3.4.6.</code>
-        <code>1.1.4.7.</code>
-        <code>1.2.8.1.</code>
-        <code>1.2.4.1.</code>
-        <code>1.3.9.6.</code>
-        <code>1.2.17.</code>
-      </hazard_factors>
-    </job>
-  </employee>
-  <employee>
-    <family_name>Абакумова</family_name>
-    <first_name>Анита</first_name>
-    <patronymic>Фёдоровна</patronymic>
-    <sex>Женский</sex>
-    <birth_date>1974-10-07</birth_date>
-    <address_free_form>Архангельская область, г Новоалександровск, ул. Мастеркова, д 341, кв 69</address_free_form>
-    <job>
-      <experience>5</experience>
-      <specialty>Кинолог</specialty>
-      <hazard_types>
-        <code>22.</code>
-        <code>27.12.</code>
-        <code>4.2.</code>
-        <code>16.</code>
-      </hazard_types>
-      <hazard_factors>
-        <code>1.2.46.</code>
-        <code>1.2.16.</code>
-        <code>3.2.2.5.</code>
-        <code>1.3.9.7.</code>
-        <code>1.2.14.2.</code>
-      </hazard_factors>
-    </job>
-  </employee>
-  <employee>
-    <family_name>Котов</family_name>
-    <first_name>Андрей</first_name>
-    <patronymic>Виленович</patronymic>
-    <sex>Мужской</sex>
-    <birth_date>1954-09-10</birth_date>
-    <address_free_form>Камчатский край, г Венёв, Аллея Бориса Жигуленкова, д 292, кв 382</address_free_form>
+    <birth_date>1997-08-01</birth_date>
+    <address_free_form>Хабаровский край, г Абдулино, Аллея Маршала Захарова, д 142, кв 233</address_free_form>
     <job>
       <experience>3</experience>
-      <specialty>Бренд-дизайнер</specialty>
+      <specialty>Психолог</specialty>
       <hazard_types>
-        <code>27.4.</code>
-        <code>27.11.</code>
-        <code>27.6.</code>
-        <code>26.</code>
-      </hazard_types>
-      <hazard_factors>
-        <code>3.2.2.1.</code>
-        <code>1.2.4.</code>
-        <code>1.2.18.</code>
-        <code>1.2.29.</code>
-        <code>1.1.4.6.</code>
-        <code>1.3.2.14.</code>
-        <code>1.1.4.6.3.</code>
-        <code>1.3.2.4.</code>
-        <code>1.2.19.</code>
-      </hazard_factors>
-    </job>
-  </employee>
-  <employee>
-    <family_name>Абрамкин</family_name>
-    <first_name>Касьян</first_name>
-    <patronymic>Игнатович</patronymic>
-    <sex>Мужской</sex>
-    <birth_date>1957-09-01</birth_date>
-    <address_free_form>Ленинградская область, г Туапсе, ул. Неманская, д 118, кв 166</address_free_form>
-    <job>
-      <experience>27</experience>
-      <specialty>Вирусолог</specialty>
-      <hazard_types>
-        <code>4.2.</code>
-        <code>27.7.</code>
-        <code>9.</code>
-        <code>22.</code>
-      </hazard_types>
-      <hazard_factors>
-        <code>1.3.2.4.</code>
-        <code>1.1.4.6.</code>
-        <code>1.3.2.3.</code>
-        <code>1.2.8.</code>
-        <code>3.2.2.4.</code>
-        <code>1.2.45.3.</code>
-        <code>1.2.30.1.</code>
-        <code>2.2.</code>
-      </hazard_factors>
-    </job>
-  </employee>
-  <employee>
-    <family_name>Столяров</family_name>
-    <first_name>Пётр</first_name>
-    <patronymic>Елисеевич</patronymic>
-    <sex>Мужской</sex>
-    <birth_date>1962-04-12</birth_date>
-    <address_free_form>Бурятия, г Красноуфимск, ул. Пушкинская, д 46, кв 344</address_free_form>
-    <job>
-      <experience>33</experience>
-      <specialty>Менеджер по работе с клиентами</specialty>
-      <hazard_types>
-        <code>22.</code>
-        <code>9.</code>
-        <code>27.3.</code>
         <code>20.</code>
+        <code>27.5.</code>
       </hazard_types>
       <hazard_factors>
-        <code>1.2.3.</code>
-        <code>2.5.1.</code>
+        <code>1.3.2.15.</code>
+      </hazard_factors>
+    </job>
+  </employee>
+  <employee>
+    <family_name>Баженова</family_name>
+    <first_name>Клавдия</first_name>
+    <patronymic>Арсеньевна</patronymic>
+    <sex>Женский</sex>
+    <birth_date>1978-02-18</birth_date>
+    <address_free_form>Вологодская область, г Холмск, ул. Анадырская, д 81, кв 132</address_free_form>
+    <job>
+      <experience>10</experience>
+      <specialty>Фельдшер</specialty>
+      <hazard_types>
+        <code>17.</code>
+      </hazard_types>
+      <hazard_factors>
+        <code>4.2.</code>
+        <code>1.1.3.</code>
+        <code>1.2.45.</code>
+      </hazard_factors>
+    </job>
+  </employee>
+  <employee>
+    <family_name>Акинин</family_name>
+    <first_name>Андрей</first_name>
+    <patronymic>Викентьевич</patronymic>
+    <sex>Мужской</sex>
+    <birth_date>1990-06-29</birth_date>
+    <address_free_form>Калининградская область, г Бирск, ул. Педагогическая, д 203, кв 30</address_free_form>
+    <job>
+      <experience>8</experience>
+      <specialty>Вышивальщица</specialty>
+      <hazard_types>
+        <code>27.5.</code>
+        <code>27.2.</code>
+        <code>4.</code>
+        <code>7.</code>
+        <code>9.</code>
+      </hazard_types>
+      <hazard_factors>
+        <code>4.4.1.</code>
+        <code>1.2.4.1.</code>
+        <code>3.2.2.4.</code>
+        <code>1.1.4.8.1.</code>
+      </hazard_factors>
+    </job>
+  </employee>
+  <employee>
+    <family_name>Андрейченко</family_name>
+    <first_name>Маргарита</first_name>
+    <patronymic>Харлампьевна</patronymic>
+    <sex>Женский</sex>
+    <birth_date>1969-03-10</birth_date>
+    <address_free_form>Северная Осетия, г Каргат, ул. Глинищевская, д 251, кв 154</address_free_form>
+    <job>
+      <experience>1</experience>
+      <specialty>Фотомодель</specialty>
+      <hazard_types>
+        <code>2.</code>
+        <code>16.</code>
+        <code>27.12.</code>
+        <code>27.10.</code>
+        <code>19.</code>
+      </hazard_types>
+      <hazard_factors>
+        <code>2.2.</code>
+        <code>3.2.2.2.</code>
+        <code>1.2.20.2.</code>
+        <code>1.2.33.</code>
+        <code>1.2.13.</code>
+        <code>3.7.</code>
+      </hazard_factors>
+    </job>
+  </employee>
+  <employee>
+    <family_name>Амельченко</family_name>
+    <first_name>Раиса</first_name>
+    <patronymic>Васильевна</patronymic>
+    <sex>Женский</sex>
+    <birth_date>2000-10-22</birth_date>
+    <address_free_form>Татарстан, г Наро-Фоминск, ул. Каширская, д 189, кв 260</address_free_form>
+    <job>
+      <experience>1</experience>
+      <specialty>Авиадиспетчер</specialty>
+      <hazard_factors>
+        <code>1.2.33.1.</code>
+        <code>1.2.30.</code>
+        <code>1.1.4.1.</code>
+        <code>1.3.8.2.</code>
+        <code>1.3.4.2.</code>
+        <code>3.6.</code>
+        <code>3.2.2.</code>
+        <code>3.10.</code>
+      </hazard_factors>
+    </job>
+  </employee>
+  <employee>
+    <family_name>Ананьев</family_name>
+    <first_name>Аксён</first_name>
+    <patronymic>Антипович</patronymic>
+    <sex>Мужской</sex>
+    <birth_date>1965-11-10</birth_date>
+    <address_free_form>Дагестан, г Гурьевск, Аллея Ибрагимова, д 115, кв 354</address_free_form>
+    <job>
+      <experience>30</experience>
+      <specialty>Садовник</specialty>
+      <hazard_types>
+        <code>25.</code>
+        <code>4.1.</code>
+        <code>10.</code>
+        <code>13.</code>
+        <code>18.</code>
+      </hazard_types>
+      <hazard_factors>
+        <code>1.2.27.</code>
+        <code>1.2.20.1.</code>
+        <code>1.1.4.8.</code>
+        <code>1.2.21.</code>
+        <code>1.3.9.2.1.</code>
+      </hazard_factors>
+    </job>
+  </employee>
+  <employee>
+    <family_name>Фирсов</family_name>
+    <first_name>Рафаил</first_name>
+    <patronymic>Абрамович</patronymic>
+    <sex>Мужской</sex>
+    <birth_date>1997-12-18</birth_date>
+    <address_free_form>Калининградская область, г Харовск, ул. Хачатуряна, д 150, кв 212</address_free_form>
+    <job>
+      <experience>3</experience>
+      <specialty>Инженер</specialty>
+      <hazard_types>
+        <code>1.</code>
+        <code>27.13.</code>
+        <code>21.</code>
+        <code>19.</code>
+      </hazard_types>
+      <hazard_factors>
+        <code>1.3.4.12.</code>
+        <code>1.2.18.</code>
+      </hazard_factors>
+    </job>
+  </employee>
+  <employee>
+    <family_name>Арсеенкова</family_name>
+    <first_name>Даниэла</first_name>
+    <patronymic>Евсеевна</patronymic>
+    <sex>Женский</sex>
+    <birth_date>1951-06-07</birth_date>
+    <address_free_form>Хабаровский край, г Вилюйск, ул. Солянка, д 112, кв 290</address_free_form>
+    <job>
+      <experience>3</experience>
+      <specialty>Машинист</specialty>
+      <hazard_types>
+        <code>10.</code>
+        <code>4.2.</code>
+      </hazard_types>
+      <hazard_factors>
+        <code>1.3.4.</code>
+      </hazard_factors>
+    </job>
+  </employee>
+  <employee>
+    <family_name>Сотников</family_name>
+    <first_name>Исак</first_name>
+    <patronymic>Викентьевич</patronymic>
+    <sex>Мужской</sex>
+    <birth_date>1974-06-26</birth_date>
+    <address_free_form>Курская область, г Кяхта, Аллея Козихинский Б., д 232, кв 311</address_free_form>
+    <job>
+      <experience>6</experience>
+      <specialty>Бухгалтер</specialty>
+      <hazard_types>
+        <code>27.14.</code>
+        <code>27.8.</code>
+        <code>26.</code>
+        <code>24.</code>
+        <code>27.15.</code>
+      </hazard_types>
+      <hazard_factors>
+        <code>3.2.2.4.</code>
+        <code>1.1.4.4.</code>
+        <code>1.2.37.</code>
+        <code>1.1.4.6.4.</code>
+        <code>1.2.2.</code>
+        <code>1.3.3.</code>
+        <code>1.2.8.1.</code>
+      </hazard_factors>
+    </job>
+  </employee>
+  <employee>
+    <family_name>Парфенова</family_name>
+    <first_name>Любовь</first_name>
+    <patronymic>Антиповна</patronymic>
+    <sex>Женский</sex>
+    <birth_date>1975-12-25</birth_date>
+    <address_free_form>Краснодарский край, г Миллерово, Аллея Кривоарбатская, д 226, кв 235</address_free_form>
+    <job>
+      <experience>0</experience>
+      <specialty>Косметолог</specialty>
+      <hazard_factors>
+        <code>1.2.8.1.</code>
+        <code>3.10.</code>
+        <code>1.3.4.8.</code>
+      </hazard_factors>
+    </job>
+  </employee>
+  <employee>
+    <family_name>Дорохов</family_name>
+    <first_name>Константин</first_name>
+    <patronymic>Валерьевич</patronymic>
+    <sex>Мужской</sex>
+    <birth_date>1972-02-17</birth_date>
+    <address_free_form>Алтай, г Кохма, ул. Сусальный Ниж., д 50, кв 287</address_free_form>
+    <job>
+      <experience>18</experience>
+      <specialty>Делопроизводитель</specialty>
+    </job>
+  </employee>
+  <employee>
+    <family_name>Озерова</family_name>
+    <first_name>Наида</first_name>
+    <patronymic>Жановна</patronymic>
+    <sex>Женский</sex>
+    <birth_date>1961-01-04</birth_date>
+    <address_free_form>Татарстан, г Гаврилов Посад, ул. Старокаширское, д 251, кв 237</address_free_form>
+    <job>
+      <experience>30</experience>
+      <specialty>Менеджер по туризму</specialty>
+      <hazard_types>
+        <code>27.2.</code>
+        <code>4.3.</code>
+      </hazard_types>
+      <hazard_factors>
+        <code>1.2.42.</code>
+        <code>1.2.31.</code>
+        <code>3.2.2.4.</code>
+      </hazard_factors>
+    </job>
+  </employee>
+  <employee>
+    <family_name>Алюшин</family_name>
+    <first_name>Гордей</first_name>
+    <patronymic>Игоревич</patronymic>
+    <sex>Мужской</sex>
+    <birth_date>1999-07-23</birth_date>
+    <address_free_form>Амурская область, г Петровск-Забайкальский, Аллея Открытое, д 129, кв 15</address_free_form>
+    <job>
+      <experience>0</experience>
+      <specialty>Маркетолог</specialty>
+      <hazard_factors>
+        <code>1.3.9.7.</code>
+      </hazard_factors>
+    </job>
+  </employee>
+  <employee>
+    <family_name>Фёдорова</family_name>
+    <first_name>Агата</first_name>
+    <patronymic>Яковлевна</patronymic>
+    <sex>Женский</sex>
+    <birth_date>1999-07-29</birth_date>
+    <address_free_form>Амурская область, г Печора, ул. Аэрофлотская, д 122, кв 232</address_free_form>
+    <job>
+      <experience>2</experience>
+      <specialty>Имиджмейкер</specialty>
+      <hazard_types>
+        <code>3.</code>
+        <code>6.</code>
+      </hazard_types>
+      <hazard_factors>
+        <code>1.3.7.</code>
+        <code>1.3.9.3.</code>
+        <code>1.2.8.</code>
+        <code>1.2.45.3.</code>
+        <code>1.3.9.4.2.</code>
+        <code>1.2.4.</code>
+      </hazard_factors>
+    </job>
+  </employee>
+  <employee>
+    <family_name>Андрейкина</family_name>
+    <first_name>Джулия</first_name>
+    <patronymic>Измаиловна</patronymic>
+    <sex>Женский</sex>
+    <birth_date>1969-03-03</birth_date>
+    <address_free_form>Белгородская область, г Константиновск, ул. Тенистая, д 331, кв 25</address_free_form>
+    <job>
+      <experience>21</experience>
+      <specialty>Летчик</specialty>
+      <hazard_types>
+        <code>27.15.</code>
+      </hazard_types>
+      <hazard_factors>
+        <code>1.2.44.</code>
+        <code>1.3.4.4.1.</code>
+        <code>1.3.5.</code>
+        <code>1.2.45.1.</code>
+        <code>4.4.1.</code>
+        <code>3.2.2.4.</code>
+        <code>1.3.2.</code>
+        <code>3.10.</code>
+        <code>1.2.53.</code>
       </hazard_factors>
     </job>
   </employee>

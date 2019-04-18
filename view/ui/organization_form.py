@@ -1,0 +1,120 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file '.pyqt5/organization_form.ui'
+#
+# Created by: PyQt5 UI code generator 5.12.1
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+
+class Ui_OrganizationForm(object):
+    def setupUi(self, OrganizationForm):
+        OrganizationForm.setObjectName("OrganizationForm")
+        OrganizationForm.resize(483, 244)
+        OrganizationForm.setMinimumSize(QtCore.QSize(483, 244))
+        self.horizontalLayout = QtWidgets.QHBoxLayout(OrganizationForm)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.fl_organization_data = QtWidgets.QFormLayout()
+        self.fl_organization_data.setObjectName("fl_organization_data")
+        self.org_name_label = QtWidgets.QLabel(OrganizationForm)
+        self.org_name_label.setObjectName("org_name_label")
+        self.fl_organization_data.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.org_name_label)
+        self.org_name = QtWidgets.QLineEdit(OrganizationForm)
+        self.org_name.setObjectName("org_name")
+        self.fl_organization_data.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.org_name)
+        self.inn_label = QtWidgets.QLabel(OrganizationForm)
+        self.inn_label.setObjectName("inn_label")
+        self.fl_organization_data.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.inn_label)
+        self.inn = QtWidgets.QLineEdit(OrganizationForm)
+        self.inn.setObjectName("inn")
+        self.fl_organization_data.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.inn)
+        self.ogrn_label = QtWidgets.QLabel(OrganizationForm)
+        self.ogrn_label.setObjectName("ogrn_label")
+        self.fl_organization_data.setWidget(2, QtWidgets.QFormLayout.LabelRole, self.ogrn_label)
+        self.ogrn = QtWidgets.QLineEdit(OrganizationForm)
+        self.ogrn.setObjectName("ogrn")
+        self.fl_organization_data.setWidget(2, QtWidgets.QFormLayout.FieldRole, self.ogrn)
+        self.org_address_label = QtWidgets.QLabel(OrganizationForm)
+        self.org_address_label.setObjectName("org_address_label")
+        self.fl_organization_data.setWidget(3, QtWidgets.QFormLayout.LabelRole, self.org_address_label)
+        self.org_address = QtWidgets.QLineEdit(OrganizationForm)
+        self.org_address.setObjectName("org_address")
+        self.fl_organization_data.setWidget(3, QtWidgets.QFormLayout.FieldRole, self.org_address)
+        self.head_full_name_label = QtWidgets.QLabel(OrganizationForm)
+        self.head_full_name_label.setObjectName("head_full_name_label")
+        self.fl_organization_data.setWidget(4, QtWidgets.QFormLayout.LabelRole, self.head_full_name_label)
+        self.head_full_name = QtWidgets.QLineEdit(OrganizationForm)
+        self.head_full_name.setObjectName("head_full_name")
+        self.fl_organization_data.setWidget(4, QtWidgets.QFormLayout.FieldRole, self.head_full_name)
+        self.verticalLayout_2.addLayout(self.fl_organization_data)
+        self.line = QtWidgets.QFrame(OrganizationForm)
+        self.line.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line.setObjectName("line")
+        self.verticalLayout_2.addWidget(self.line)
+        self.label = QtWidgets.QLabel(OrganizationForm)
+        self.label.setObjectName("label")
+        self.verticalLayout_2.addWidget(self.label)
+        self.formLayout = QtWidgets.QFormLayout()
+        self.formLayout.setObjectName("formLayout")
+        self.representative_full_name_label = QtWidgets.QLabel(OrganizationForm)
+        self.representative_full_name_label.setObjectName("representative_full_name_label")
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.representative_full_name_label)
+        self.representative_full_name = QtWidgets.QLineEdit(OrganizationForm)
+        self.representative_full_name.setObjectName("representative_full_name")
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.representative_full_name)
+        self.representative_position_label = QtWidgets.QLabel(OrganizationForm)
+        self.representative_position_label.setObjectName("representative_position_label")
+        self.formLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.representative_position_label)
+        self.representative_position = QtWidgets.QLineEdit(OrganizationForm)
+        self.representative_position.setObjectName("representative_position")
+        self.formLayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.representative_position)
+        self.verticalLayout_2.addLayout(self.formLayout)
+        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_2.addItem(spacerItem)
+        self.horizontalLayout.addLayout(self.verticalLayout_2)
+        self.vl_buttons = QtWidgets.QVBoxLayout()
+        self.vl_buttons.setObjectName("vl_buttons")
+        self.save_btn = QtWidgets.QPushButton(OrganizationForm)
+        self.save_btn.setDefault(True)
+        self.save_btn.setObjectName("save_btn")
+        self.vl_buttons.addWidget(self.save_btn)
+        self.cancel_btn = QtWidgets.QPushButton(OrganizationForm)
+        self.cancel_btn.setObjectName("cancel_btn")
+        self.vl_buttons.addWidget(self.cancel_btn)
+        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.vl_buttons.addItem(spacerItem1)
+        self.horizontalLayout.addLayout(self.vl_buttons)
+
+        self.retranslateUi(OrganizationForm)
+        QtCore.QMetaObject.connectSlotsByName(OrganizationForm)
+
+    def retranslateUi(self, OrganizationForm):
+        _translate = QtCore.QCoreApplication.translate
+        OrganizationForm.setWindowTitle(_translate("OrganizationForm", "Form"))
+        self.org_name_label.setText(_translate("OrganizationForm", "Наименование:"))
+        self.inn_label.setText(_translate("OrganizationForm", "ИНН:"))
+        self.ogrn_label.setText(_translate("OrganizationForm", "ОГРН:"))
+        self.org_address_label.setText(_translate("OrganizationForm", "Адрес:"))
+        self.head_full_name_label.setText(_translate("OrganizationForm", "Руководитель:"))
+        self.label.setText(_translate("OrganizationForm", "Представитель работодателя"))
+        self.representative_full_name_label.setText(_translate("OrganizationForm", "ФИО:"))
+        self.representative_position_label.setText(_translate("OrganizationForm", "Должность:"))
+        self.save_btn.setText(_translate("OrganizationForm", "Сохранить"))
+        self.cancel_btn.setText(_translate("OrganizationForm", "Отмена"))
+
+
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    OrganizationForm = QtWidgets.QWidget()
+    ui = Ui_OrganizationForm()
+    ui.setupUi(OrganizationForm)
+    OrganizationForm.show()
+    sys.exit(app.exec_())

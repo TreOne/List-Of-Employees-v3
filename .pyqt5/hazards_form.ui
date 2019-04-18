@@ -76,7 +76,7 @@
         </size>
        </property>
        <property name="text">
-        <string>Сохранить и закрыть</string>
+        <string>Сохранить и закрыть (Enter)</string>
        </property>
       </widget>
      </item>
@@ -84,6 +84,11 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>hazards_types</tabstop>
+  <tabstop>hazards_factors</tabstop>
+  <tabstop>save_btn</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

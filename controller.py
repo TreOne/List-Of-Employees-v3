@@ -15,9 +15,10 @@ import re
 
 class Controller:
 
-    def __init__(self, model):
+    def __init__(self, model, organization):
 
         self.app_settings = Settings()
+        self.organization = organization
 
         # Модель и Представление
         self.model = model

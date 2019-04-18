@@ -25,14 +25,14 @@
      <item>
       <layout class="QFormLayout" name="fl_organization_data">
        <item row="0" column="0">
-        <widget class="QLabel" name="name_label">
+        <widget class="QLabel" name="org_name_label">
          <property name="text">
           <string>Наименование:</string>
          </property>
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QLineEdit" name="name"/>
+        <widget class="QLineEdit" name="org_name"/>
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="inn_label">
