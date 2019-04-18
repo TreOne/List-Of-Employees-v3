@@ -1,8 +1,6 @@
 import math
 from datetime import datetime
-
-from PyQt5.QtCore import QVariant
-
+from PyQt5.QtCore import QVariant, pyqtSignal
 from utility.employees import Employee, Validate
 from utility.words import smart_ending
 from PyQt5 import QtCore
@@ -11,6 +9,7 @@ from PyQt5 import QtGui
 
 class EmployeesListModel(QtCore.QAbstractTableModel):
     SortRole = QtCore.Qt.UserRole + 1
+    rowsAddRemove = pyqtSignal()
 
     def __init__(self, list_of_employees):
         QtCore.QAbstractTableModel.__init__(self)
@@ -161,6 +160,7 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
         self.beginInsertRows(QtCore.QModelIndex(), row_pos, row_pos)
         self.employees.add()
         self.endInsertRows()
+        self.rowsAddRemove.emit()
         return True
 
     def removeRow(self, row, parent=QtCore.QModelIndex()):
@@ -168,6 +168,8 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
         self.beginRemoveRows(parent, row, row)
         self.employees.pop(emp_id)
         self.endRemoveRows()
+        self.rowsAddRemove.emit()
+        return True
 
     def get_completer(self, completer_field):
         return self.employees.get_completer(completer_field)

@@ -28,10 +28,12 @@ class MWView(QtWidgets.QMainWindow):
             pyuic5 -x .pyqt5/main_window.ui -o view/ui/main_window.py
     """
 
-    def __init__(self, controller, autoload_ui=False):
+    def __init__(self, model, organization, autoload_ui=False):
 
-        self.controller = controller
+        self.model = model
         self.app_settings = Settings()
+        self.data_is_saved = True
+        self.organization = organization
 
         # Подключаем Представление
         flags = Qt.WindowFlags()
@@ -44,9 +46,7 @@ class MWView(QtWidgets.QMainWindow):
         else:
             self.ui = Ui_MainWindow()
             self.ui.setupUi(self)
-
-        version = self.app_settings.get('system', 'version')
-        self.setWindowTitle('СписокСотрудников (версия {})'.format(version))
+        self.update_window_title()
 
         # Заполняем данными поля организации
         self.fill_organization_fields()
@@ -60,11 +60,11 @@ class MWView(QtWidgets.QMainWindow):
 
         # Подключаем модель к главной таблице
         proxy_model = EmployeesSortModel()
-        proxy_model.setSourceModel(controller.model)
+        proxy_model.setSourceModel(self.model)
         self.ui.employees_table.setModel(proxy_model)
 
         # Создаем делегатов для редактирования данных модели
-        in_line_edit_delegate = InLineEditDelegate(self, controller.model)
+        in_line_edit_delegate = InLineEditDelegate(self, self.model)
         gender_selection_delegate = GenderSelectionDelegate(self)
         birth_date_selection_delegate = BirthDateSelectionDelegate(self)
         experience_selection_delegate = ExperienceSelectionDelegate(self)
@@ -99,6 +99,8 @@ class MWView(QtWidgets.QMainWindow):
         self.ui.menu_save.triggered.connect(self.menu_save_file_clicked)
         self.ui.menu_save_as.triggered.connect(self.menu_save_file_as_clicked)
         self.ui.menu_export_word.triggered.connect(self.menu_export_word_clicked)
+        self.model.dataChanged.connect(self.data_changed)
+        self.model.rowsAddRemove.connect(self.data_changed)
 
         # Горячие клавиши
         QShortcut(QKeySequence(Qt.Key_F1), self, lambda: proxy_model.insertRow())
@@ -112,7 +114,10 @@ class MWView(QtWidgets.QMainWindow):
         for column_name in Employee.ALL_FIELDS:
             # Ищем чекбокс, отвечающий за колонку
             hide_checkbox = getattr(self.ui, 'hide_col_' + column_name)
-            hide_checkbox.stateChanged.connect(lambda: self.controller.hide_checkbox_clicked(self.sender()))
+            hide_checkbox.stateChanged.connect(self.hide_checkbox_clicked)
+
+        self.refresh_column_views()
+        self.showMaximized()
 
     #     edit_key = QShortcut(QKeySequence(Qt.Key_Return), self.ui.employees_table)
     #     edit_key.activated.connect(self.item_edit)
@@ -122,6 +127,7 @@ class MWView(QtWidgets.QMainWindow):
     #     if self.ui.employees_table.selectedIndexes():
     #         edited_cell_index = self.ui.employees_table.selectedIndexes()[0]
     #         self.ui.employees_table.edit(edited_cell_index)
+
 
     def adjust_column_width(self):
         column_to_stretch = ('address_free_form', 'hazard_types', 'hazard_factors')
@@ -197,14 +203,14 @@ class MWView(QtWidgets.QMainWindow):
     def fill_organization_fields(self):
         for field in Organization.ALL_FIELDS:
             ui_field = getattr(self.ui, field)
-            if self.controller.organization[field] == '':
+            if self.organization[field] == '':
                 ui_field.setText('<НЕ ЗАПОЛНЕНО>')
             else:
-                ui_field.setText(self.controller.organization[field])
+                ui_field.setText(self.organization[field])
 
     def organization_edit_btn_clicked(self):
-        organization_data = self.controller.organization
-        organization_edit_dialog = OFView(controller=self.controller, organization_data=organization_data, parent=self)
+        organization_data = self.organization
+        organization_edit_dialog = OFView(organization_data=organization_data, parent=self)
         organization_edit_dialog.show()
 
     def menu_new_file_clicked(self):
@@ -221,3 +227,38 @@ class MWView(QtWidgets.QMainWindow):
 
     def menu_export_word_clicked(self):
         pass
+
+    def data_changed(self):
+        """Слот для фиксирования изменений в данных"""
+        self.data_is_saved = False
+        self.update_window_title()
+
+    def update_window_title(self):
+        """Обновляет заголовок программы"""
+        version = self.app_settings.get('system', 'version')
+        tail = '' if self.data_is_saved else ' ⚫'
+        self.setWindowTitle('СписокСотрудников (версия {}){}'.format(version, tail))
+
+    def refresh_column_views(self):
+        # Скрываем отмеченные в настройках колонки и отображаем остальные
+        columns_to_hide = self.app_settings.get('appearance', 'sections_to_hide')
+        columns_to_hide = columns_to_hide.split(', ')
+        for column in Employee.ALL_FIELDS:
+            if column in columns_to_hide:
+                self.hide_column(column=column)
+            else:
+                self.show_column(column=column)
+
+    def hide_checkbox_clicked(self):
+        column_name = self.sender().objectName().replace('hide_col_', '')
+        columns_to_hide = self.app_settings.get('appearance', 'sections_to_hide')
+        if columns_to_hide == "":
+            columns_to_hide = list()
+        else:
+            columns_to_hide = columns_to_hide.split(', ')
+        if self.sender().isChecked():
+            columns_to_hide.remove(column_name)
+        else:
+            columns_to_hide.append(column_name)
+        self.app_settings.set('appearance', 'sections_to_hide', ", ".join(columns_to_hide))
+        self.refresh_column_views()
