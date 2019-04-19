@@ -1,3 +1,4 @@
+import os
 from PyQt5 import QtWidgets, uic, QtGui
 from PyQt5.QtCore import Qt
 from PyQt5 import QtCore
@@ -39,6 +40,7 @@ class MWView(QtWidgets.QMainWindow):
         list_of_employees = xml_parser.get_employees()
         self.model = EmployeesListModel(list_of_employees)
         self.organization = xml_parser.get_organization()
+        self.filename = None
 
         self.app_settings = Settings()
         self.data_is_saved = True
@@ -226,14 +228,17 @@ class MWView(QtWidgets.QMainWindow):
             if answer == QMessageBox.Yes:
                 # TODO: Реализовать систему сохранения. После сохранения не инициализировать создание нового файла!
                 return
-        self.organization = Organization()
-        self.fill_organization_fields()
-        self.model = EmployeesListModel(Employees())
-        self.proxy_model.setSourceModel(self.model)
-        self.ui.employees_table.setModel(self.proxy_model)
+        self.clear_data()
 
     def menu_open_clicked(self):
-        pass
+        if self.filename is not None:
+            path, _ = os.path.split(self.filename)
+        else:
+            path = os.getcwd()
+        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption='Открыть файл', directory=path,
+                                                         filter='XML Files (*.xml *.XML)')[0]
+        if filename != '':
+            self.load_file(filename)
 
     def menu_save_file_clicked(self):
         pass
@@ -248,12 +253,9 @@ class MWView(QtWidgets.QMainWindow):
         """Слот для фиксирования изменений в данных"""
         self.data_is_saved = False
         self.update_window_title()
-
-    def update_window_title(self):
-        """Обновляет заголовок программы"""
-        version = self.app_settings.get('system', 'version')
-        tail = '' if self.data_is_saved else ' ⚫'
-        self.setWindowTitle('СписокСотрудников (версия {}){}'.format(version, tail))
+        self.ui.menu_save.setEnabled(True)
+        self.ui.menu_save_as.setEnabled(True)
+        self.ui.menu_export_word.setEnabled(True)
 
     def refresh_column_views(self):
         # Скрываем отмеченные в настройках колонки и отображаем остальные
@@ -278,3 +280,44 @@ class MWView(QtWidgets.QMainWindow):
             columns_to_hide.append(column_name)
         self.app_settings.set('appearance', 'sections_to_hide', ", ".join(columns_to_hide))
         self.refresh_column_views()
+
+    def clear_data(self):
+        """Обнуляет состояние модели"""
+        self.organization = Organization()
+        self.fill_organization_fields()
+
+        self.model = EmployeesListModel(Employees())
+        self.proxy_model.setSourceModel(self.model)
+        self.ui.employees_table.setModel(self.proxy_model)
+
+        self.filename = None
+        self.data_is_saved = True
+        self.update_window_title()
+
+    def update_window_title(self):
+        """Обновляет заголовок программы"""
+        version = self.app_settings.get('system', 'version')
+        tail = '' if self.data_is_saved else ' ●'
+        self.setWindowTitle('СписокСотрудников (версия {}){}'.format(version, tail))
+
+    def load_file(self, filename):
+        """Загружает файл из указанного пути"""
+        xml_parser = XMLParser()
+
+        if xml_parser.load_file(filename):
+            if xml_parser.validate():
+                self.filename = os.path.normpath(filename)
+                self.organization = xml_parser.get_organization()
+                self.fill_organization_fields()
+                list_of_employees = xml_parser.get_employees()
+                self.model = EmployeesListModel(list_of_employees)
+                self.proxy_model.setSourceModel(self.model)
+                self.ui.employees_table.setModel(self.proxy_model)
+            else:
+                QMessageBox.critical(self, 'XML файл имеет ошибки!',
+                                     '\n'.join(xml_parser.get_errors()),
+                                     QMessageBox.Close, QMessageBox.Close)
+        else:
+            QMessageBox.critical(self, 'Ошибки при открытии файла!',
+                                 '\n'.join(xml_parser.get_errors()),
+                                 QMessageBox.Close, QMessageBox.Close)

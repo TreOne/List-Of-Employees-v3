@@ -47,7 +47,7 @@ class XMLParser:
             self.__errors.append('ERROR: XML файл по пути "' + filename + '" не найден.')
             return False
         except etree.XMLSyntaxError:
-            self.__errors.append('ERROR: Не возможно разобрать файл по пути "' + filename + '".')
+            self.__errors.append('ERROR: Не возможно разобрать файл "' + filename + '".')
             return False
         self.__xml_filename = filename
 
@@ -202,7 +202,7 @@ class XMLParser:
             return False
 
         except AssertionError as err:
-            self.__errors.append("ERROR: Неправильный формат файла валидации XML: {0}".format(err))
+            self.__errors.append(str(err))
             return False
 
         except ValueError as err:
