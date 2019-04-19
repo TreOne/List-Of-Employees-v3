@@ -24,5 +24,5 @@ if __name__ == '__main__':
 
     app = QApplication(sys.argv)
     prepare_app(app)
-    MWView(autoload_ui=True)
+    MWView()
     sys.exit(app.exec_())
