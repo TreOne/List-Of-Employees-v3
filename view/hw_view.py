@@ -44,6 +44,7 @@ class HWView(QtWidgets.QWidget):
         self.load_tree_data(self.factors_tree, self.hazards_factors, 'hazard_factors', hazard_factors)
         self.types_tree.resizeColumnToContents(0)
         self.factors_tree.resizeColumnToContents(0)
+        self.update_summaries()
 
     def hazards(self):
         """Возвращает списки факторов и типов вредностей"""
@@ -66,6 +67,7 @@ class HWView(QtWidgets.QWidget):
             tree.addTopLevelItem(root)
             self.__add_checkboxes(root, mode, emp_hazards)
         tree.expandAll()
+        tree.clicked.connect(self.update_summaries)
 
     def __add_checkboxes(self, node, mode, emp_hazards):
         child_count = node.childCount()
@@ -87,16 +89,6 @@ class HWView(QtWidgets.QWidget):
     def save_btn_clicked(self):
         self.hazardsChanged.emit()
         self.close()
-        # employee_hazards = self.employee['hazard_types']
-        # employee_hazards.clear()
-        # for i in range(self.types_tree.topLevelItemCount()):
-        #     self.__fill_hazards_list(self.types_tree.topLevelItem(i), employee_hazards)
-        # employee_hazards = self.employee['hazard_factors']
-        # employee_hazards.clear()
-        # for i in range(self.factors_tree.topLevelItemCount()):
-        #     self.__fill_hazards_list(self.factors_tree.topLevelItem(i), employee_hazards)
-        # self.controller.update_hazards_count()
-        # self.close()
 
     def __fill_hazards_list(self, node, hazard_list):
         """Заполняет список отмеченными в дереве вредностями"""
@@ -122,3 +114,8 @@ class HWView(QtWidgets.QWidget):
                 q_item_child.setToolTip(1, '<div style="width: 80px;">{}</div>'.format(child.name))
                 self.__fill_the_brunch(child, q_item_child)
                 q_tree_item.addChild(q_item_child)
+
+    def update_summaries(self):
+        hazard_types, hazard_factors = self.hazards()
+        self.ui.types_summary.setText(" / ".join(hazard_types))
+        self.ui.factors_summary.setText(" / ".join(hazard_factors))

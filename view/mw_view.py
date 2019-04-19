@@ -257,8 +257,8 @@ class MWView(QtWidgets.QMainWindow):
         now = datetime.now()
         date = now.strftime("%d.%m.%Y")
         path = os.getenv('HOME') if self.last_path is None else self.last_path
-        filename = QtWidgets.QFileDialog.getSaveFileName(self, options='/Список сотрудников ({date})'.format(date=date),
-                                                         caption='Сохранить файл', directory=path,
+        filename = QtWidgets.QFileDialog.getSaveFileName(self, 'Сохранить файл',
+                                                         '{}/Список сотрудников ({})'.format(path, date),
                                                          filter='XML Files (*.xml *.XML)')[0]
         self.save_file(filename)
 

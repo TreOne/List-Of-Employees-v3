@@ -53,7 +53,67 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="al_hazards_btns">
+    <layout class="QHBoxLayout" name="hl_summary">
+     <item>
+      <layout class="QFormLayout" name="fl_types_summary">
+       <item row="0" column="0">
+        <widget class="QLabel" name="types_summary_label">
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Выбраны типы:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="types_summary">
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QFormLayout" name="fl_factors_summary">
+       <item row="0" column="0">
+        <widget class="QLabel" name="factors_summary_label">
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Выбраны факторы:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="factors_summary">
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="fl_hazards_btns">
      <item>
       <spacer name="horizontal_spacer">
        <property name="orientation">
