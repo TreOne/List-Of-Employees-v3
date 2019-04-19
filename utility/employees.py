@@ -179,6 +179,7 @@ class Employees:
 
     def get_completer(self, completer_field):
         try:
+            print(self.__completer_hints[completer_field])
             return self.__completer_hints[completer_field]
         except KeyError:
             return set()

@@ -28,7 +28,7 @@ class MWView(QtWidgets.QMainWindow):
         Для импорта ресурсов:
             pyrcc5 .pyqt5/resources/resources.qrc -o utility/resources.py
         Для импорта UI в PY:
-            pyuic5 -x .pyqt5/main_window.ui -o view/ui/main_window.py
+            pyuic5 -x resources/main_window.ui -o view/ui/main_window.py
     """
 
     def __init__(self, autoload_ui=False):
@@ -39,12 +39,7 @@ class MWView(QtWidgets.QMainWindow):
         super(MWView, self).__init__(parent=None, flags=flags)
 
         # Подключаем UI
-        # TODO: При релизе, переключить с динамической компиляции интерфейса на статическую.
-        if autoload_ui:
-            self.ui = uic.loadUi(resource_path('.pyqt5/main_window.ui'), self)
-        else:
-            self.ui = Ui_MainWindow()
-            self.ui.setupUi(self)
+        self.ui = uic.loadUi(resource_path('./resources/main_window.ui'), self)
 
         self.model = EmployeesListModel(Employees())
         self.organization = Organization()
@@ -71,23 +66,14 @@ class MWView(QtWidgets.QMainWindow):
         self.ui.employees_table.setModel(self.proxy_model)
 
         # Создаем делегатов для редактирования данных модели
-        in_line_edit_delegate = InLineEditDelegate(self, self.model)
-        gender_selection_delegate = GenderSelectionDelegate(self)
-        birth_date_selection_delegate = BirthDateSelectionDelegate(self)
-        experience_selection_delegate = ExperienceSelectionDelegate(self)
-        hazards_selection_delegate = HazardsSelectionDelegate(self)
+        self.in_line_edit_delegate = InLineEditDelegate(self, self.model)
+        self.gender_selection_delegate = GenderSelectionDelegate(self)
+        self.birth_date_selection_delegate = BirthDateSelectionDelegate(self)
+        self.experience_selection_delegate = ExperienceSelectionDelegate(self)
+        self.hazards_selection_delegate = HazardsSelectionDelegate(self)
 
-        # Подключаем делегатов к таблице
-        self.ui.employees_table.setItemDelegateForColumn(0, in_line_edit_delegate)  # Фамилия
-        self.ui.employees_table.setItemDelegateForColumn(1, in_line_edit_delegate)  # Имя
-        self.ui.employees_table.setItemDelegateForColumn(2, in_line_edit_delegate)  # Отчество
-        self.ui.employees_table.setItemDelegateForColumn(3, gender_selection_delegate)  # Пол
-        self.ui.employees_table.setItemDelegateForColumn(4, birth_date_selection_delegate)  # Дата рождения
-        self.ui.employees_table.setItemDelegateForColumn(6, experience_selection_delegate)  # Стаж
-        self.ui.employees_table.setItemDelegateForColumn(5, in_line_edit_delegate)  # Адрес
-        self.ui.employees_table.setItemDelegateForColumn(7, in_line_edit_delegate)  # Должность
-        self.ui.employees_table.setItemDelegateForColumn(8, hazards_selection_delegate)  # Типы вредности
-        self.ui.employees_table.setItemDelegateForColumn(9, hazards_selection_delegate)  # Факторы вредности
+        # Подключаем их к таблице
+        self.update_delegates()
 
         # Выравниваем колонки таблицы
         self.adjust_column_width()
@@ -315,6 +301,7 @@ class MWView(QtWidgets.QMainWindow):
         self.model = EmployeesListModel(Employees())
         self.proxy_model.setSourceModel(self.model)
         self.ui.employees_table.setModel(self.proxy_model)
+        self.update_delegates()
         self.model.dataChanged.connect(self.data_changed)
         self.model.rowsAddRemove.connect(self.data_changed)
 
@@ -348,12 +335,34 @@ class MWView(QtWidgets.QMainWindow):
             self.model = EmployeesListModel(list_of_employees)
             self.proxy_model.setSourceModel(self.model)
             self.ui.employees_table.setModel(self.proxy_model)
+            self.update_delegates()
+
             self.model.dataChanged.connect(self.data_changed)
             self.model.rowsAddRemove.connect(self.data_changed)
         else:
             QMessageBox.critical(self, 'Ошибки при открытии файла!',
                                  '\n'.join(xml_parser.get_errors()),
                                  QMessageBox.Close, QMessageBox.Close)
+
+    def update_delegates(self):
+        # Создаем делегатов для редактирования данных модели
+        self.in_line_edit_delegate = InLineEditDelegate(self, self.model)
+        self.gender_selection_delegate = GenderSelectionDelegate(self)
+        self.birth_date_selection_delegate = BirthDateSelectionDelegate(self)
+        self.experience_selection_delegate = ExperienceSelectionDelegate(self)
+        self.hazards_selection_delegate = HazardsSelectionDelegate(self)
+
+        # Подключаем делегатов к таблице
+        self.ui.employees_table.setItemDelegateForColumn(0, self.in_line_edit_delegate)  # Фамилия
+        self.ui.employees_table.setItemDelegateForColumn(1, self.in_line_edit_delegate)  # Имя
+        self.ui.employees_table.setItemDelegateForColumn(2, self.in_line_edit_delegate)  # Отчество
+        self.ui.employees_table.setItemDelegateForColumn(3, self.gender_selection_delegate)  # Пол
+        self.ui.employees_table.setItemDelegateForColumn(4, self.birth_date_selection_delegate)  # Дата рождения
+        self.ui.employees_table.setItemDelegateForColumn(6, self.experience_selection_delegate)  # Стаж
+        self.ui.employees_table.setItemDelegateForColumn(5, self.in_line_edit_delegate)  # Адрес
+        self.ui.employees_table.setItemDelegateForColumn(7, self.in_line_edit_delegate)  # Должность
+        self.ui.employees_table.setItemDelegateForColumn(8, self.hazards_selection_delegate)  # Типы вредности
+        self.ui.employees_table.setItemDelegateForColumn(9, self.hazards_selection_delegate)  # Факторы вредности
 
     def save_file(self, filename=None):
         """Сохраняет файл"""
