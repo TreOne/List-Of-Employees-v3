@@ -22,7 +22,7 @@ class Organization:
         self.__dict__[key] = value
 
     def __getitem__(self, key):
-        return self.__dict__[key]
+        return self.__dict__[key] if self.__dict__[key] is not None else ''
 
     def __repr__(self):
         return "Organization({})".format(self['org_name'])

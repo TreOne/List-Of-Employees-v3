@@ -82,7 +82,7 @@ class XMLParser:
         organization_node = etree.SubElement(root, 'organization')
         for field in Organization.ALL_FIELDS:
             node = etree.SubElement(organization_node, field)
-            node.text = organization[field]
+            node.text = organization[field].strip()
 
         # Заполняем данные сотрудников
         for employee in employees.values():
@@ -90,19 +90,19 @@ class XMLParser:
             # Заполняем корневой тег <employee> сотрудника
             for field in Employee.PERSON_FIELDS:
                 node = etree.SubElement(employee_node, field)
-                node.text = employee[field]
+                node.text = employee[field].strip()
             # Заполняем тег <job> сотрудника
             job_node = etree.SubElement(employee_node, 'job')
             for field in Employee.JOB_FIELDS:
                 if field not in Employee.LIST_FIELDS:
                     node = etree.SubElement(job_node, field)
-                    node.text = employee[field]
+                    node.text = employee[field].strip()
                 else:
                     if len(employee[field]) > 0:
                         hazard_node = etree.SubElement(job_node, field)
                         for hazard in employee[field]:
                             code = etree.SubElement(hazard_node, 'code')
-                            code.text = hazard
+                            code.text = hazard.strip()
 
         save_tree = etree.ElementTree(root)
         save_tree.write(filename, pretty_print=True, encoding="utf-8", xml_declaration=True)

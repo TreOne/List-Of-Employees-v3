@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <register>
-  <date>2019-04-18</date>
+  <date>2019-04-19</date>
   <organization>
     <org_name>ПAO "Балтийская строительная компания"</org_name>
     <inn>4576887212</inn>
@@ -330,6 +330,27 @@
         <code>1.3.2.</code>
         <code>3.10.</code>
         <code>1.2.53.</code>
+      </hazard_factors>
+    </job>
+  </employee>
+  <employee>
+    <family_name>Кондратьев</family_name>
+    <first_name>Константин</first_name>
+    <patronymic>Андреевич</patronymic>
+    <sex>Мужской</sex>
+    <birth_date>1989-05-31</birth_date>
+    <address_free_form>Новгородский р-н, деревня Григорово, ул Центральная, д 14, кв 24</address_free_form>
+    <job>
+      <experience>7</experience>
+      <specialty>Программист</specialty>
+      <hazard_types>
+        <code>1.</code>
+        <code>4.1.</code>
+      </hazard_types>
+      <hazard_factors>
+        <code>1.</code>
+        <code>3.1.</code>
+        <code>4.1.</code>
       </hazard_factors>
     </job>
   </employee>

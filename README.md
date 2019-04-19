@@ -5,3 +5,4 @@
 * pip install pyqt5
 * pip install lxml
 * pip install requests
+* pip install docxtpl

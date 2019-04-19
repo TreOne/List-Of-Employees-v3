@@ -50,9 +50,12 @@ class GenderSelectionDelegate(QtWidgets.QStyledItemDelegate):
         self.commitData.emit(editor)
 
     def setEditorData(self, editor, index):
-        value = index.data(QtCore.Qt.EditRole)
-        num = self.genders.index(value)
-        editor.setCurrentIndex(num)
+        try:
+            value = index.data(QtCore.Qt.EditRole)
+            num = self.genders.index(value)
+            editor.setCurrentIndex(num)
+        except ValueError:
+            editor.setCurrentIndex(0)
 
     def setModelData(self, editor, model, index):
         value = editor.currentText()

@@ -64,11 +64,11 @@ class Employee:
     def __getitem__(self, key):
         # Для удобства, автоматически создаем поле full_name
         if key == 'full_name':
-            full_name = ' '.join((self.__dict__['family_name'],
-                                  self.__dict__['first_name'],
-                                  self.__dict__['patronymic']))
+            full_name = ' '.join((self['family_name'],
+                                  self['first_name'],
+                                  self['patronymic']))
             return full_name.strip()
-        return self.__dict__[key]
+        return self.__dict__[key] if self.__dict__[key] is not None else ''
 
     def __repr__(self):
         return 'Employee({})'.format(self['full_name'])

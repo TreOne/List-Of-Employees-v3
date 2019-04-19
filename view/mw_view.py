@@ -1,9 +1,9 @@
-import os
 from PyQt5 import QtWidgets, uic, QtGui
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSlot
 from PyQt5 import QtCore
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QShortcut, QMessageBox
+from utility.docx_creator import DocxCreator
 from utility.employees import Employee, Employees
 from model import EmployeesListModel
 import utility.resources
@@ -16,6 +16,8 @@ from utility.settings import Settings
 from model import EmployeesSortModel
 from utility.delegates import InLineEditDelegate, GenderSelectionDelegate, BirthDateSelectionDelegate, \
     ExperienceSelectionDelegate, HazardsSelectionDelegate
+from datetime import datetime
+import os
 
 
 class MWView(QtWidgets.QMainWindow):
@@ -31,20 +33,6 @@ class MWView(QtWidgets.QMainWindow):
 
     def __init__(self, autoload_ui=False):
 
-        # Парсинг XML в Employees и Organization
-        xml_parser = XMLParser()
-        xml_parser.load_file(resource_path('tests/demo_data.xml'))
-        print('\n'.join(xml_parser.get_errors()))
-        xml_parser.validate()
-        print('\n'.join(xml_parser.get_errors()))
-        list_of_employees = xml_parser.get_employees()
-        self.model = EmployeesListModel(list_of_employees)
-        self.organization = xml_parser.get_organization()
-        self.filename = None
-
-        self.app_settings = Settings()
-        self.data_is_saved = True
-
         # Подключаем Представление
         flags = Qt.WindowFlags()
         super(MWView, self).__init__(parent=None, flags=flags)
@@ -56,9 +44,17 @@ class MWView(QtWidgets.QMainWindow):
         else:
             self.ui = Ui_MainWindow()
             self.ui.setupUi(self)
-        self.update_window_title()
 
-        # Заполняем данными поля организации
+        self.model = EmployeesListModel(Employees())
+        self.organization = Organization()
+
+        self.filename = None
+        self.last_path = None
+        self.data_is_saved = True
+        self.app_settings = Settings()
+
+        # Стартовая инициализация внешнего вида / данных
+        self.update_window_title()
         self.fill_organization_fields()
 
         # Список чекбоксов для отображения/скрытия колонок таблицы
@@ -226,29 +222,66 @@ class MWView(QtWidgets.QMainWindow):
                                           "Вы хотите сохранить изменения?",
                                           QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
             if answer == QMessageBox.Yes:
-                # TODO: Реализовать систему сохранения. После сохранения не инициализировать создание нового файла!
-                return
+                if not self.save_file():
+                    self.menu_save_file_as_clicked()
+                    return
         self.clear_data()
+        self.ui.menu_save.setEnabled(True)
+        self.ui.menu_save_as.setEnabled(True)
+        self.ui.menu_export_word.setEnabled(True)
 
     def menu_open_clicked(self):
-        if self.filename is not None:
-            path, _ = os.path.split(self.filename)
-        else:
-            path = os.getcwd()
+        if not self.data_is_saved:
+            answer = QMessageBox.question(self, 'Изменения еще не сохранены!',
+                                          "Вы хотите сохранить изменения?",
+                                          QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+            if answer == QMessageBox.Yes:
+                if not self.save_file():
+                    self.menu_save_file_as_clicked()
+                    return
+        # Если локальная переменная пуста, то открываем рабочий каталог по умолчанию.
+        # Если в локальной переменной есть путь, то открываем эту директорию,
+        path = os.getenv('HOME') if self.last_path is None else self.last_path
         filename = QtWidgets.QFileDialog.getOpenFileName(self, caption='Открыть файл', directory=path,
                                                          filter='XML Files (*.xml *.XML)')[0]
-        if filename != '':
-            self.load_file(filename)
+        self.load_file(filename)
+        self.ui.menu_save.setEnabled(True)
+        self.ui.menu_save_as.setEnabled(True)
+        self.ui.menu_export_word.setEnabled(True)
 
     def menu_save_file_clicked(self):
-        pass
+        if not self.save_file():
+            self.menu_save_file_as_clicked()
 
     def menu_save_file_as_clicked(self):
-        pass
+        now = datetime.now()
+        date = now.strftime("%d.%m.%Y")
+        path = os.getenv('HOME') if self.last_path is None else self.last_path
+        filename = QtWidgets.QFileDialog.getSaveFileName(self, options='/Список сотрудников ({date})'.format(date=date),
+                                                         caption='Сохранить файл', directory=path,
+                                                         filter='XML Files (*.xml *.XML)')[0]
+        self.save_file(filename)
 
     def menu_export_word_clicked(self):
-        pass
+        now = datetime.now()
+        date = now.strftime("%d.%m.%Y")
+        filename = QtWidgets.QFileDialog.getSaveFileName(self, 'Сохранить файл',
+                                                         '/Список сотрудников ({date})'.format(date=date),
+                                                         filter='Word 2007 (.docx)|*.docx')[0]
+        if filename != '':
+            docx = DocxCreator()
+            docx.create_file(self.organization, self.model.employees)
+            try:
+                docx.save_file(filename)
+            except PermissionError:
+                QMessageBox.critical(self, 'Сохранение невозможно!',
+                                     "Не получилось сохранить файл."
+                                     " Возможно у вас нет прав на редактирование этого файла"
+                                     " или файл открыт в другой программе.",
+                                     QMessageBox.Close, QMessageBox.Close)
+            self.last_path = os.path.split(os.path.normpath(filename))[0]
 
+    @pyqtSlot()
     def data_changed(self):
         """Слот для фиксирования изменений в данных"""
         self.data_is_saved = False
@@ -260,7 +293,7 @@ class MWView(QtWidgets.QMainWindow):
     def refresh_column_views(self):
         # Скрываем отмеченные в настройках колонки и отображаем остальные
         columns_to_hide = self.app_settings.get('appearance', 'sections_to_hide')
-        columns_to_hide = columns_to_hide.split(', ')
+        columns_to_hide = set(columns_to_hide.split(', '))
         for column in Employee.ALL_FIELDS:
             if column in columns_to_hide:
                 self.hide_column(column=column)
@@ -289,6 +322,8 @@ class MWView(QtWidgets.QMainWindow):
         self.model = EmployeesListModel(Employees())
         self.proxy_model.setSourceModel(self.model)
         self.ui.employees_table.setModel(self.proxy_model)
+        self.model.dataChanged.connect(self.data_changed)
+        self.model.rowsAddRemove.connect(self.data_changed)
 
         self.filename = None
         self.data_is_saved = True
@@ -302,22 +337,46 @@ class MWView(QtWidgets.QMainWindow):
 
     def load_file(self, filename):
         """Загружает файл из указанного пути"""
-        xml_parser = XMLParser()
+        if filename == '':
+            return
 
+        xml_parser = XMLParser()
         if xml_parser.load_file(filename):
-            if xml_parser.validate():
-                self.filename = os.path.normpath(filename)
-                self.organization = xml_parser.get_organization()
-                self.fill_organization_fields()
-                list_of_employees = xml_parser.get_employees()
-                self.model = EmployeesListModel(list_of_employees)
-                self.proxy_model.setSourceModel(self.model)
-                self.ui.employees_table.setModel(self.proxy_model)
-            else:
+            if not xml_parser.validate():
                 QMessageBox.critical(self, 'XML файл имеет ошибки!',
                                      '\n'.join(xml_parser.get_errors()),
                                      QMessageBox.Close, QMessageBox.Close)
+            self.clear_data()
+            self.filename = os.path.normpath(filename)
+            self.last_path = os.path.split(filename)[0]
+            self.organization = xml_parser.get_organization()
+            self.fill_organization_fields()
+            list_of_employees = xml_parser.get_employees()
+            self.model = EmployeesListModel(list_of_employees)
+            self.proxy_model.setSourceModel(self.model)
+            self.ui.employees_table.setModel(self.proxy_model)
+            self.model.dataChanged.connect(self.data_changed)
+            self.model.rowsAddRemove.connect(self.data_changed)
         else:
             QMessageBox.critical(self, 'Ошибки при открытии файла!',
                                  '\n'.join(xml_parser.get_errors()),
                                  QMessageBox.Close, QMessageBox.Close)
+
+    def save_file(self, filename=None):
+        """Сохраняет файл"""
+        if filename == '':
+            return False
+
+        filename = filename if filename is not None else self.filename
+        if filename is None:
+            return False
+
+        xml_parser = XMLParser()
+        if xml_parser.save_to_file(filename, self.organization, self.model.employees):
+            self.data_is_saved = True
+            self.update_window_title()
+            self.filename = os.path.normpath(filename)
+            self.last_path = os.path.split(filename)[0]
+            return True
+        else:
+            return False

@@ -23,9 +23,6 @@ def prepare_app(app_var):
 if __name__ == '__main__':
 
     app = QApplication(sys.argv)
-
-    # Настройки внешнего вида, руссификация интерфейса и пр.
     prepare_app(app)
-
     MWView(autoload_ui=True)
     sys.exit(app.exec_())

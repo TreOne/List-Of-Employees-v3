@@ -65,7 +65,8 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
             if field_name in Employee.LIST_FIELDS:
                 return " / ".join(self.employees[emp_id][field_name])
 
-            return self.employees[emp_id][field_name]
+            value = self.employees[emp_id][field_name]
+            return value if value is not None else ''
 
         # Фон при ошибке в поле сотрудника
         if role == QtCore.Qt.BackgroundRole:
