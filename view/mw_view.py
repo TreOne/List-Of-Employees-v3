@@ -34,7 +34,8 @@ class MWView(QtWidgets.QMainWindow):
     def __init__(self, autoload_ui=False):
 
         # Подключаем Представление
-        flags = Qt.WindowFlags()
+        # flags = Qt.WindowFlags()
+        flags = Qt.WindowFlags(Qt.Window)
         super(MWView, self).__init__(parent=None, flags=flags)
 
         # Подключаем UI
@@ -125,14 +126,6 @@ class MWView(QtWidgets.QMainWindow):
         self.refresh_column_views()
         self.showMaximized()
 
-    #     edit_key = QShortcut(QKeySequence(Qt.Key_Return), self.ui.employees_table)
-    #     edit_key.activated.connect(self.item_edit)
-    #
-    # def item_edit(self):
-    #     """Переводим активную ячейку в режим редактирования"""
-    #     if self.ui.employees_table.selectedIndexes():
-    #         edited_cell_index = self.ui.employees_table.selectedIndexes()[0]
-    #         self.ui.employees_table.edit(edited_cell_index)
 
     def adjust_column_width(self):
         column_to_stretch = ('address_free_form', 'hazard_types', 'hazard_factors')

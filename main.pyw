@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import QTranslator
 from utility.resource_path import resource_path
 from utility.settings import Settings
@@ -22,7 +22,7 @@ def prepare_app(app_var):
 
 if __name__ == '__main__':
 
-    app = QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     prepare_app(app)
-    MWView()
+    main_window = MWView()
     sys.exit(app.exec_())

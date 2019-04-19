@@ -293,7 +293,7 @@ class Ui_MainWindow(object):
         self.menu_about.setToolTip(_translate("MainWindow", "Сведения о программе."))
 
 
-import resources_rc
+import utility.resources
 
 
 if __name__ == "__main__":
