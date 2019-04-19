@@ -4,7 +4,7 @@ from utility.resource_path import resource_path
 from view.ui.hazards_form import Ui_HazardsForm
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QKeySequence, QColor, QBrush
-from PyQt5.QtWidgets import QShortcut, QMessageBox
+from PyQt5.QtWidgets import QShortcut
 
 
 class HWView(QtWidgets.QWidget):
