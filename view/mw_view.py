@@ -290,7 +290,7 @@ class MWView(QtWidgets.QMainWindow):
             columns_to_hide.remove(column_name)
         else:
             columns_to_hide.append(column_name)
-        self.app_settings.set('appearance', 'sections_to_hide', ", ".join(columns_to_hide))
+        self.app_settings.set('appearance', 'sections_to_hide', ", ".join(set(columns_to_hide)))
         self.refresh_column_views()
 
     def clear_data(self):
