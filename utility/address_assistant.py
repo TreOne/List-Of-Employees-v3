@@ -92,7 +92,7 @@ class AddressesHintsList(QtCore.QAbstractListModel):
         is_novobl = self.is_novobl_checkbox.checkState()
         hints = self.aa.give_address_hints(self.address_for_search, is_novobl=is_novobl)
         self.beginResetModel()
-        self._addresses_hints = hints
+        self._addresses_hints = hints if hints is not None else tuple()
         self.endResetModel()
         self.hint_complete.emit()
 
