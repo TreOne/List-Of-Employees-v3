@@ -16,12 +16,16 @@ class DocxCreator:
         address = organization['org_address']
         max_length = 50
         # TODO: Плохая проверка на пустой адресс AttributeError: 'NoneType' object has no attribute 'find'
-        try:
-            split_char = address.find(' ', max_length)
-            org_address_line_1 = address[:split_char]
-            org_address_line_2 = address[split_char:]
-        except AttributeError:
-            org_address_line_1 = ''
+        if len(address) > 50:
+            try:
+                split_char = address.find(' ', max_length)
+                org_address_line_1 = address[:split_char]
+                org_address_line_2 = address[split_char:]
+            except AttributeError:
+                org_address_line_1 = ''
+                org_address_line_2 = ''
+        else:
+            org_address_line_1 = address
             org_address_line_2 = ''
 
         now = datetime.now()
