@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.pyqt5/main_window.ui'
+# Form implementation generated from reading ui file 'resources/main_window.ui'
 #
 # Created by: PyQt5 UI code generator 5.12.1
 #
@@ -293,7 +293,7 @@ class Ui_MainWindow(object):
         self.menu_about.setToolTip(_translate("MainWindow", "Сведения о программе."))
 
 
-import utility.resources
+# import resources_rc
 
 
 if __name__ == "__main__":

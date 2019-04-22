@@ -2,7 +2,7 @@ from PyQt5 import QtWidgets, uic, QtGui
 from PyQt5.QtCore import Qt, pyqtSlot
 from PyQt5 import QtCore
 from PyQt5.QtGui import QIcon, QKeySequence
-from PyQt5.QtWidgets import QShortcut, QMessageBox
+from PyQt5.QtWidgets import QShortcut, QMessageBox, QMainWindow
 from utility.docx_creator import DocxCreator
 from utility.employees import Employee, Employees
 from model import EmployeesListModel
@@ -20,7 +20,7 @@ from datetime import datetime
 import os
 
 
-class MWView(QtWidgets.QMainWindow):
+class MWView(QMainWindow):
     """
     Класс MWView отвечает за визуальное представление главного окна.
 
@@ -31,15 +31,19 @@ class MWView(QtWidgets.QMainWindow):
             pyuic5 -x resources/main_window.ui -o view/ui/main_window.py
     """
 
-    def __init__(self, autoload_ui=False):
+    def __init__(self):
 
         # Подключаем Представление
         # flags = Qt.WindowFlags()
-        flags = Qt.WindowFlags(Qt.Window)
-        super(MWView, self).__init__(parent=None, flags=flags)
+        # flags = Qt.WindowFlags(Qt.Window)
+        # super(MWView, self).__init__(parent=None, flags=flags)
+        #
+        # # Подключаем UI
+        # self.ui = uic.loadUi(resource_path('./resources/main_window.ui'), self)
 
-        # Подключаем UI
-        self.ui = uic.loadUi(resource_path('./resources/main_window.ui'), self)
+        QMainWindow.__init__(self)
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
 
         self.model = EmployeesListModel(Employees())
         self.organization = Organization()
@@ -111,7 +115,6 @@ class MWView(QtWidgets.QMainWindow):
 
         self.refresh_column_views()
         self.showMaximized()
-
 
     def adjust_column_width(self):
         column_to_stretch = ('address_free_form', 'hazard_types', 'hazard_factors')
@@ -230,7 +233,9 @@ class MWView(QtWidgets.QMainWindow):
 
     def menu_save_file_clicked(self):
         if not self.save_file():
-            self.menu_save_file_as_clicked()
+            return self.menu_save_file_as_clicked()
+        else:
+            return True
 
     def menu_save_file_as_clicked(self):
         now = datetime.now()
@@ -239,7 +244,7 @@ class MWView(QtWidgets.QMainWindow):
         filename = QtWidgets.QFileDialog.getSaveFileName(self, 'Сохранить файл',
                                                          '{}/Список сотрудников ({})'.format(path, date),
                                                          filter='XML Files (*.xml *.XML)')[0]
-        self.save_file(filename)
+        return self.save_file(filename)
 
     def menu_export_word_clicked(self):
         now = datetime.now()
@@ -382,3 +387,18 @@ class MWView(QtWidgets.QMainWindow):
             return True
         else:
             return False
+
+    def closeEvent(self, event):
+        print(event)
+        if self.data_is_saved:
+            event.accept()
+        else:
+            answer = QMessageBox.question(self, 'Изменения еще не сохранены!',
+                                          "Вы хотите сохранить изменения?",
+                                          QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+            if answer == QMessageBox.Yes and self.menu_save_file_clicked():
+                event.accept()
+            elif answer == QMessageBox.No:
+                event.accept()
+            else:
+                event.ignore()
