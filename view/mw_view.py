@@ -389,7 +389,6 @@ class MWView(QMainWindow):
             return False
 
     def closeEvent(self, event):
-        print(event)
         if self.data_is_saved:
             event.accept()
         else:
