@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt, pyqtSlot
 from PyQt5 import QtCore
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QShortcut, QMessageBox, QMainWindow
+from utility.auto_saver import AutoSaver
 from utility.docx_creator import DocxCreator
 from utility.employees import Employee, Employees
 from model import EmployeesListModel
@@ -28,7 +29,7 @@ class MWView(QMainWindow):
         Для импорта ресурсов:
             pyrcc5 .pyqt5/resources/resources.qrc -o utility/resources.py
         Для импорта UI в PY:
-            pyuic5 -x resources/main_window.ui -o view/ui/main_window.py
+            pyuic5 -x .pyqt5/main_window.ui -o view/ui/main_window.py
     """
 
     def __init__(self):
@@ -47,6 +48,7 @@ class MWView(QMainWindow):
 
         self.model = EmployeesListModel(Employees())
         self.organization = Organization()
+        self.auto_saver = AutoSaver(self.organization, self.model.employees)
 
         self.filename = None
         self.last_path = None
@@ -310,6 +312,8 @@ class MWView(QMainWindow):
         self.model.dataChanged.connect(self.data_changed)
         self.model.rowsAddRemove.connect(self.data_changed)
 
+        self.auto_saver.update_data(self.organization, self.model.employees)
+
         self.filename = None
         self.data_is_saved = True
         self.update_window_title()
@@ -341,6 +345,8 @@ class MWView(QMainWindow):
             self.proxy_model.setSourceModel(self.model)
             self.ui.employees_table.setModel(self.proxy_model)
             self.update_delegates()
+
+            self.auto_saver.update_data(self.organization, self.model.employees)
 
             self.model.dataChanged.connect(self.data_changed)
             self.model.rowsAddRemove.connect(self.data_changed)

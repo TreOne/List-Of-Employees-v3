@@ -431,11 +431,21 @@
     <property name="title">
      <string>Файл</string>
     </property>
+    <widget class="QMenu" name="menu_auto_save">
+     <property name="title">
+      <string>Автосохранение...</string>
+     </property>
+     <property name="icon">
+      <iconset resource="resources/resources.qrc">
+       <normaloff>:/icons/files_list.svg</normaloff>:/icons/files_list.svg</iconset>
+     </property>
+    </widget>
     <addaction name="menu_new_file"/>
     <addaction name="menu_open"/>
     <addaction name="separator"/>
     <addaction name="menu_save"/>
     <addaction name="menu_save_as"/>
+    <addaction name="menu_auto_save"/>
     <addaction name="separator"/>
     <addaction name="menu_export_word"/>
    </widget>
@@ -521,6 +531,11 @@
    </property>
    <property name="toolTip">
     <string>Сведения о программе.</string>
+   </property>
+  </action>
+  <action name="menu_tes">
+   <property name="text">
+    <string>Файл1</string>
    </property>
   </action>
  </widget>
