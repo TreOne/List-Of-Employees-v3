@@ -14,10 +14,11 @@ class AutoSaver:
     def __init__(self, organization=None, employees=None):
         if organization is None or employees is None:
             return
-        self.auto_save_time = 5
+        self.auto_save_time = 120
         self.organization = organization
         self.employees = employees
         self.parser = XMLParser()
+        self.recent_file_menu = None
 
         # Создаем каталог для хранения файлов сохранения в %LOCALAPPDATA%\СписокСотрудников
         if not os.path.exists(path):
@@ -29,7 +30,6 @@ class AutoSaver:
 
     def auto_save_file(self):
         while True:
-            time.sleep(self.auto_save_time)
             # Удаляем старые сохранения (те что старше 9-го сохранения)
             files = os.listdir(path)
             old_files = files[0:-9]
@@ -40,12 +40,31 @@ class AutoSaver:
             name = "Автосохранение {}.xml".format(now.strftime("%d.%m.%Y (%H.%M.%S)"))
             filename = os.path.join(path, name)
             self.parser.save_to_file(filename, self.organization, self.employees)
+            if self.recent_file_menu is not None:
+                self.recent_file_menu.clear()
+                for menu_name, menu_path in self.__get_saves_list().values():
+                    self.recent_file_menu.addAction(menu_name, lambda: print(menu_path))
+
+            time.sleep(self.auto_save_time)
 
     def update_data(self, organization, employees):
         self.organization = organization
         self.employees = employees
 
-#
+    def set_menu_for_update(self, recent_file_menu):
+        """Задает меню которое надо заполнять, при добавлении новых файлов."""
+        self.recent_file_menu = recent_file_menu
+
+    def __get_saves_list(self):
+        saves = dict()
+        files = os.listdir(path)
+        for i, file in enumerate(files):
+            menu_name = "Сохранено {date} в {hour}:{minute}".format(date=file[15:25],
+                                                                    hour=file[27:29],
+                                                                    minute=file[30:32])
+            saves[i] = (menu_name, os.path.join(path, file))
+        return saves
+
 # class RecentFilesMenuModel(QStringListModel):
 #
 #     def __init__(self, parent=None):
