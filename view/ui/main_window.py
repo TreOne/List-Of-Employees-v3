@@ -289,7 +289,7 @@ class Ui_MainWindow(object):
         self.add_employee_btn.setText(_translate("MainWindow", "Добавить сотрудника  (F1)"))
         self.remove_employee_btn.setText(_translate("MainWindow", "Удалить сотрудника (Delete)"))
         self.menu_file.setTitle(_translate("MainWindow", "Файл"))
-        self.menu_auto_save.setTitle(_translate("MainWindow", "Автосохранение..."))
+        self.menu_auto_save.setTitle(_translate("MainWindow", "Загрузить автосохранение..."))
         self.menu_help.setTitle(_translate("MainWindow", "Справка"))
         self.action.setText(_translate("MainWindow", "Открыть"))
         self.menu_new_file.setText(_translate("MainWindow", "Создать"))

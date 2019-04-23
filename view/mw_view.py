@@ -50,6 +50,7 @@ class MWView(QMainWindow):
         self.organization = Organization()
         self.auto_saver = AutoSaver(self.organization, self.model.employees)
         self.auto_saver.set_menu_for_update(self.ui.menu_auto_save)
+        self.auto_saver.set_load_action(self.load_file)
 
         self.filename = None
         self.last_path = None
