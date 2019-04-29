@@ -212,6 +212,7 @@ class MWView(QMainWindow):
                     self.menu_save_file_as_clicked()
                     return
         load_autosave_dialog = SLView(auto_saver=self.auto_saver, parent=self)
+        self.auto_saver.auto_save_finished.connect(load_autosave_dialog.autosave_files_updated)
         load_autosave_dialog.show()
 
     def menu_new_file_clicked(self):

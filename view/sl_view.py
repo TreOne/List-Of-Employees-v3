@@ -2,7 +2,7 @@ from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QShortcut
 from view.ui.save_list import Ui_SaveListForm
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSlot
 
 
 class SLView(QtWidgets.QWidget):
@@ -25,6 +25,7 @@ class SLView(QtWidgets.QWidget):
         QShortcut(QKeySequence(Qt.Key_Escape), self, self.close)
         self.ui.load_btn.clicked.connect(self.load_btn_clicked)
         QShortcut(QKeySequence(Qt.Key_Return), self, self.load_btn_clicked)
+        self.ui.save_list.itemDoubleClicked.connect(self.load_btn_clicked)
 
     def load_btn_clicked(self):
         if len(self.ui.save_list.selectedItems()) == 0:
@@ -39,7 +40,12 @@ class SLView(QtWidgets.QWidget):
         self.close()
 
     def __fill_save_list(self):
+        self.ui.save_list.clear()
         for menu_name, menu_path in self.auto_saver.get_saves_list().values():
             item = QtWidgets.QListWidgetItem(menu_name)
             item.setToolTip(menu_path)
             self.ui.save_list.addItem(item)
+
+    @pyqtSlot()
+    def autosave_files_updated(self):
+        self.__fill_save_list()
