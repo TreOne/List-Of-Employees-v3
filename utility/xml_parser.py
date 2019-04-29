@@ -194,15 +194,19 @@ class XMLParser:
             schema_filename = resource_path('resources/xml_schema.xsd')
             schema = etree.XMLSchema(file=schema_filename)
             xml_file = etree.ElementTree(file=self.__xml_filename)
-            schema.assert_(xml_file)
+            if not schema.validate(xml_file):
+                e = schema.error_log[0]
+                error_tag = "<{}>".format(e.path.split('/').pop())
+                error_path = "<{}>".format("> / <".join(e.path.lstrip('/').split('/')))
+                self.__errors.append("{}: Ошибка валидации XML файла!\n"
+                                     "Тег: {}\n"
+                                     "Путь: {}\n"
+                                     "Строка: {}".format(e.level_name, error_tag, error_path, e.line))
+                return False
             return True
 
         except etree.XMLSyntaxError as err:
             self.__errors.append("ERROR: Ошибка разбора XML файла:{0}".format(err))
-            return False
-
-        except AssertionError as err:
-            self.__errors.append(str(err))
             return False
 
         except ValueError as err:

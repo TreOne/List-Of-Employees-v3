@@ -11,6 +11,7 @@ import utility.resources
 from utility.organization import Organization
 from utility.xml_parser import XMLParser
 from view.of_view import OFView
+from view.sl_view import SLView
 from view.ui.main_window import Ui_MainWindow
 from utility.resource_path import resource_path
 from utility.settings import Settings
@@ -49,8 +50,6 @@ class MWView(QMainWindow):
         self.model = EmployeesListModel(Employees())
         self.organization = Organization()
         self.auto_saver = AutoSaver(self.organization, self.model.employees)
-        self.auto_saver.set_menu_for_update(self.ui.menu_auto_save)
-        self.auto_saver.set_load_action(self.load_file)
 
         self.filename = None
         self.last_path = None
@@ -97,6 +96,7 @@ class MWView(QMainWindow):
         self.ui.organization_edit_btn.clicked.connect(self.organization_edit_btn_clicked)
         self.ui.menu_new_file.triggered.connect(self.menu_new_file_clicked)
         self.ui.menu_open.triggered.connect(self.menu_open_clicked)
+        self.ui.menu_auto_save.triggered.connect(self.menu_auto_save_clicked)
         self.ui.menu_save.triggered.connect(self.menu_save_file_clicked)
         self.ui.menu_save_as.triggered.connect(self.menu_save_file_as_clicked)
         self.ui.menu_export_word.triggered.connect(self.menu_export_word_clicked)
@@ -201,6 +201,18 @@ class MWView(QMainWindow):
         organization_data = self.organization
         organization_edit_dialog = OFView(organization_data=organization_data, parent=self)
         organization_edit_dialog.show()
+
+    def menu_auto_save_clicked(self):
+        if not self.data_is_saved:
+            answer = QMessageBox.question(self, 'Изменения еще не сохранены!',
+                                          "Вы хотите сохранить изменения?",
+                                          QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+            if answer == QMessageBox.Yes:
+                if not self.save_file():
+                    self.menu_save_file_as_clicked()
+                    return
+        load_autosave_dialog = SLView(auto_saver=self.auto_saver, parent=self)
+        load_autosave_dialog.show()
 
     def menu_new_file_clicked(self):
         if not self.data_is_saved:
@@ -326,7 +338,7 @@ class MWView(QMainWindow):
         tail = '' if self.data_is_saved else ' ●'
         self.setWindowTitle('СписокСотрудников (версия {}){}'.format(version, tail))
 
-    def load_file(self, filename):
+    def load_file(self, filename, save_last_path=True):
         """Загружает файл из указанного пути"""
         if filename == '':
             return
@@ -339,7 +351,8 @@ class MWView(QMainWindow):
                                      QMessageBox.Close, QMessageBox.Close)
             self.clear_data()
             self.filename = os.path.normpath(filename)
-            self.last_path = os.path.split(filename)[0]
+            if save_last_path:
+                self.last_path = os.path.split(filename)[0]
             self.organization = xml_parser.get_organization()
             self.fill_organization_fields()
             list_of_employees = xml_parser.get_employees()

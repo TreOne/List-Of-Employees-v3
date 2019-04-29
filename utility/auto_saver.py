@@ -44,23 +44,13 @@ class AutoSaver:
             name = "Автосохранение {}.xml".format(now.strftime("%d.%m.%Y (%H.%M.%S)"))
             filename = os.path.join(path, name)
             self.parser.save_to_file(filename, self.organization, self.employees)
-            self.update_menu()
 
     def update_data(self, organization, employees):
         self.organization = organization
         self.employees = employees
 
-    def set_menu_for_update(self, recent_file_menu):
-        """Задает меню которое надо заполнять, при добавлении новых файлов."""
-        self.recent_file_menu = recent_file_menu
-        self.update_menu()
-
-    def set_load_action(self, load_action):
-        """Задает действие, которое надо выполнить, при выборе пункта меню автозагрузки."""
-        self.load_action = load_action
-        self.update_menu()
-
-    def __get_saves_list(self):
+    @staticmethod
+    def get_saves_list():
         saves = dict()
         files = os.listdir(path)
         files.sort(reverse=True)
@@ -71,17 +61,6 @@ class AutoSaver:
             saves[i] = (menu_name, os.path.join(path, file))
         return saves
 
-    def update_menu(self):
-        # TODO: Функция не работает
-        if self.recent_file_menu is not None and self.load_action is not None:
-            self.recent_file_menu.clear()
-            for menu_name, menu_path in self.__get_saves_list().values():
-                load_autosave_action = QAction(menu_name, self.recent_file_menu)
-                # load_autosave_action.triggered.connect(lambda: self.load_action(menu_path))
-                func = lambda: print(menu_path)
-                load_autosave_action.triggered.connect(func)
-                print(load_autosave_action, menu_path)
-                self.recent_file_menu.addAction(load_autosave_action)
 
 # class RecentFilesMenuModel(QStringListModel):
 #
@@ -92,7 +71,7 @@ class AutoSaver:
 #         if not index.isValid():
 #             return
 #
-#         save_files = self.__get_saves_list()
+#         save_files = self.get_saves_list()
 #         title, filename = save_files[index.row()]
 #         if role == Qt.DisplayRole:
 #             return title
@@ -100,7 +79,7 @@ class AutoSaver:
 #     def rowCount(self, *args, **kwargs):
 #         return len(self.files_list)
 #
-#     def __get_saves_list(self):
+#     def get_saves_list(self):
 #         saves = dict()
 #         files = os.listdir(path)
 #         for i, file in enumerate(files):
