@@ -284,6 +284,7 @@ class MWView(QMainWindow):
     @pyqtSlot()
     def data_changed(self):
         """Слот для фиксирования изменений в данных"""
+        self.auto_saver.update_data(self.organization, self.model.employees)
         self.data_is_saved = False
         self.update_window_title()
         self.ui.menu_save.setEnabled(True)

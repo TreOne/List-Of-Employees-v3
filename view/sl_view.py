@@ -27,9 +27,12 @@ class SLView(QtWidgets.QWidget):
         QShortcut(QKeySequence(Qt.Key_Return), self, self.load_btn_clicked)
 
     def load_btn_clicked(self):
+        if len(self.ui.save_list.selectedItems()) == 0:
+            return
         selected_save = self.ui.save_list.selectedItems()[0]
         filename = selected_save.toolTip()
         self.parent().load_file(filename, save_last_path=False)
+        self.parent().filename = None
         self.close()
 
     def cancel_btn_clicked(self):
