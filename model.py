@@ -14,6 +14,11 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
     def __init__(self, list_of_employees):
         QtCore.QAbstractTableModel.__init__(self)
         self.employees = list_of_employees
+        try:
+            for emp in list_of_employees:
+                print(' {} {} {} '.format(', '.join(emp["hazard_types"]), '/', ', '.join(emp["hazard_factors"])))
+        except:
+            pass
 
     def flags(self, index):
         if not index.isValid():
