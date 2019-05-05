@@ -10,7 +10,7 @@ from model import EmployeesListModel
 import utility.resources
 from utility.organization import Organization
 from utility.xml_parser import XMLParser
-from utility.xlsx_parser import get_data_from_xlsx
+from utility.xlsx_parser import XLSXParser
 from view.of_view import OFView
 from view.sl_view import SLView
 from view.ui.main_window import Ui_MainWindow
@@ -398,7 +398,28 @@ class MWView(QMainWindow):
         if filename == '':
             return
 
+        xlsx_parser = XLSXParser()
+        if xlsx_parser.load_file(filename):
+            self.clear_data()
+            self.filename = os.path.normpath(filename)
+            if save_last_path:
+                self.last_path = os.path.split(filename)[0]
+            self.organization = Organization()
+            self.fill_organization_fields()
+            list_of_employees = xlsx_parser.get_employees()
+            self.model = EmployeesListModel(list_of_employees)
+            self.proxy_model.setSourceModel(self.model)
+            self.ui.employees_table.setModel(self.proxy_model)
+            self.update_delegates()
 
+            self.auto_saver.update_data(self.organization, self.model.employees)
+
+            self.model.dataChanged.connect(self.data_changed)
+            self.model.rowsAddRemove.connect(self.data_changed)
+        else:
+            QMessageBox.critical(self, 'Ошибки при открытии файла!',
+                                 '\n'.join(xlsx_parser.get_errors()),
+                                 QMessageBox.Close, QMessageBox.Close)
 
     def update_delegates(self):
         # Создаем делегатов для редактирования данных модели
