@@ -433,6 +433,7 @@
     </property>
     <addaction name="menu_new_file"/>
     <addaction name="menu_open"/>
+    <addaction name="menu_import_excel"/>
     <addaction name="separator"/>
     <addaction name="menu_save"/>
     <addaction name="menu_save_as"/>
@@ -536,6 +537,15 @@
    </property>
    <property name="text">
     <string>Список автосохранений</string>
+   </property>
+  </action>
+  <action name="menu_import_excel">
+   <property name="icon">
+    <iconset resource="resources/resources.qrc">
+     <normaloff>:/icons/excel.svg</normaloff>:/icons/excel.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Импорт из Excel</string>
    </property>
   </action>
  </widget>

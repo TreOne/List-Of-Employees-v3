@@ -227,8 +227,14 @@ class Ui_MainWindow(object):
         icon6.addPixmap(QtGui.QPixmap(":/icons/files_list.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.menu_auto_save.setIcon(icon6)
         self.menu_auto_save.setObjectName("menu_auto_save")
+        self.menu_import_excel = QtWidgets.QAction(MainWindow)
+        icon7 = QtGui.QIcon()
+        icon7.addPixmap(QtGui.QPixmap(":/icons/excel.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.menu_import_excel.setIcon(icon7)
+        self.menu_import_excel.setObjectName("menu_import_excel")
         self.menu_file.addAction(self.menu_new_file)
         self.menu_file.addAction(self.menu_open)
+        self.menu_file.addAction(self.menu_import_excel)
         self.menu_file.addSeparator()
         self.menu_file.addAction(self.menu_save)
         self.menu_file.addAction(self.menu_save_as)
@@ -301,6 +307,7 @@ class Ui_MainWindow(object):
         self.menu_about.setToolTip(_translate("MainWindow", "Сведения о программе."))
         self.menu_tes.setText(_translate("MainWindow", "Файл1"))
         self.menu_auto_save.setText(_translate("MainWindow", "Список автосохранений"))
+        self.menu_import_excel.setText(_translate("MainWindow", "Импорт из Excel"))
 
 
 if __name__ == "__main__":

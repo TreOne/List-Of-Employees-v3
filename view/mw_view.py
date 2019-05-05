@@ -10,6 +10,7 @@ from model import EmployeesListModel
 import utility.resources
 from utility.organization import Organization
 from utility.xml_parser import XMLParser
+from utility.xlsx_parser import get_data_from_xlsx
 from view.of_view import OFView
 from view.sl_view import SLView
 from view.ui.main_window import Ui_MainWindow
@@ -96,6 +97,7 @@ class MWView(QMainWindow):
         self.ui.organization_edit_btn.clicked.connect(self.organization_edit_btn_clicked)
         self.ui.menu_new_file.triggered.connect(self.menu_new_file_clicked)
         self.ui.menu_open.triggered.connect(self.menu_open_clicked)
+        self.ui.menu_import_excel.triggered.connect(self.menu_import_clicked)
         self.ui.menu_auto_save.triggered.connect(self.menu_auto_save_clicked)
         self.ui.menu_save.triggered.connect(self.menu_save_file_clicked)
         self.ui.menu_save_as.triggered.connect(self.menu_save_file_as_clicked)
@@ -248,6 +250,25 @@ class MWView(QMainWindow):
         self.ui.menu_save_as.setEnabled(True)
         self.ui.menu_export_word.setEnabled(True)
 
+    def menu_import_clicked(self):
+        if not self.data_is_saved:
+            answer = QMessageBox.question(self, 'Изменения еще не сохранены!',
+                                          "Вы хотите сохранить изменения?",
+                                          QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+            if answer == QMessageBox.Yes:
+                if not self.save_file():
+                    self.menu_save_file_as_clicked()
+                    return
+        # Если локальная переменная пуста, то открываем рабочий каталог по умолчанию.
+        # Если в локальной переменной есть путь, то открываем эту директорию,
+        path = os.getenv('HOME') if self.last_path is None else self.last_path
+        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption='Импорт файла', directory=path,
+                                                         filter='Excel 2010 (.xlsx)|*.xlsx')[0]
+        self.import_file(filename)
+        self.ui.menu_save.setEnabled(True)
+        self.ui.menu_save_as.setEnabled(True)
+        self.ui.menu_export_word.setEnabled(True)
+
     def menu_save_file_clicked(self):
         if not self.save_file():
             return self.menu_save_file_as_clicked()
@@ -268,7 +289,7 @@ class MWView(QMainWindow):
         date = now.strftime("%d.%m.%Y")
         filename = QtWidgets.QFileDialog.getSaveFileName(self, 'Сохранить файл',
                                                          '/Список сотрудников ({date})'.format(date=date),
-                                                         filter='Word 2007 (.docx)|*.docx')[0]
+                                                         filter='Word 2010 (.docx)|*.docx')[0]
         if filename != '':
             docx = DocxCreator()
             docx.create_file(self.organization, self.model.employees)
@@ -371,6 +392,13 @@ class MWView(QMainWindow):
             QMessageBox.critical(self, 'Ошибки при открытии файла!',
                                  '\n'.join(xml_parser.get_errors()),
                                  QMessageBox.Close, QMessageBox.Close)
+
+    def import_file(self, filename, save_last_path=True):
+        """Импортирует данные из Excel таблицы"""
+        if filename == '':
+            return
+
+
 
     def update_delegates(self):
         # Создаем делегатов для редактирования данных модели

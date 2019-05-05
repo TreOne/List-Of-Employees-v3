@@ -6,3 +6,4 @@
 * pip install lxml
 * pip install requests
 * pip install docxtpl
+* pip install openpyxl
