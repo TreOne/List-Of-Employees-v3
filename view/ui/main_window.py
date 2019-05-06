@@ -320,7 +320,7 @@ class Ui_MainWindow(object):
         self.menu_tes.setText(_translate("MainWindow", "Файл1"))
         self.menu_auto_save.setText(_translate("MainWindow", "Список автосохранений"))
         self.menu_import_excel.setText(_translate("MainWindow", "Импорт из Excel"))
-        self.menu_demo_list.setText(_translate("MainWindow", "Создать случайный список сотрудников"))
+        self.menu_demo_list.setText(_translate("MainWindow", "Создать тестовый список сотрудников"))
         self.menu_demo_xml.setText(_translate("MainWindow", "Содать случайный XML файл"))
         self.menu_demo_excel.setText(_translate("MainWindow", "Создать тестовый Excel файл для импорта"))
 

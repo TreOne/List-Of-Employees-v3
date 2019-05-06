@@ -17,6 +17,7 @@ from view.ui.main_window import Ui_MainWindow
 from utility.resource_path import resource_path
 from utility.settings import Settings
 from model import EmployeesSortModel
+from utility.mime_data import MimeData
 from utility.delegates import InLineEditDelegate, GenderSelectionDelegate, BirthDateSelectionDelegate, \
     ExperienceSelectionDelegate, HazardsSelectionDelegate
 from datetime import datetime
@@ -102,6 +103,8 @@ class MWView(QMainWindow):
         self.ui.menu_save.triggered.connect(self.menu_save_file_clicked)
         self.ui.menu_save_as.triggered.connect(self.menu_save_file_as_clicked)
         self.ui.menu_export_word.triggered.connect(self.menu_export_word_clicked)
+        self.ui.menu_demo_list.triggered.connect(self.menu_demo_list_clicked)
+        self.ui.menu_demo_excel.triggered.connect(self.menu_demo_excel_clicked)
         self.model.dataChanged.connect(self.data_changed)
         self.model.rowsAddRemove.connect(self.data_changed)
 
@@ -302,6 +305,45 @@ class MWView(QMainWindow):
                                      " или файл открыт в другой программе.",
                                      QMessageBox.Close, QMessageBox.Close)
             self.last_path = os.path.split(os.path.normpath(filename))[0]
+
+    def menu_demo_list_clicked(self):
+        list_len, ok = QtWidgets.QInputDialog.getInt(self, 'Создание тестовых данных', 'Количество сотрудников:')
+        if ok:
+            if list_len < 0:
+                QMessageBox.critical(self, 'Недопустимое число сотрудников!',
+                                     'Число сотрудников не может быть отрицательным!',
+                                     QMessageBox.Close, QMessageBox.Close)
+                return
+            if not self.data_is_saved:
+                answer = QMessageBox.question(self, 'Изменения еще не сохранены!',
+                                              "Вы хотите сохранить изменения?",
+                                              QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+                if answer == QMessageBox.Yes:
+                    if not self.save_file():
+                        self.menu_save_file_as_clicked()
+                        return
+
+            mime_generator = MimeData(list_len)
+            self.clear_data()
+            self.organization = mime_generator.organization
+            self.fill_organization_fields()
+            list_of_employees = mime_generator.employees
+            self.model = EmployeesListModel(list_of_employees)
+            self.proxy_model.setSourceModel(self.model)
+            self.ui.employees_table.setModel(self.proxy_model)
+            self.update_delegates()
+
+            self.auto_saver.update_data(self.organization, self.model.employees)
+
+            self.model.dataChanged.connect(self.data_changed)
+            self.model.rowsAddRemove.connect(self.data_changed)
+
+            self.ui.menu_save.setEnabled(True)
+            self.ui.menu_save_as.setEnabled(True)
+            self.ui.menu_export_word.setEnabled(True)
+
+    def menu_demo_excel_clicked(self):
+        pass
 
     @pyqtSlot()
     def data_changed(self):

@@ -7,3 +7,4 @@
 * pip install requests
 * pip install docxtpl
 * pip install openpyxl
+* pip install mimesis

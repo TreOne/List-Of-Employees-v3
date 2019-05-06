@@ -558,7 +558,7 @@
   </action>
   <action name="menu_demo_list">
    <property name="text">
-    <string>Создать случайный список сотрудников</string>
+    <string>Создать тестовый список сотрудников</string>
    </property>
   </action>
   <action name="menu_demo_xml">
