@@ -250,7 +250,6 @@ class Ui_MainWindow(object):
         self.menu_file.addSeparator()
         self.menu_file.addAction(self.menu_export_word)
         self.menu_demo_data.addAction(self.menu_demo_list)
-        self.menu_demo_data.addAction(self.menu_demo_xml)
         self.menu_demo_data.addAction(self.menu_demo_excel)
         self.menu_help.addAction(self.menu_about)
         self.menu_help.addAction(self.menu_demo_data.menuAction())
@@ -321,9 +320,9 @@ class Ui_MainWindow(object):
         self.menu_tes.setText(_translate("MainWindow", "Файл1"))
         self.menu_auto_save.setText(_translate("MainWindow", "Список автосохранений"))
         self.menu_import_excel.setText(_translate("MainWindow", "Импорт из Excel"))
-        self.menu_demo_list.setText(_translate("MainWindow", "Заполнить список случайными сотрудниками"))
+        self.menu_demo_list.setText(_translate("MainWindow", "Создать случайный список сотрудников"))
         self.menu_demo_xml.setText(_translate("MainWindow", "Содать случайный XML файл"))
-        self.menu_demo_excel.setText(_translate("MainWindow", "Создать случайный Excel файл для импорта"))
+        self.menu_demo_excel.setText(_translate("MainWindow", "Создать тестовый Excel файл для импорта"))
 
 
 if __name__ == "__main__":
