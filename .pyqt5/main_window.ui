@@ -433,6 +433,7 @@
     </property>
     <addaction name="menu_new_file"/>
     <addaction name="menu_open"/>
+    <addaction name="menu_import_excel"/>
     <addaction name="separator"/>
     <addaction name="menu_save"/>
     <addaction name="menu_save_as"/>
@@ -444,7 +445,16 @@
     <property name="title">
      <string>Справка</string>
     </property>
+    <widget class="QMenu" name="menu_demo_data">
+     <property name="title">
+      <string>Демо-данные...</string>
+     </property>
+     <addaction name="menu_demo_list"/>
+     <addaction name="menu_demo_xml"/>
+     <addaction name="menu_demo_excel"/>
+    </widget>
     <addaction name="menu_about"/>
+    <addaction name="menu_demo_data"/>
    </widget>
    <addaction name="menu_file"/>
    <addaction name="menu_help"/>
@@ -536,6 +546,30 @@
    </property>
    <property name="text">
     <string>Список автосохранений</string>
+   </property>
+  </action>
+  <action name="menu_import_excel">
+   <property name="icon">
+    <iconset resource="resources/resources.qrc">
+     <normaloff>:/icons/excel.svg</normaloff>:/icons/excel.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Импорт из Excel</string>
+   </property>
+  </action>
+  <action name="menu_demo_list">
+   <property name="text">
+    <string>Заполнить список случайными сотрудниками</string>
+   </property>
+  </action>
+  <action name="menu_demo_xml">
+   <property name="text">
+    <string>Содать случайный XML файл</string>
+   </property>
+  </action>
+  <action name="menu_demo_excel">
+   <property name="text">
+    <string>Создать случайный Excel файл для импорта</string>
    </property>
   </action>
  </widget>
