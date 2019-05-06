@@ -263,7 +263,7 @@ class MWView(QMainWindow):
         # Если в локальной переменной есть путь, то открываем эту директорию,
         path = os.getenv('HOME') if self.last_path is None else self.last_path
         filename = QtWidgets.QFileDialog.getOpenFileName(self, caption='Импорт файла', directory=path,
-                                                         filter='Excel 2010 (.xlsx)|*.xlsx')[0]
+                                                         filter='Excel 2010 (*.xlsx)')[0]
         self.import_file(filename)
         self.ui.menu_save.setEnabled(True)
         self.ui.menu_save_as.setEnabled(True)
@@ -416,9 +416,13 @@ class MWView(QMainWindow):
 
             self.model.dataChanged.connect(self.data_changed)
             self.model.rowsAddRemove.connect(self.data_changed)
+            if len(xlsx_parser.get_warnings()) != 0:
+                QMessageBox.warning(self, 'Предупреждения при открытии файла!',
+                                    '\n\n'.join(xlsx_parser.get_warnings()),
+                                    QMessageBox.Close, QMessageBox.Close)
         else:
             QMessageBox.critical(self, 'Ошибки при открытии файла!',
-                                 '\n'.join(xlsx_parser.get_errors()),
+                                 '\n\n'.join(xlsx_parser.get_errors()),
                                  QMessageBox.Close, QMessageBox.Close)
 
     def update_delegates(self):

@@ -28,6 +28,9 @@ class XLSXParser:
     def get_errors(self):
         return self.__errors
 
+    def get_warnings(self):
+        return self.__warnings
+
     def load_file(self, filename):
         """Разбирает XLSX файл и заполняет данными список сотрудников"""
         self.__reset_state()
@@ -41,61 +44,69 @@ class XLSXParser:
             self.__errors.append('ERROR: XLSX файл по пути "' + filename + '" не найден.')
             return False
         self.__xlsx_filename = filename
-        # TODO: Реализовать парсер по примеру из self.get_data_from_xlsx()
 
+        excel_employees = ws.rows
+
+        for excel_employee in excel_employees:
+            # Пропускаем шапку таблицы
+            if excel_employee[0].row == 1:
+                continue
+            employee = self.employee_from_row(excel_employee)
+            self.__employees.add(employee)
         return True
 
-    def get_data_from_xlsx(self, filename=''):
-        wb = load_workbook(filename)
-        first_sheet_name = wb.sheetnames[0]
-        ws = wb[first_sheet_name]
-        lines = list()
-        names = list()
-        birthdays = list()
-        policy_regex = r"(\d+-\d+)-(\d+)"
-        policy_series = list()
-        policy_numbers = list()
-        policy_start = list()
-        policy_end = list()
-        errors = list()
+    def employee_from_row(self, excel_row):
+        new_employee = Employee()
+        employee_full_name = " ".join((str(excel_row[0].value), str(excel_row[1].value), str(excel_row[2].value)))
+        for field in Employee.ALL_FIELDS:
+            field_id = Employee.ALL_FIELDS.index(field)
 
-        # Добавляем имена и даты рождений в списки
-        for cell in ws['C']:
-            if cell.value is None:
-                errors.append('ERROR: В ячейке [' + cell.coordinate + '] не заполненно Имя!')
-            names.append(cell.value)
-            lines.append(cell.row + 1)
-        for cell in ws['D']:
-            if cell.value is None:
-                errors.append('ERROR: В ячейке [' + cell.coordinate + '] не заполненна Дата Рождения!')
-            birthdays.append(cell.value)
-        for cell in ws['B']:
-            if cell.value is None:
-                errors.append('ERROR: В ячейке [' + cell.coordinate + '] не заполненн Полис!')
-                continue
-            policy_data = re.search(policy_regex, cell.value)
-            if policy_data is not None and len(policy_data.groups()) == 2:
-                policy_series.append(policy_data.group(1))
-                policy_numbers.append(policy_data.group(2))
+            # Проверка форматов ячеек
+            if str(type(excel_row[field_id].value)) != str(type(None)):
+                if field == 'birth_date':
+                    if str(type(excel_row[field_id].value)) != "<class 'datetime.datetime'>":
+                        self.__warnings.append("WARNING: Формат ячейки 'Дата рождения' сотрудника {} не является датой."
+                                               " Пожалуйста, проверьте формат ячейки. Она должа иметь формат 'Дата'."
+                                               .format(employee_full_name))
+                        excel_row[field_id].value = None
+                elif field == 'experience':
+                    if str(type(excel_row[field_id].value)) != "<class 'int'>":
+                        self.__warnings.append("WARNING: Формат ячейки 'Стаж' сотрудника {} не является числом. "
+                                               "Пожалуйста, проверьте формат ячейки. Она должа иметь формат 'Числовой'."
+                                               .format(employee_full_name))
+                        excel_row[field_id].value = ''
+                else:
+                    if str(type(excel_row[field_id].value)) != "<class 'str'>":
+                        self.__warnings.append("WARNING: Формат ячейки '{}' сотрудника {} не является текстовым. "
+                                               "Пожалуйста, проверьте формат ячейки. Она должа иметь формат 'Текст'."
+                                               .format(Employee.translate(field), employee_full_name))
+                        excel_row[field_id].value = ''
+
+            # аие полей сотрудника
+            if field in Employee.LIST_FIELDS:
+                if excel_row[field_id].value is None:
+                    value = list()
+                else:
+                    value = str(excel_row[field_id].value).split(',')
+                    value = list(map(str.strip, value))
             else:
-                policy_series.append(None)
-                policy_numbers.append(None)
-        for cell in ws['H']:
-            if cell.value is None:
-                errors.append('ERROR: В ячейке [' + cell.coordinate + '] не заполненна Дата Начала!')
-            policy_start.append(cell.value)
-        for cell in ws['I']:
-            if cell.value is None:
-                errors.append('ERROR: В ячейке [' + cell.coordinate + '] не заполненна Дата Окончания!')
-            policy_end.append(cell.value)
+                value = '' if excel_row[field_id].value is None else excel_row[field_id].value
 
-        # Удаляем заголовки колонок и собираем 4 списка в один
-        names.pop(0)
-        birthdays.pop(0)
-        policy_series.pop(0)
-        policy_numbers.pop(0)
-        policy_start.pop(0)
-        policy_end.pop(0)
-        clients = list(zip(names, birthdays, policy_series, policy_numbers, lines, policy_start, policy_end))
-
-        return clients
+            if field in Employee.LIST_FIELDS:
+                new_employee[field] = value
+            elif field == 'birth_date':
+                if value != '':
+                    value = value.strftime("%Y-%m-%d")
+                new_employee[field] = value
+            elif field == 'sex':
+                if value in ('Мужской', 'Женский', ''):
+                    new_employee[field] = value
+                else:
+                    self.__warnings.append("WARNING: Ячейка 'Пол' сотрудника {} заполнена неправильно. "
+                                           "Пожалуйста, проверьте текст ячейки. "
+                                           "Она должа содержать одно из двух значений: 'Мужской' или 'Женский'."
+                                           .format(employee_full_name))
+                    new_employee[field] = ''
+            else:
+                new_employee[field] = str(value)
+        return new_employee

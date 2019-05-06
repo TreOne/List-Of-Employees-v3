@@ -1,5 +1,4 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
-
 from utility.address_assistant import set_address_completer
 from utility.employees import Employee
 from view.hw_view import HWView

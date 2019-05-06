@@ -90,6 +90,8 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
         if role == EmployeesListModel.SortRole:
             if field_name == 'birth_date':
                 str_birth_date = self.employees[emp_id]['birth_date']
+                if str_birth_date == '':
+                    return -1
                 birth_date = datetime.strptime(str_birth_date, "%Y-%m-%d")
                 now = datetime.today()
                 delta = now - birth_date
@@ -97,6 +99,8 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
 
             if field_name == 'experience':
                 experience = self.employees[emp_id]['experience']
+                if experience == '':
+                    return -1
                 return int(experience)
 
             if field_name in Employee.LIST_FIELDS:

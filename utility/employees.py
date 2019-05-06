@@ -1,4 +1,11 @@
 from __future__ import annotations
+from utility.hazards_lists_helper import HazardsListsHelper
+
+
+hazards_lists_helper = HazardsListsHelper()
+
+VALID_TYPE_CODES = hazards_lists_helper.get_hazard_types().keys()
+VALID_FACTOR_CODES = hazards_lists_helper.get_hazard_factors().keys()
 
 
 class Validate:
@@ -29,7 +36,7 @@ class Employee:
 
     @staticmethod
     def translate(eng_field):
-        """Позволяет ресифицировать название поля."""
+        """Позволяет русифицировать название поля."""
         all_fields_rus = {'family_name': 'Фамилия',
                           'first_name': 'Имя',
                           'patronymic': 'Отчество',
@@ -87,6 +94,13 @@ class Employee:
         if field_name not in Employee.ALL_FIELDS:
             return Validate(Validate.INVALID, "Неправильное название поля сотрудника: '{}'".format(rus_name))
 
+        # Проверяем коды списков вредностей
+        if field_name in Employee.LIST_FIELDS:
+            valid_codes = VALID_TYPE_CODES if field_name == 'hazard_types' else VALID_FACTOR_CODES
+            for code in self[field_name]:
+                if code not in valid_codes:
+                    return Validate(Validate.INVALID, "Код вредности '{}' не содержится в базе!".format(code))
+
         # Эти поля не должны быть пустыми
         if field_name in ('family_name', 'first_name', 'sex', 'birth_date', 'experience', 'specialty'):
             if self[field_name] == '':
@@ -98,7 +112,7 @@ class Employee:
                 return Validate(Validate.WARNING, "Если у сотрудника есть отчество,"
                                                   " оно должно быть обязательно указано.".format(rus_name))
 
-        return Validate(Validate.VALID, "Неправильное название поля сотрудника: '{}'".format(rus_name))
+        return Validate(Validate.VALID, "Поле валидно.")
 
     def show(self):
         string = """\
