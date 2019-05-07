@@ -10,6 +10,7 @@ from PyQt5 import QtGui
 class EmployeesListModel(QtCore.QAbstractTableModel):
     SortRole = QtCore.Qt.UserRole + 1
     rowsAddRemove = pyqtSignal()
+    selectHint = pyqtSignal(QtCore.QModelIndex)
 
     def __init__(self, list_of_employees):
         QtCore.QAbstractTableModel.__init__(self)
@@ -166,6 +167,9 @@ class EmployeesListModel(QtCore.QAbstractTableModel):
         self.employees.add()
         self.endInsertRows()
         self.rowsAddRemove.emit()
+        new_row = self.rowCount() - 1
+        first_cell_index = self.index(new_row, 0)
+        self.selectHint.emit(first_cell_index)
 
     def removeRow(self, row, parent=QtCore.QModelIndex()):
         emp_id = tuple(self.employees.keys())[row]

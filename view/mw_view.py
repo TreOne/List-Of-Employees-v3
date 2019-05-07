@@ -108,6 +108,7 @@ class MWView(QMainWindow):
         self.ui.menu_demo_excel.triggered.connect(self.menu_demo_excel_clicked)
         self.model.dataChanged.connect(self.data_changed)
         self.model.rowsAddRemove.connect(self.data_changed)
+        self.model.selectHint.connect(self.select_cell)
 
         # Горячие клавиши
         QShortcut(QKeySequence(Qt.Key_F1), self, self.proxy_model.insertRow)
@@ -183,6 +184,10 @@ class MWView(QMainWindow):
             QMessageBox.critical(self, 'Удаление невозможно!',
                                  "Не выбран сотрудник для удаления.",
                                  QMessageBox.Close, QMessageBox.Close)
+
+    def select_cell(self, source_index):
+        proxy_index = self.proxy_model.mapFromSource(source_index)
+        self.ui.employees_table.selectionModel().setCurrentIndex(proxy_index, QtCore.QItemSelectionModel.ClearAndSelect)
 
     def open_about_window(self):
         version = self.app_settings.get('system', 'version')
@@ -338,6 +343,7 @@ class MWView(QMainWindow):
 
             self.model.dataChanged.connect(self.data_changed)
             self.model.rowsAddRemove.connect(self.data_changed)
+            self.model.selectHint.connect(self.select_cell)
 
             self.ui.menu_save.setEnabled(True)
             self.ui.menu_save_as.setEnabled(True)
@@ -417,6 +423,7 @@ class MWView(QMainWindow):
         self.update_delegates()
         self.model.dataChanged.connect(self.data_changed)
         self.model.rowsAddRemove.connect(self.data_changed)
+        self.model.selectHint.connect(self.select_cell)
 
         self.auto_saver.update_data(self.organization, self.model.employees)
 
@@ -457,6 +464,7 @@ class MWView(QMainWindow):
 
             self.model.dataChanged.connect(self.data_changed)
             self.model.rowsAddRemove.connect(self.data_changed)
+            self.model.selectHint.connect(self.select_cell)
         else:
             QMessageBox.critical(self, 'Ошибки при открытии файла!',
                                  '\n'.join(xml_parser.get_errors()),
@@ -485,6 +493,8 @@ class MWView(QMainWindow):
 
             self.model.dataChanged.connect(self.data_changed)
             self.model.rowsAddRemove.connect(self.data_changed)
+            self.model.selectHint.connect(self.select_cell)
+
             if len(xlsx_parser.get_warnings()) != 0:
                 QMessageBox.warning(self, 'Предупреждения при открытии файла!',
                                     '\n\n'.join(xlsx_parser.get_warnings()),
