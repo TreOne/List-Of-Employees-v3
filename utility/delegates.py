@@ -165,9 +165,12 @@ class HazardsSelectionDelegate(QtWidgets.QStyledItemDelegate):
     def setModelData(self, editor, model, index):
         # Получаем данные из редактора вредностей
         hazard_types, hazard_factors = editor.hazards()
-        # Получаем индексы ячеек вредностей
-        hazard_types_index = index.siblingAtColumn(8)
-        hazard_factors_index = index.siblingAtColumn(9)
-        # Обновляем данные по указанным индексам
-        model.setData(hazard_types_index, hazard_types)
-        model.setData(hazard_factors_index, hazard_factors)
+
+        # Данные обновляем в исходной модели, так как прокси модель может
+        # сменить индексы после первого изменения данных
+        # и второе будет уже по неправильному индексу
+        hazard_types_index = model.mapToSource(index.siblingAtColumn(8))
+        hazard_factors_index = model.mapToSource(index.siblingAtColumn(9))
+
+        model.sourceModel().setData(hazard_types_index, hazard_types)
+        model.sourceModel().setData(hazard_factors_index, hazard_factors)

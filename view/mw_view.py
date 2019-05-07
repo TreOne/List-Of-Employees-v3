@@ -9,6 +9,7 @@ from utility.employees import Employee, Employees
 from model import EmployeesListModel
 import utility.resources
 from utility.organization import Organization
+from utility.words import smart_ending
 from utility.xml_parser import XMLParser
 from utility.xlsx_parser import XLSXParser
 from view.of_view import OFView
@@ -343,7 +344,33 @@ class MWView(QMainWindow):
             self.ui.menu_export_word.setEnabled(True)
 
     def menu_demo_excel_clicked(self):
-        pass
+        list_len, ok = QtWidgets.QInputDialog.getInt(self, 'Создание тестовых данных', 'Количество сотрудников:')
+        if ok:
+            if list_len < 0:
+                QMessageBox.critical(self, 'Недопустимое число сотрудников!',
+                                     'Число сотрудников не может быть отрицательным!',
+                                     QMessageBox.Close, QMessageBox.Close)
+                return
+            path = os.getenv('HOME') if self.last_path is None else self.last_path
+            filename = QtWidgets.QFileDialog.getSaveFileName(self, 'Сохранить демонстрационный файл',
+                                                             '{}/Демо-таблица из {} {}'
+                                                             .format(path, list_len, smart_ending(list_len,
+                                                                                                  'сотрудника',
+                                                                                                  'сотрудников',
+                                                                                                  'сотрудников')),
+                                                             filter='Excel 2010 (*.xlsx)')[0]
+
+            if filename == '':
+                return False
+
+            filename = filename if filename is not None else self.filename
+            if filename is None:
+                return False
+
+            xlsx_parser = XLSXParser()
+            mime_generator = MimeData(list_len)
+            list_of_employees = mime_generator.employees
+            xlsx_parser.save_to_file(filename, list_of_employees)
 
     @pyqtSlot()
     def data_changed(self):
